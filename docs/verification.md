@@ -17,7 +17,7 @@ Exécution le 5 novembre 2026, Windows, Node.js 26.13.0. Les résultats concerne
 | Dialogue et choix mentor | Affichage, lien vers la charte et fermeture par Échap vérifiés |
 | Console de l’aperçu React | Aucune erreur relevée |
 | Compilation complète Next.js 16.4.5 | Réussie : accueil, quatre pages publiques et page 404 générés |
-| Publication Sites | Bloquée : Git absent, aucune version déployée |
+| Préparation Git / Sites | Git 2.56.0 installé ; commit initial `243346d` créé ; accès au dépôt Sites confirmé. L’état de publication est consultable dans Sites. |
 
 Les contrôles navigateur ci-dessus ont commencé sur un aperçu de QA rendu et hydraté à partir des mêmes composants React. Après compilation Next.js, les cinq routes principales ont répondu HTTP 200. Le dialogue mentor, la persistance du thème après rechargement et la navigation vers la charte ont été revérifiés sur le site compilé. Aucune erreur applicative n’a été relevée dans sa console. Un cas de sélection du thème avant hydratation a été corrigé puis revérifié. Les outils temporaires de génération sont dans `work/`, en dehors des sources livrées.
 
