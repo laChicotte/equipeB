@@ -1,6 +1,16 @@
 # Préversion Vercel — comptes fermés
 
-Choix utilisateur confirmé le 5 novembre 2026 : Vercel. Aucun fournisseur d’e-mail n’est encore choisi. Cette étape prépare une préversion protégée, sans transfert des identifiants Neon et sans ouverture de comptes réels.
+Choix utilisateur confirmé le 5 novembre 2026 : Vercel, puis Resend pour l’e-mail. Cette étape fournit une préversion protégée, sans transfert des identifiants Neon et sans ouverture de comptes réels.
+
+## Déploiement vérifié le 5 novembre 2026
+
+- Projet talentlink, espace talent-link1 ; identifiant prj_lVIrejwZbhcaJqwyJYJ9Eu86R2BL.
+- Source applicative commit 4022237 ; déploiement dpl_jzu6NZ6nGYHW2riEwPyR7pqdAwps à l’état READY.
+- URL : https://talentlink-988yvesqu-talent-link1.vercel.app ; cible API staging (préversion, aucune promotion production).
+- Protection renvoyée par Vercel : ssoProtection.enabled=true, deploymentType=all.
+- Compilation cloud réussie en environ 40 secondes. Vérifications locales : 20 tests, typecheck, parcours API et préversion de production sans identifiants privés réussis. Aucun test HTTP authentifié du runtime cloud effectué à cette étape.
+- Première tentative classée automatiquement production par l’API puis annulée avant mise en ligne ; l’API refuse la chaîne target=preview et accepte target=staging. Toujours vérifier la cible retournée.
+- Resend retenu ensuite par l’utilisateur ; aucun domaine encore possédé. Voir email.md pour la mise en place. Comptes toujours fermés ; aucune donnée Neon ou SMTP transférée.
 
 ## Configuration prête à examiner
 
