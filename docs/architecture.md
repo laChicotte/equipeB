@@ -24,3 +24,7 @@ L’export statique livré est une étape de présentation. Il ne peut pas exéc
 - https://nextjs.org/docs/app/getting-started/installation : Node minimum 20.9, App Router.
 - https://nextjs.org/support-policy : utiliser une version stable maintenue.
 - https://www.efonij.gn/ : référence de clarté des services, sans reprise d’actifs.
+
+
+## Mise à jour 0.2
+La source 0.2 utilise désormais le serveur Next.js et les API Node.js. Les adaptateurs pg/Neon, les migrations SQL transactionnelles et les services d’identité sont implémentés. SQL paramétré et un dépôt typé ont été retenus pour cette première surface de données, sans introduire un ORM supplémentaire ; les services sont séparés du transport et réutilisables par une future application mobile. Voir authentication.md pour les décisions et les limites de publication.

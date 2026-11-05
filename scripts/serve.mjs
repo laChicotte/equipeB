@@ -15,6 +15,6 @@ createServer(async(req,res)=>{
   res.end(req.method==='HEAD'?undefined:data);
  }catch{
   res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'});
-  try{res.end(req.method==='HEAD'?undefined:await readFile(path.join(root,'404.html')))}catch{res.end('Page introuvable. Lancez npm run build avant npm start.')}
+  try{res.end(req.method==='HEAD'?undefined:await readFile(path.join(root,'404.html')))}catch{res.end('Export de la vitrine 0.1 absent. Utilisez son archive ou npm run dev pour la version serveur.')}
  }
 }).listen(3000,'127.0.0.1',()=>console.log('TalentLink — http://127.0.0.1:3000'));

@@ -15,3 +15,7 @@ Page d’accueil, composants de navigation, thèmes, pages publiques et cadrage 
 
 ## Contenus non encore disponibles
 Statistiques d’impact, témoignages avec consentement, partenaires et mentors : ne pas inventer. Les sections correspondantes seront introduites lorsque les données auront été vérifiées et les autorisations obtenues.
+
+
+## Mise à jour 0.2
+Les parcours d’identité sont développés pour des tests locaux avec PostgreSQL. L’ouverture des comptes réels reste une activation distincte, après validation du cadre de traitement et configuration de SMTP/hébergement. Le mentorat privé et les parcours des mineurs ne sont pas ouverts.

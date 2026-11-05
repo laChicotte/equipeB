@@ -1,48 +1,57 @@
-# TalentLink
+# TalentLink — authentification et PostgreSQL
 
-Première itération web, 5 novembre 2026. Plateforme gratuite de mentorat et d’apprentissage pour les jeunes en Guinée. Signature : « Apprends. Connecte-toi. Réalise ton potentiel. »
+Itération 0.2, 5 novembre 2026. Plateforme gratuite de mentorat et d’apprentissage destinée d’abord aux jeunes en Guinée.
 
 ## État réel
 
-Livré : vitrine responsive en français, navigation mobile, thèmes clair/sombre/système persistants, recherche de domaines avec état d’attente explicite, présentation des parcours mentor/mentoré, FAQ et quatre pages publiques. Aucun chiffre d’impact, témoignage ou mentor fictif.
+Le projet est maintenant une application Next.js avec serveur Node.js, API d’authentification, PostgreSQL, formulaires français et thèmes clair/sombre/automatique. Inscription adulte, e-mail de vérification, connexion/déconnexion, compte courant, mot de passe oublié et reset sont implémentés. Les inscriptions ne permettent que les rôles mentoré et mentor.
 
-Les comptes ne sont **pas ouverts**. Les dialogues ne collectent aucune coordonnée. Pas de backend, de messagerie, de quiz jouable ni de donnée personnelle dans cette livraison. Le schéma SQL est une fondation à valider, pas une base déployée. L’authentification, PostgreSQL et les e-mails ne doivent pas être présentés comme fonctionnels.
+Les comptes réels restent fermés par défaut. Le mentorat privé, les profils détaillés, les séances, les jeux et la messagerie ne sont pas encore activés. Une déclaration de majorité ne vaut pas vérification d’âge. Les textes juridiques restent préparatoires.
 
-## Consulter le site déjà compilé
+La vitrine 0.1 déjà publiée sur Sites reste en ligne. Cet hébergement statique ne fait pas fonctionner les nouvelles API Node.js. Le dossier historique `out/` correspond à cette vitrine, pas à l’authentification 0.2. L’activation en ligne du backend nécessite un hébergement Node.js et SMTP configuré.
 
-Le dossier `out/` est inclus dans l’archive. Avec Node.js installé, lancez `node scripts/serve.mjs` depuis le dossier du projet, puis ouvrez http://127.0.0.1:3000. Aucune installation de dépendances n’est nécessaire pour consulter cette version compilée.
+## Installation et développement
 
-## Démarrage reproductible
-
-Node.js 20.9 minimum selon Next.js ; environnement utilisé : Node 26.13.0, npm 11.20.0. Versions exactes dans package-lock.json.
+Node.js >=22.18 (vérifié avec 26.13.0), versions verrouillées dans package-lock.json.
 
 ```sh
 npm ci
-npm run dev
-npm run typecheck
+# Renseigner .env.local à partir de .env.example, sans écraser vos identifiants existants.
+npm run db:check
+npm run db:migrate
 npm test
-npm run build
+npm run db:smoke
+npm run dev -- --hostname 127.0.0.1
 ```
 
-Le build produit `out/`, hébergeable statiquement. `npm start` sert le dossier `out/` sur http://127.0.0.1:3000 après compilation ; `npm run dev` lance le développement. Le serveur fourni est destiné à la prévisualisation locale.
+Pour l’interface de test locale uniquement, renseigner AUTH_ENABLED=true, AUTH_REGISTRATION_ENABLED=true, un AUTH_SECRET aléatoire d’au moins 32 caractères, APP_URL=http://127.0.0.1:3000 et MAIL_DRIVER=file. Utiliser exclusivement des comptes fictifs. Les messages sont dans `.local/mail/`, ignoré par Git. Aucun lien de vérification n’est exposé dans une API de développement publique.
+
+Une connexion Neon est reconnue automatiquement : transport WSS sécurisé sur 443 via son pilote officiel. Les autres PostgreSQL utilisent pg. Sans serveur externe, DB_DRIVER=pglite permet une base PostgreSQL embarquée locale, interdite en production. Les tests unitaires/intégrés utilisent une base mémoire isolée et un faux transport d’e-mail.
+
+## Compilation serveur
+
+```sh
+npm run typecheck
+npm run build
+npm start
+```
+
+Avant une exploitation HTTPS : APP_URL doit correspondre à l’origine finale ; SMTP et les procédures d’ouverture doivent être validés. Le serveur de démarrage écoute sur 127.0.0.1 derrière un proxy HTTPS. Les migrations sont explicites, transactionnelles, versionnées et protégées par checksum.
 
 ## Structure
 
 ```text
-app/
-  layout.tsx          Métadonnées et initialisation du thème
-  page.tsx            Vitrine et interactions publiques
-  globals.css         Tokens et styles responsive
-  [slug]/page.tsx     Engagements, confidentialité, conditions, charte
-database/migrations/  Fondation PostgreSQL, non appliquée
-docs/                 Cadrage, architecture, sécurité et critères
-tests/                Contrôles de livraison et modèle de publication
-.env.example          Variables futures sans secret
-.openai/hosting.json  Identité de la préversion privée
+app/                         Vitrine, pages de compte et routes API /api/v1/auth
+components/                  Formulaires, espace personnel et sélecteur de thème
+src/modules/identity/        Validation, hachage, permissions et services métier
+src/server/                  Adaptateurs PostgreSQL, migrations, HTTP et e-mail
+database/migrations/         SQL versionné dans le schéma talentlink
+scripts/                     Commandes de contrôle, migration et test PostgreSQL natif
+tests/                       Tests de sécurité et parcours intégrés isolés
+docs/                        Architecture, produit, sécurité, parcours et vérifications
+.env.example                 Configuration sans secret réel
 ```
 
-## Décisions
+Le commit `40a8053` conserve le point de reprise de la vitrine 0.1. Cette itération prépare les profils, la vérification des mentors et les demandes ; TalentLink Play précédera toujours la messagerie.
 
-Next.js App Router + React + TypeScript strict. Export statique pour cette itération sans données : aucun serveur à exposer avant les validations. CSS sémantique léger sans dépendance visuelle ; Tailwind, shadcn/ui, Zod et React Hook Form pourront être ajoutés avec les formulaires réels. L’API `/api/v1` et PostgreSQL seront introduits à l’itération suivante en retirant `output: 'export'`. Cette transition est nécessaire avant toute authentification réelle.
-
-Voir [le plan et les critères](docs/roadmap.md), [l’architecture](docs/architecture.md) et [le rapport de vérification](docs/verification.md).
+Voir [l’authentification](docs/authentication.md), [la sécurité](docs/security.md), [le déploiement](docs/deployment.md) et [les vérifications 0.2](docs/verification-auth.md).

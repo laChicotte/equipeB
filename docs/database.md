@@ -14,3 +14,7 @@ Une réponse par tentative et question (contrainte unique). Le serveur tire le s
 
 ## Confidentialité
 Profils mentorés privés. Localisation publique générale seulement. Identités justificatives dans un espace privé séparé. Dates de naissance et justificatifs ne seront pas collectés avant validation de leur nécessité et de la procédure applicable. Consentements versionnés, séparation entre comptes et agrégats.
+
+
+## Mise à jour 0.2
+Les migrations 001 et 002 ont été appliquées à la base Neon configurée, dans le schéma talentlink. 002 ajoute la majorité déclarée (distincte d’une autorisation privée), le statut désactivé, les dates et index des sessions/jetons et les compteurs de débit. schema_migration conserve les checksums. Aucune donnée réelle n’a été nécessaire aux tests.
