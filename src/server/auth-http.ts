@@ -17,7 +17,6 @@ export function authConfig():AuthConfig {
   const secret=process.env.AUTH_SECRET || '';
   if(secret.length<32 || /replace|change-me/i.test(secret)) throw new Error('AUTH_SECRET is not configured');
   if(process.env.DB_DRIVER!=='pglite'&&!/^postgres(?:ql)?:\/\//.test(process.env.DATABASE_URL||''))throw new Error('PostgreSQL is not configured');
-  if(process.env.NODE_ENV==='production'&&(process.env.MAIL_DRIVER!=='smtp'||!process.env.SMTP_URL||!process.env.MAIL_FROM))throw new Error('SMTP is not configured');
   if(process.env.NODE_ENV==='production'&&process.env.DB_DRIVER==='pglite')throw new Error('Embedded development database is not allowed in production');
   if(process.env.NODE_ENV==='production'){
     if(process.env.REAL_ACCOUNTS_APPROVED!=='true')throw new Error('Real account activation is not approved');

@@ -50,6 +50,15 @@ test('production : le serveur refuse l’activation non approuvée et ne divulgu
     const request=new Request('https://talentlink.example.invalid/api/v1/auth/config');
     const closed=await handleAuth(request,'config');assert.deepEqual(await closed.json(),{enabled:false,registrationEnabled:false});
     process.env.REAL_ACCOUNTS_APPROVED='true';assert.equal(authConfig().secure,true);
+    const previousResend=process.env.MESSAGING_RESEND_API_KEY;
+    try{
+      delete process.env.SMTP_URL;process.env.MESSAGING_RESEND_API_KEY='synthetic-resend-test-key';
+      assert.equal(authConfig().secure,true);
+      delete process.env.MESSAGING_RESEND_API_KEY;assert.throws(()=>authConfig());
+    }finally{
+      process.env.SMTP_URL=production.SMTP_URL;
+      if(previousResend===undefined)delete process.env.MESSAGING_RESEND_API_KEY;else process.env.MESSAGING_RESEND_API_KEY=previousResend;
+    }
     const ready=await handleAuth(request,'config');assert.deepEqual(await ready.json(),{enabled:true,registrationEnabled:true});
   }finally{for(const key of keys){if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key]}}
 });
