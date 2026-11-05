@@ -1,8 +1,10 @@
 # Service e-mail TalentLink
 
-Comparatif consulté le 5 novembre 2026. Choix utilisateur : Resend. Aucun domaine possédé pour le moment. Aucun compte fournisseur créé par l’agent, abonnement souscrit, domaine acheté ni message réel envoyé.
+Comparatif consulté le 5 novembre 2026. Choix utilisateur : Resend. Domaine communiqué ensuite : talentlink.today ; statut Verified à confirmer dans Resend. Intégration gratuite installée par l’utilisateur. Aucun abonnement payant souscrit ni message réel envoyé par l’agent.
 
-Prochaine action : créer/connecter le compte gratuit depuis https://vercel.com/marketplace/resend et sélectionner uniquement le projet talentlink de l’espace talent-link1. L’utilisateur complète l’authentification et les conditions du service. Sans domaine vérifié, l’expéditeur de test onboarding@resend.dev permet uniquement des essais vers l’adresse associée au compte Resend ; ce mode ne permet pas d’ouvrir les inscriptions publiques. Source : https://resend.com/docs/knowledge-base/403-error-resend-dev-domain.
+Le projet talentlink possède MESSAGING_RESEND_API_KEY et MESSAGING_RESEND_EMAIL_DOMAIN, protégées et installées par le Marketplace. Le transport accepte maintenant MESSAGING_RESEND_API_KEY lorsque SMTP_URL est absent ; une SMTP_URL explicite reste prioritaire. MAIL_DRIVER=smtp et MAIL_FROM=TalentLink <notifications@talentlink.today> sont configurés uniquement sur Preview. Le domaine Marketplace ne choisit pas automatiquement l’expéditeur. Les clés ne sont pas lues ni copiées en local. Vérifier le domaine, puis tester SMTP et réception sur un destinataire explicitement autorisé avant toute activation des comptes.
+
+Sans domaine vérifié, l’expéditeur de test onboarding@resend.dev permet uniquement des essais vers l’adresse associée au compte Resend ; ce mode ne permet pas d’ouvrir les inscriptions publiques. Source : https://resend.com/docs/knowledge-base/403-error-resend-dev-domain.
 
 | Solution | Offre gratuite vérifiée | Intérêt pour TalentLink |
 | --- | --- | --- |
@@ -17,7 +19,7 @@ Ces quotas portent sur les messages, pas les utilisateurs. Une inscription, un r
 1. L’utilisateur choisit le fournisseur et confirme le domaine qu’il possède ainsi que l’accès DNS. Un domaine Vercel partagé en `.vercel.app` ne peut pas servir de domaine expéditeur personnel vérifié.
 2. Créer/connecter le compte Resend, en restant sur l’offre gratuite, via le Marketplace Vercel ou directement chez Resend. La création et les conditions du compte sont complétées par l’utilisateur.
 3. Ajouter un sous-domaine d’envoi du domaine possédé (par exemple `notifications.example.com`, exemple uniquement). Copier les enregistrements DNS exacts fournis par Resend pour SPF/DKIM ; configurer DMARC et contrôler la vérification. Préserver les enregistrements de la messagerie existante. Désactiver le suivi des liens et des ouvertures pour les e-mails d’authentification.
-4. Définir une clé d’envoi dédiée avec les droits minimaux. La conserver dans les paramètres privés, jamais dans le chat ni Git. L’intégration Vercel fournit RESEND_API_KEY ; le transport actuel de TalentLink attend SMTP_URL et ne lit pas directement cette variable.
+4. Définir une clé d’envoi dédiée avec les droits minimaux. La conserver dans les paramètres privés, jamais dans le chat ni Git. L’installation actuelle fournit MESSAGING_RESEND_API_KEY, prise en charge par TalentLink. RESEND_API_KEY, utilisé par d’autres installations, n’est pas lu automatiquement.
 5. Renseigner MAIL_DRIVER=smtp, MAIL_FROM et SMTP_URL dans les environnements privés autorisés. Pour Resend : hôte smtp.resend.com, utilisateur resend, mot de passe = clé API ; port 465 en smtps ou 587 avec STARTTLS. Encoder les identifiants lors de la construction de l’URL SMTP. Ne pas remplacer les variables Neon existantes.
 6. Exécuter `npm run mail:check` : vérification de connexion/TLS/authentification, sans envoi. Puis tester réception et liens de vérification/réinitialisation sur une adresse explicitement autorisée par l’utilisateur. Une connexion SMTP réussie ne prouve pas la réception.
 7. Valider le cadre de données, les URLs HTTPS, les secrets et les tests avant ouverture explicite des comptes. Les trois verrous dans vercel.json restent false jusque-là. Ne pas activer les fonctions mineurs ou la mise en relation privée.

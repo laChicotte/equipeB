@@ -33,6 +33,16 @@ test('SMTP : TLS obligatoire, aucun paramètre de désactivation implicite',()=>
     {SMTP_URL:'smtps://fixture:password@smtp.example.invalid/?tls.rejectUnauthorized=false'},
     {SMTP_URL:'http://fixture:password@smtp.example.invalid'}])assert.throws(()=>smtpSettings({...production,...overrides},true));
 });
+test('Resend Marketplace : clé protégée, expéditeur explicite et priorité SMTP',()=>{
+  const env={MAIL_DRIVER:'smtp',MAIL_FROM:'TalentLink <notifications@example.invalid>',MESSAGING_RESEND_API_KEY:'fixture:/@?#%secret'};
+  const settings=smtpSettings(env,true);
+  assert.equal(settings.options.host,'smtp.resend.com');assert.equal(settings.options.port,465);
+  assert.equal(settings.options.secure,true);assert.equal(settings.options.requireTLS,true);
+  assert.deepEqual(settings.options.auth,{user:'resend',pass:env.MESSAGING_RESEND_API_KEY});
+  assert.throws(()=>smtpSettings({...env,MAIL_FROM:''},true));
+  assert.throws(()=>smtpSettings({...env,MESSAGING_RESEND_API_KEY:''},true));
+  assert.equal(smtpSettings({...env,SMTP_URL:production.SMTP_URL},true).options.host,'smtp.example.invalid');
+});
 test('production : le serveur refuse l’activation non approuvée et ne divulgue pas sa configuration',async()=>{
   const keys=Object.keys(production);const previous=Object.fromEntries(keys.map(key=>[key,process.env[key]]));
   try{
