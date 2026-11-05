@@ -46,6 +46,7 @@ try{
  let ready=false;
  while(Date.now()<deadline){if(server.exitCode!==null)throw new Error('Test server exited before readiness');try{const response=await fetch(`${base}/api/v1/auth/config`,{signal:AbortSignal.timeout(3000)});if(response.ok&&(await response.json()).enabled){ready=true;break}}catch{}await pause(300)}
  assert.ok(ready,'Next.js API did not become ready');
+ const health=await fetch(`${base}/api/health/`);assert.equal(health.status,200);assert.deepEqual(await health.json(),{status:'ok'});assert.equal(health.headers.get('cache-control'),'no-store');
  assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,400);
  assert.equal((await post('register',{},'','https://other.invalid')).status,403);
  assert.equal((await post('register',{email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,202);

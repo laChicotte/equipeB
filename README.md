@@ -55,3 +55,9 @@ docs/                        Architecture, produit, sécurité, parcours et vér
 Le commit `40a8053` conserve le point de reprise de la vitrine 0.1. Cette itération prépare les profils, la vérification des mentors et les demandes ; TalentLink Play précédera toujours la messagerie.
 
 Voir [l’authentification](docs/authentication.md), [la sécurité](docs/security.md), [le déploiement](docs/deployment.md) et [les vérifications 0.2](docs/verification-auth.md).
+
+## Préversion Vercel
+
+L’hébergeur Vercel a été choisi. Le fichier vercel.json prépare une préversion avec comptes fermés ; aucune configuration privée n’est nécessaire à ce premier déploiement. Voir [la procédure Vercel](docs/vercel.md).
+
+`npm run deploy:check` vérifie cette fermeture. `npm run deploy:check-accounts` liste les prérequis d’une ouverture future sans exposer de secret. `npm run mail:check` vérifie un SMTP configuré sans envoyer d’e-mail. La connexion Vercel, la protection d’accès de la préversion et son déploiement effectif doivent être confirmés séparément. Aucun fournisseur SMTP n’a encore été choisi.

@@ -1,0 +1,12 @@
+.env*
+.local
+.git
+.openai
+.npmrc
+.next
+node_modules
+out
+work
+*.zip
+*.tar.gz
+*.tsbuildinfo

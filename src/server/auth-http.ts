@@ -5,6 +5,7 @@ import { mailer } from './mail.ts';
 import { IdentityService, SESSION_SECONDS } from '../modules/identity/service.ts';
 import { AuthError } from '../modules/identity/errors.ts';
 import { requirePermission } from '../modules/identity/access.ts';
+import {smtpSettings} from './smtp-settings.ts';
 
 export type AuthConfig={origin:string;secure:boolean;registrationEnabled:boolean;secret:string};
 export function authConfig():AuthConfig {
@@ -18,6 +19,10 @@ export function authConfig():AuthConfig {
   if(process.env.DB_DRIVER!=='pglite'&&!/^postgres(?:ql)?:\/\//.test(process.env.DATABASE_URL||''))throw new Error('PostgreSQL is not configured');
   if(process.env.NODE_ENV==='production'&&(process.env.MAIL_DRIVER!=='smtp'||!process.env.SMTP_URL||!process.env.MAIL_FROM))throw new Error('SMTP is not configured');
   if(process.env.NODE_ENV==='production'&&process.env.DB_DRIVER==='pglite')throw new Error('Embedded development database is not allowed in production');
+  if(process.env.NODE_ENV==='production'){
+    if(process.env.REAL_ACCOUNTS_APPROVED!=='true')throw new Error('Real account activation is not approved');
+    smtpSettings(process.env,true);
+  }
   return {origin:url.origin,secure,secret,registrationEnabled:process.env.AUTH_REGISTRATION_ENABLED==='true'};
 }
 export function cookieName(config:AuthConfig){return config.secure?'__Host-tl_session':'tl_session'}

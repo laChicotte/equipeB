@@ -3,6 +3,8 @@
 ## Accès et périmètre
 AUTH_ENABLED et AUTH_REGISTRATION_ENABLED sont false par défaut. Les formulaires ne collectent pas de coordonnées lorsque le service annonce sa fermeture. Les comptes fictifs servent aux tests ; aucun compte réel n’est ouvert automatiquement. L’espace courant est protégé par une vérification de session côté API, même si le navigateur modifie son affichage.
 
+En production, REAL_ACCOUNTS_APPROVED=true est aussi exigé par le serveur. Ce verrou doit traduire une validation réelle de l’opérateur ; il ne remplace pas la validation juridique et opérationnelle. La configuration Vercel initiale verrouille explicitement les trois valeurs à false pour une préversion sans collecte.
+
 ## Mots de passe et sessions
 Scrypt : N=131072, r=8, p=1, sel aléatoire 128 bits, sortie 512 bits ; comparaison en temps constant. Mot de passe de 12 à 128 caractères à la création/reset, aucune transformation silencieuse des espaces. Deux calculs simultanés au maximum, file bornée à huit demandes. Les erreurs de capacité restent génériques.
 

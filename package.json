@@ -13,7 +13,11 @@
     "db:check": "node scripts/database.ts check",
     "db:migrate": "node scripts/database.ts migrate",
     "db:smoke": "node scripts/native-smoke.ts",
-    "test:e2e": "node scripts/e2e.ts"
+    "test:e2e": "node scripts/e2e.ts",
+    "deploy:check": "node scripts/deployment.ts preview",
+    "deploy:check-accounts": "node scripts/deployment.ts accounts",
+    "mail:check": "node scripts/deployment.ts smtp",
+    "test:preview": "node scripts/preview-check.ts"
   },
   "dependencies": {
     "next": "16.4.5",
