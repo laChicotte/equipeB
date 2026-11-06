@@ -2,6 +2,8 @@
 
 État au 6 novembre 2026 : proposition à approuver et à éprouver avant l’ouverture adulte. Aucune suppression de compte, modification SQL ou purge nouvelle n’est exécutée par ce document.
 
+Décision de l’utilisateur : les objectifs suivants sont acceptés — suppression des comptes non confirmés après 30 jours, prise en charge des demandes sous 7 jours, clôture visée sous 30 jours après vérification et revue des comptes inactifs après 24 mois. Cette décision autorise leur préparation technique ; elle ne constate pas leur mise en œuvre et ne valide pas les autres durées proposées. L’identité du responsable de TalentLink Group reste à préciser. Les inscriptions demeurent fermées.
+
 ## Durées proposées et réalité technique
 
 | Données | Règle proposée | Mise en œuvre actuelle / travail restant |
