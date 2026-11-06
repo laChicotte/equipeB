@@ -1,0 +1,170 @@
+{
+  "sourceCheckedAt": "2026-11-06",
+  "games": [
+    {
+      "slug": "securite-numerique-depart-v1",
+      "title": "Les bons réflexes numériques",
+      "description": "Quatre situations pour reconnaître un message suspect et mieux protéger ses comptes.",
+      "category": "Technologie et numérique",
+      "level": "beginner",
+      "durationMinutes": 3,
+      "pointsPerAnswer": 10,
+      "questions": [
+        {
+          "stem": "Un message urgent vous demande de vous connecter par un lien inattendu. Quel réflexe privilégier ?",
+          "options": [
+            "Ouvrir le lien immédiatement",
+            "Accéder au service par son adresse habituelle",
+            "Envoyer son mot de passe en réponse"
+          ],
+          "correctIndex": 1,
+          "explanation": "En cas de doute, utilisez une adresse connue ou contactez directement le service. Le lien reçu peut mener vers un faux site.",
+          "source": "https://www.cybermalveillance.gouv.fr/tous-nos-contenus/fiches-reflexes/hameconnage-phishing"
+        },
+        {
+          "stem": "Le nom affiché de l’expéditeur suffit-il à prouver qu’un message est authentique ?",
+          "options": [
+            "Oui, si le nom est connu",
+            "Oui, si le message comporte un logo",
+            "Non, il faut vérifier par un canal fiable"
+          ],
+          "correctIndex": 2,
+          "explanation": "Une apparence familière ne suffit pas. Une organisation peut être imitée ; vérifiez le message auprès du service par un moyen connu.",
+          "source": "https://www.cybermalveillance.gouv.fr/tous-nos-contenus/fiches-reflexes/hameconnage-phishing"
+        },
+        {
+          "stem": "Pourquoi choisir un mot de passe différent pour chaque compte ?",
+          "options": [
+            "Pour limiter les conséquences du vol d’un mot de passe",
+            "Pour supprimer le besoin de vérifier les messages",
+            "Pour rendre son adresse e-mail invisible"
+          ],
+          "correctIndex": 0,
+          "explanation": "Un mot de passe unique évite qu’un même secret volé permette d’ouvrir plusieurs comptes. Un gestionnaire peut aider à conserver ces secrets.",
+          "source": "https://www.cnil.fr/fr/securite-des-donnees-les-regles-essentielles"
+        },
+        {
+          "stem": "Quel est le rôle de l’authentification multifacteur ?",
+          "options": [
+            "Remplacer toutes les mises à jour",
+            "Ajouter une preuve d’identité distincte du mot de passe",
+            "Permettre de partager son mot de passe"
+          ],
+          "correctIndex": 1,
+          "explanation": "Un facteur supplémentaire renforce la connexion, par exemple une validation sur un appareil. Cela réduit certains risques sans rendre le compte invulnérable.",
+          "source": "https://www.cnil.fr/fr/securite-des-donnees-les-regles-essentielles"
+        }
+      ]
+    },
+    {
+      "slug": "reperes-systeme-solaire-v1",
+      "title": "Premiers repères dans le Système solaire",
+      "description": "Identifier le Soleil, situer la Terre et comprendre quelques liens entre les astres.",
+      "category": "Sciences",
+      "level": "beginner",
+      "durationMinutes": 3,
+      "pointsPerAnswer": 10,
+      "questions": [
+        {
+          "stem": "Quel type d’astre est le Soleil ?",
+          "options": [
+            "Une étoile",
+            "Une planète",
+            "Un satellite naturel"
+          ],
+          "correctIndex": 0,
+          "explanation": "Le Soleil est l’étoile de notre système planétaire. Il produit l’énergie qui nous parvient sous forme de lumière et de chaleur.",
+          "source": "https://science.nasa.gov/sun/facts/"
+        },
+        {
+          "stem": "Quelle interaction maintient les planètes sur des orbites autour du Soleil ?",
+          "options": [
+            "Le vent dans l’espace",
+            "La lumière réfléchie par la Lune",
+            "La gravitation"
+          ],
+          "correctIndex": 2,
+          "explanation": "L’attraction gravitationnelle du Soleil intervient dans le mouvement orbital des planètes. Elle ne correspond ni à un vent ni à une lumière réfléchie.",
+          "source": "https://science.nasa.gov/sun/facts/"
+        },
+        {
+          "stem": "En partant du Soleil, quelle est la position de la Terre parmi les planètes ?",
+          "options": [
+            "Deuxième",
+            "Troisième",
+            "Cinquième"
+          ],
+          "correctIndex": 1,
+          "explanation": "La Terre est la troisième planète à partir du Soleil, après Mercure et Vénus.",
+          "source": "https://science.nasa.gov/earth/facts/"
+        },
+        {
+          "stem": "Quel astre est le satellite naturel de la Terre ?",
+          "options": [
+            "La Lune",
+            "Le Soleil",
+            "Mars"
+          ],
+          "correctIndex": 0,
+          "explanation": "La Lune est le satellite naturel de la Terre : elle orbite autour de notre planète.",
+          "source": "https://science.nasa.gov/moon/facts/"
+        }
+      ]
+    },
+    {
+      "slug": "cycle-eau-essentiels-v1",
+      "title": "L’eau change et circule",
+      "description": "Reconnaître l’évaporation, la condensation et le rôle des plantes dans le cycle de l’eau.",
+      "category": "Environnement",
+      "level": "beginner",
+      "durationMinutes": 3,
+      "pointsPerAnswer": 10,
+      "questions": [
+        {
+          "stem": "Lors de l’évaporation, l’eau liquide devient principalement…",
+          "options": [
+            "De la glace",
+            "Du sel",
+            "De la vapeur d’eau"
+          ],
+          "correctIndex": 2,
+          "explanation": "L’évaporation fait passer l’eau de l’état liquide à l’état gazeux. La vapeur peut ensuite circuler dans l’atmosphère.",
+          "source": "https://www.usgs.gov/water-science-school/science/evaporation-and-water-cycle"
+        },
+        {
+          "stem": "Comment appelle-t-on le passage de la vapeur d’eau à l’eau liquide ?",
+          "options": [
+            "La condensation",
+            "La fusion",
+            "La filtration"
+          ],
+          "correctIndex": 0,
+          "explanation": "La condensation transforme la vapeur en eau liquide. Elle peut produire des gouttelettes, par exemple sur une surface froide.",
+          "source": "https://www.usgs.gov/water-science-school/science/condensation-and-water-cycle"
+        },
+        {
+          "stem": "Par quel processus les plantes libèrent-elles de la vapeur d’eau, notamment par leurs feuilles ?",
+          "options": [
+            "La congélation",
+            "La transpiration",
+            "La sédimentation"
+          ],
+          "correctIndex": 1,
+          "explanation": "Les plantes absorbent de l’eau et en relâchent une partie sous forme de vapeur. Ce transfert vers l’air participe au cycle de l’eau.",
+          "source": "https://www.usgs.gov/water-science-school/science/evapotranspiration-and-water-cycle"
+        },
+        {
+          "stem": "À l’échelle de la Terre, quelle eau représente la plus grande part du volume total ?",
+          "options": [
+            "L’eau douce des rivières",
+            "L’eau douce des lacs",
+            "L’eau salée"
+          ],
+          "correctIndex": 2,
+          "explanation": "La très grande majorité de l’eau terrestre est salée. L’eau douce ne représente qu’une petite part du total.",
+          "source": "https://www.climatehubs.usda.gov/commodity/water"
+        }
+      ]
+    }
+  ]
+}

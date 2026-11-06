@@ -1,3 +1,7 @@
+## Itération 0.11 — premiers quiz à relire
+
+Trois lots éditoriaux sourcés, douze questions soumises à validation humaine. Guide : [docs/editorial-launch.md](docs/editorial-launch.md). Aucune publication automatique.
+
 ## Itération 0.10 — lancement découverte
 
 Périmètre public autorisé : vitrine, annuaire, quiz validés ; nouvelles inscriptions fermées. Guide de lancement, contact et retour arrière : [docs/public-launch.md](docs/public-launch.md).

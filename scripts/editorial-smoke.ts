@@ -1,0 +1,8 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {getDatabase} from '../src/server/database.ts';
+import type {Database} from '../src/server/database.ts';
+import type {Account} from '../src/modules/identity/access.ts';
+import {importEditorialPack} from '../src/modules/play/editorial.ts';
+process.loadEnvFile('.env.local');const email=process.argv[2];if(!email||process.env.DB_DRIVER==='pglite')throw Error('Existing administrator and PostgreSQL required');const db=await getDatabase(),rollback=new Error('Rollback');let checked=false;
+try{try{await db.transaction(async sql=>{const isolated:Database={...sql,transaction:fn=>fn(sql),close:async()=>{}};const [user]=await sql.query<{id:string}>('SELECT id FROM app_user WHERE lower(email)=lower($1)',[email]);if(!user)throw Error('Administrator unavailable');const pack=JSON.parse(await readFile('editorial/launch-quizzes.v1.json','utf8'));const imported=await importEditorialPack(isolated,user as Account,pack);assert.equal(imported.questionsSubmitted,12);assert.equal((await importEditorialPack(isolated,user as Account,pack)).questionsSubmitted,0);const rows=await sql.query<{status:string}>('SELECT status FROM quiz_question_version WHERE editorial_batch_id=ANY($1::uuid[])',[imported.batches.map(b=>b.id)]);assert.equal(rows.length,12);assert.ok(rows.every(r=>r.status==='submitted'));checked=true;throw rollback})}catch(e){if(e!==rollback)throw e}assert.ok(checked);console.log('PostgreSQL natif : import et rejeu éditoriaux vérifiés dans une transaction annulée. Aucune approbation, publication ou donnée persistante.')}catch{console.error('Contrôle éditorial natif échoué. Aucun identifiant affiché.');process.exitCode=1}finally{await db.close()}

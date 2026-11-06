@@ -1,3 +1,7 @@
+## Lots éditoriaux assistés — mise à jour 0.11
+
+Une provenance explicite distingue les lots rédigés avec assistance des contributions humaines ; leur importateur est identifié séparément. Une validation administrative humaine reste requise pour chaque question. Voir editorial-launch.md. Les corrections humaines restent soumises au refus d’auto-approbation.
+
 # TalentLink Play — itération 0.4
 
 ## Parcours

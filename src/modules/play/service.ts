@@ -48,7 +48,7 @@ export class PlayService {
   if(!rows.length)throw conflict();await this.audit(sql,user.id,'play.question.submitted',id);return {message:'Question soumise à l’examen humain.'};
  })}
  async reviewQuestion(account:Account|null,input:unknown){const v=reviewQuestionSchema.parse(input);return this.db.transaction(async sql=>{
-  const user=await this.actor(sql,account,true);const [q]=await sql.query<{author_id:string;created_by:string;status:string}>(`SELECT v.status,v.created_by,q.author_id FROM quiz_question_version v JOIN quiz_question q ON q.id=v.question_id WHERE v.id=$1 FOR UPDATE OF v`,[v.id]);
+  const user=await this.actor(sql,account,true);const [q]=await sql.query<{author_id:string|null;created_by:string|null;status:string}>(`SELECT v.status,v.created_by,q.author_id FROM quiz_question_version v JOIN quiz_question q ON q.id=v.question_id WHERE v.id=$1 FOR UPDATE OF v`,[v.id]);
   if(!q)throw missing();if(q.author_id===user.id||q.created_by===user.id)throw deny();
   if(v.decision==='archived'?!['approved','submitted','in_review','rejected'].includes(q.status):!['submitted','in_review'].includes(q.status))throw conflict();
   await sql.query('UPDATE quiz_question_version SET status=$2,reviewed_by=$3,review_note=$4,reviewed_at=now() WHERE id=$1',[v.id,v.decision,user.id,v.note]);
