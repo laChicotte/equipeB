@@ -10,3 +10,5 @@
 - Navigateur : annuaire vide explicite, connexion d’un mentor synthétique de la base isolée, accès au formulaire enregistré « En examen », thème sombre et mesure à 375 px sans débordement horizontal. Présentation claire de l’annuaire également inspectée. Aucun examen administratif réel effectué dans le navigateur.
 
 Les photos, évaluations, séances et justificatifs ne sont pas couverts par cette livraison. Les tests de concurrence des demandes s’exécutent dans la base embarquée ; une charge multi-connexions PostgreSQL native reste à organiser avant ouverture. L’annuaire vide reflète l’absence de mentor réel validé, pas un échec de chargement. L’accès adulte et les mises en relation restent fermés jusqu’à la validation des procédures.
+
+Contrôle final sur le serveur local relié à Neon : une première requête a renvoyé 503 lors d’une indisponibilité transitoire ; la suivante a répondu 200 avec items=[], total=0. Le profil ne doit pas être inventé pour masquer cet état. L’interface distingue erreur et liste vide et propose de réessayer le chargement. Pas de reprise automatique des écritures ni des e-mails.
