@@ -2,12 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build",
-  "env": {
-    "AUTH_ENABLED": "false",
-    "AUTH_REGISTRATION_ENABLED": "false",
-    "REAL_ACCOUNTS_APPROVED": "false",
-    "MENTORING_ENABLED": "false",
-    "PLAY_ENABLED": "false"
-  }
+  "buildCommand": "npm run build"
 }

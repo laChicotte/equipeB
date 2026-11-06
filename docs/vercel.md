@@ -1,55 +1,29 @@
-# Préversion Vercel — comptes fermés
+# Hébergement Vercel — version privée
 
-Choix utilisateur confirmé le 5 novembre 2026 : Vercel, puis Resend pour l’e-mail. Cette étape fournit une préversion protégée, sans transfert des identifiants Neon et sans ouverture de comptes réels.
+Le 6 novembre 2026, l’utilisateur a demandé de regrouper toutes les fonctionnalités développées sur Vercel avec talentlink.today, puis a choisi explicitement un accès privé protégé par sa connexion Vercel.
 
-## Déploiement vérifié le 5 novembre 2026
+Projet : talentlink, espace talent-link1, identifiant prj_lVIrejwZbhcaJqwyJYJ9Eu86R2BL. Domaine principal : https://talentlink.today ; www.talentlink.today redirige en 308 vers le domaine principal. Les enregistrements Resend existants sont conservés ; aucun achat, transfert, changement de nameservers ou de plan.
 
-- Projet talentlink, espace talent-link1 ; identifiant prj_lVIrejwZbhcaJqwyJYJ9Eu86R2BL.
-- Source applicative commit 4022237 ; déploiement dpl_jzu6NZ6nGYHW2riEwPyR7pqdAwps à l’état READY.
-- URL : https://talentlink-988yvesqu-talent-link1.vercel.app ; cible API staging (préversion, aucune promotion production).
-- Protection renvoyée par Vercel : ssoProtection.enabled=true, deploymentType=all.
-- Compilation cloud réussie en environ 40 secondes. Vérifications locales : 20 tests, typecheck, parcours API et préversion de production sans identifiants privés réussis. Aucun test HTTP authentifié du runtime cloud effectué à cette étape.
-- Première tentative classée automatiquement production par l’API puis annulée avant mise en ligne ; l’API refuse la chaîne target=preview et accepte target=staging. Toujours vérifier la cible retournée.
-- Resend retenu ensuite par l’utilisateur ; aucun domaine encore possédé. Voir email.md pour la mise en place. Comptes toujours fermés ; aucune donnée Neon ou SMTP transférée.
+## Configuration par environnement
 
-## Configuration prête à examiner
+vercel.json définit uniquement Next.js, npm ci et npm run build. Les verrous ne sont plus codés dans ce fichier : leurs valeurs viennent désormais de l’environnement Vercel. En l’absence de valeurs, le code et .env.example gardent les fonctions désactivées.
 
-- Framework Next.js, installation npm ci, compilation npm run build avec Webpack.
-- Choisir Node.js 24.x dans le projet Vercel ; la source exige au minimum Node 22.18 et a été testée localement avec Node 26.13.
-- Les trois verrous AUTH_ENABLED, AUTH_REGISTRATION_ENABLED et REAL_ACCOUNTS_APPROVED sont explicitement false dans vercel.json. Leur levée nécessitera une modification relue de ce fichier et les réglages privés correspondants, après validation.
-- La fonction d’authentification dispose d’un budget maximal de 60 secondes. Ne pas modifier le plan ou engager de dépense pour ce déploiement sans accord.
-- .vercelignore exclut les fichiers .env, les données et messages locaux, les caches, les archives et les métadonnées Sites. .vercel/ n’est pas versionné.
-- GET /api/health renvoie uniquement un état de fonctionnement du serveur, sans contrôle de base ou SMTP ni révélation de configuration.
+Production privée : AUTH_ENABLED=true, AUTH_REGISTRATION_ENABLED=true, REAL_ACCOUNTS_APPROVED=true, PLAY_ENABLED=true, MENTORING_ENABLED=false. APP_URL=https://talentlink.today, DB_DRIVER=postgres, MAIL_DRIVER=smtp, MAIL_FROM=TalentLink <notifications@talentlink.today>. DATABASE_URL est transférée depuis la configuration PostgreSQL de développement autorisée ; un AUTH_SECRET distinct a été généré pour le cloud. Ces secrets sont stockés comme variables sensibles de production, jamais dans Git, un livrable ou le chat. La clé MESSAGING_RESEND_API_KEY du Marketplace est conservée sans lecture.
 
-## Première préversion
+Ces valeurs autorisent les essais derrière Vercel Authentication, pas une ouverture publique. La protection du projet doit rester enabled=true et deploymentType=all. Ne pas la retirer : cela exposerait l’inscription et Play. L’ouverture publique exige une décision distincte et la finalisation des textes/procédures. Les mineurs et mises en relation privées ne sont pas activés. La Preview n’hérite pas de ces variables de production ; elle reste fermée par défaut.
 
-1. Accéder au compte Vercel autorisé et vérifier le plan existant. Ne pas accepter de conditions ni souscrire une offre à la place de l’utilisateur.
-2. Créer ou sélectionner le projet TalentLink, avec la racine de ce dépôt et Node 24.x.
-3. Activer et vérifier la protection par authentification Vercel sur la préversion avant de la partager. Ne pas créer de lien de contournement public et ne pas élargir les accès.
-4. Déployer une Preview, sans promotion en production. La configuration de compte fermé permet ce déploiement sans DATABASE_URL, AUTH_SECRET ou SMTP_URL dans Vercel.
-5. Vérifier le build, l’accueil, les pages de compte fermées et /api/health. Le point health est un test de vie du serveur, pas une validation de l’authentification complète.
+## Accès
 
-La protection par authentification Vercel peut protéger tous les déploiements sur tous les plans depuis l’annonce du 9 septembre 2026. Ne pas se fier aux anciennes pages indiquant un supplément nécessaire : vérifier la configuration réellement retournée par le projet. Le plan Hobby est limité aux usages personnels ou non commerciaux ; confirmer l’adéquation du compte et du projet avant de l’utiliser. Aucun changement de plan automatique.
+Ouvrir le domaine principal, se connecter à Vercel avec le compte autorisé, puis se connecter au compte TalentLink. Les formulaires doivent utiliser talentlink.today : les URL techniques de déploiement ne correspondent pas à APP_URL et leurs écritures peuvent être refusées par le contrôle Origin.
 
-## Contrôles disponibles
+Avec son accord explicite, le compte désigné par l’utilisateur devient administrateur. Les sessions antérieures sont révoquées. Aucun autre rôle ni accès adulte n’est modifié. L’administration permet l’examen des mentors et des quiz ; les contenus ne sont pas approuvés automatiquement et un auteur ne peut pas approuver sa propre question.
 
-```sh
-npm run deploy:check
-npm run deploy:check-accounts
-npm run mail:check
-```
+L’annuaire et les jeux réels peuvent être vides tant qu’aucun contenu réel n’a été validé. Les données de la démonstration locale ne sont pas copiées dans Neon. Les API des demandes/programmes sont déployées, avec le verrou métier conservé jusqu’à validation des procédures.
 
-deploy:check valide uniquement la fermeture des comptes et le nettoyage normal de compilation. Il ne prouve ni le lien Vercel, ni la protection d’accès, ni un déploiement effectif. deploy:check-accounts liste les prérequis manquants sans afficher leurs valeurs. mail:check teste la connexion SMTP/TLS et l’authentification sans envoyer de message. Cela ne prouve pas que MAIL_FROM sera accepté ni qu’un message arrivera en boîte de réception.
+## Vérification et maintenance
 
-## Après choix du fournisseur d’e-mail
+Inspecter le déploiement, ses journaux, les domaines, HTTPS et la protection retournée par Vercel. Les anciens tests locaux (43 tests, HTTP, build et PostgreSQL natif) ne prouvent pas à eux seuls le fonctionnement de chaque parcours dans le cloud. Une vérification manuelle authentifiée de connexion/e-mail reste nécessaire après publication privée.
 
-Préparer le domaine expéditeur et ses réglages SPF/DKIM selon les instructions du fournisseur. Placer SMTP_URL et MAIL_FROM uniquement dans la configuration privée locale puis dans l’environnement Vercel autorisé. Aucun mot de passe ni clé d’API ne doit être collé dans le chat ou ajouté à Git.
+npm run deploy:check contrôle uniquement l’environnement local fermé, pas les variables du projet Vercel. Ne pas considérer son succès comme une preuve de fermeture du cloud. Les migrations 001 à 005 sont déjà appliquées à PostgreSQL de développement ; elles ne sont pas exécutées automatiquement au déploiement. Organiser sauvegardes, séparation des données de production et entretien avant ouverture large.
 
-Avant comptes réels : vérifier les connexions, tester un e-mail vers un destinataire explicitement autorisé, finaliser le cadre de traitement des données et valider l’ouverture. Seulement ensuite modifier les verrous dans vercel.json et définir APP_URL HTTPS, DATABASE_URL, AUTH_SECRET, MAIL_DRIVER=smtp et les valeurs approuvées dans Vercel. Les mises en relation privées et les mineurs restent hors de cette activation.
-
-## Sources officielles consultées
-- https://vercel.com/docs/functions/runtimes/node-js/node-js-versions
-- https://vercel.com/docs/project-configuration/vercel-json
-- https://vercel.com/changelog/protect-production-deployments-for-free-on-every-plan
-- https://vercel.com/docs/plans/hobby
-- https://nodemailer.com/smtp
+Les premières préversions 0.2 restaient sans identifiants Neon et sans comptes ouverts ; elles sont remplacées par cette livraison regroupée à l’accès privé. La vitrine statique Sites historique reste séparée et ne représente pas le backend à jour.

@@ -36,7 +36,7 @@ L’administration dispose des jeux publiés, parties commencées/terminées, ta
 
 ## Activation et entretien
 
-PLAY_ENABLED=false dans .env.example et vercel.json. Aucun nouveau jeu n’est publié dans le PostgreSQL réel par les scripts de test. AUTH_SECRET sert à limiter les écritures par HMAC ; APP_URL doit être l’origine locale exacte ou HTTPS en production. Les écritures exigent Origin exact et JSON limité à 8 Ko. La limitation applicative est complétée par une limite globale ; la rotation du cookie ne remplace pas une protection réseau avant ouverture large.
+PLAY_ENABLED=false par défaut dans .env.example. Le domaine de test privé active Play via une variable de production Vercel, derrière Vercel Authentication ; voir vercel.md. Aucun nouveau jeu n’est publié dans le PostgreSQL réel par les scripts de test. AUTH_SECRET sert à limiter les écritures par HMAC ; APP_URL doit être l’origine locale exacte ou HTTPS en production. Les écritures exigent Origin exact et JSON limité à 8 Ko. La limitation applicative est complétée par une limite globale ; la rotation du cookie ne remplace pas une protection réseau avant ouverture large.
 
 Les migrations additives 004 et 005 ont été appliquées à PostgreSQL de développement. Elles ne changent ni les comptes, ni leurs rôles ou approbations adultes.
 

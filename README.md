@@ -8,7 +8,7 @@ Le projet est maintenant une application Next.js avec serveur Node.js, API d’a
 
 Les comptes réels restent fermés par défaut. Les profils mentors, l’examen administratif, l’annuaire filtrable, les favoris, les demandes et les programmes sont implémentés. Les mises en relation privées restent fermées par défaut ; TalentLink Play ajoute les quiz publics sans compte, les scores et les contributions modérées. Les séances et la messagerie restent à développer. Une déclaration de majorité ne vaut pas vérification d’âge. Les textes juridiques restent préparatoires.
 
-La vitrine 0.1 déjà publiée sur Sites reste en ligne. Cet hébergement statique ne fait pas fonctionner les nouvelles API Node.js. Le dossier historique `out/` correspond à cette vitrine, pas à l’authentification 0.2. Une préversion protégée est déployée sur Vercel avec comptes fermés. Resend est configuré ; l’utilisateur a validé le parcours local complet de vérification et de réinitialisation par e-mail.
+La vitrine 0.1 déjà publiée sur Sites reste en ligne. Cet hébergement statique ne fait pas fonctionner les nouvelles API Node.js. Le dossier historique `out/` correspond à cette vitrine, pas à l’authentification 0.2. La version regroupée est préparée sur talentlink.today, protégée par Vercel Authentication pour des essais privés. Resend est configuré ; l’utilisateur a validé le parcours local complet de vérification et de réinitialisation par e-mail.
 
 ## Installation et développement
 
@@ -58,7 +58,7 @@ Voir [l’authentification](docs/authentication.md), [la sécurité](docs/securi
 
 ## Préversion Vercel
 
-L’hébergeur Vercel a été choisi. Le fichier vercel.json prépare une préversion avec comptes fermés ; aucune configuration privée n’est nécessaire à ce premier déploiement. Voir [la procédure Vercel](docs/vercel.md).
+L’hébergeur Vercel a été choisi. vercel.json définit le build ; les activations sont gérées dans les variables de chaque environnement. La production privée du domaine active les comptes et Play derrière Vercel Authentication. Voir [la procédure Vercel](docs/vercel.md).
 
 `npm run deploy:check` vérifie cette fermeture. `npm run deploy:check-accounts` liste les prérequis d’une ouverture future sans exposer de secret. `npm run mail:check` vérifie un SMTP configuré sans envoyer d’e-mail. La connexion Vercel, la protection d’accès de la préversion et son déploiement effectif doivent être confirmés séparément. Resend est le fournisseur retenu, via SMTP sécurisé. Voir [le guide e-mail](docs/email.md).
 
@@ -68,4 +68,4 @@ Après `npm run db:migrate`, exécuter `npm test`, `npm run test:e2e` et `npm ru
 
 ## TalentLink Play
 
-Voir [le module Play](docs/play.md). `npm run play:demo` démarre une démonstration clairement identifiée sur une base embarquée isolée, sans Neon ni SMTP. `npm run db:smoke-play` vérifie PostgreSQL natif dans une transaction annulée. Les migrations 004/005 préparent le catalogue, les versions immuables, les tentatives et leur attribution explicite au mentorat. PLAY_ENABLED reste false sur Vercel ; aucun quiz réel n’est publié automatiquement.
+Voir [le module Play](docs/play.md). `npm run play:demo` démarre une démonstration clairement identifiée sur une base embarquée isolée, sans Neon ni SMTP. `npm run db:smoke-play` vérifie PostgreSQL natif dans une transaction annulée. Les migrations 004/005 préparent le catalogue, les versions immuables, les tentatives et leur attribution explicite au mentorat. Play est activé seulement sur la production privée protégée ; aucun quiz réel n’est publié automatiquement.

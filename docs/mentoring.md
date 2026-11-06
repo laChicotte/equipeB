@@ -21,7 +21,7 @@ L’annuaire ne retourne ni e-mail, ni note de revue, ni justificatif, ni identi
 
 ## Garde d’ouverture
 
-MENTORING_ENABLED=false par défaut et explicitement dans vercel.json. Les demandes et leur acceptation sont refusées tant que ce verrou n’est pas levé. En plus, les deux participants doivent être actifs, leur e-mail vérifié et leur accès adulte approuvé ; le mentor doit toujours être publié et vérifié à l’acceptation/réactivation. Un compte simplement déclaré majeur ne suffit pas.
+MENTORING_ENABLED=false par défaut et dans l’environnement de production privée Vercel. Les demandes et leur acceptation sont refusées tant que ce verrou n’est pas levé. En plus, les deux participants doivent être actifs, leur e-mail vérifié et leur accès adulte approuvé ; le mentor doit toujours être publié et vérifié à l’acceptation/réactivation. Un compte simplement déclaré majeur ne suffit pas.
 
 Aucune promotion de rôle ni approbation adulte réelle n’a été faite dans cette itération. Aucun parcours de vérification d’âge ou de collecte de pièces sensibles n’est ajouté sans validation juridique et opérationnelle. Les scénarios complets sont testés avec des comptes synthétiques dans des bases isolées. Ne pas lever le verrou pour contourner cette étape.
 
@@ -35,4 +35,4 @@ Migration additive `003_mentoring.sql` : champs de profil, version, revue, favor
 
 ## Limites explicites
 
-Photos/téléversements, justificatifs, évaluations, publications et badges restent à ajouter avec les procédures appropriées. Pas de nombre d’heures ou de séances sans données réelles. La disponibilité est déclarative, sans réservation. Les objectifs de programme sont éditables mais il n’y a pas encore de jalons ou de bilan structuré. Les listes personnelles sont limitées à 100 éléments dans cette première version ; l’annuaire est paginé. La messagerie, les séances et le suivi avancé viendront après TalentLink Play. Les inscriptions Vercel et les mises en relation publiques restent fermées.
+Photos/téléversements, justificatifs, évaluations, publications et badges restent à ajouter avec les procédures appropriées. Pas de nombre d’heures ou de séances sans données réelles. La disponibilité est déclarative, sans réservation. Les objectifs de programme sont éditables mais il n’y a pas encore de jalons ou de bilan structuré. Les listes personnelles sont limitées à 100 éléments dans cette première version ; l’annuaire est paginé. La messagerie, les séances et le suivi avancé viendront après TalentLink Play. Les inscriptions sont accessibles seulement derrière la protection privée Vercel ; les mises en relation restent fermées.
