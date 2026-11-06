@@ -11,3 +11,11 @@ Contrôles du 6 novembre 2026 :
 La nouvelle interface n’a pas encore fait l’objet d’un parcours visuel automatisé dans un navigateur pendant cette itération. Les contrôles HTTP et de compilation ne remplacent pas cette vérification. Une démonstration isolée est disponible avec npm run planning:demo ; voir planning.md pour les comptes fictifs et le parcours manuel.
 
 Aucun compte réel modifié, aucune approbation adulte accordée et aucun e-mail envoyé. La production garde PLANNING_ENABLED=false et les verrous de mise en relation et de communication privée existants. L’activation réelle reste distincte de l’hébergement privé.
+
+## Livraison privée
+
+Source déployée : 4ec2f4d185306853e505f94c142cf6b1667ad96b. Déploiement dpl_Ez4XoSYsjkb87G9AzsX822WS5zge confirmé READY et associé à talentlink.today et www.talentlink.today, sans erreur d’alias. PLANNING_ENABLED=false explicitement configuré en production avant la construction. Protection relue après livraison : enabled=true, deploymentType=all.
+
+La requête HTTPS anonyme sur /compte/planning/ reçoit HTTP 302 vers vercel.com. Cela confirme la protection, sans prouver un parcours applicatif authentifié dans le cloud. Aucun lien de contournement créé.
+
+La démonstration locale sur le port 4394 a été démarrée et contrôlée par HTTP : connexion du mentoré fictif réussie, un accompagnement, une proposition, un objectif, canWrite=true et bannière de simulation présente dans la page. Les propositions restent disponibles pour l’essai manuel ; aucun compte réel n’est utilisé.
