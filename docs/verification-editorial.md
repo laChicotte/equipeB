@@ -11,3 +11,15 @@ Le parcours HTTP Next.js étendu a réussi : douze questions assistées reçues 
 Build public et TypeScript réussis, 29 pages statiques et routes API compilées. Le changement d’affichage signale la rédaction assistée dans l’atelier ; aucun parcours visuel automatisé supplémentaire n’est déclaré. Les sources sont citées sans revendiquer de partenariat ni d’approbation des organismes. La validation des sources par recherche et consultation ne remplace pas la décision éditoriale humaine.
 
 La nouvelle provenance n’attribue pas le contenu à l’importateur humain : elle identifie un lot rédigé avec assistance et enregistre séparément l’importateur. Aucun auteur ou relecteur fictif n’est créé. L’import local n’a pas d’API publique, ne permet pas de publier et ne crée aucune approbation. Les corrections humaines gardent les contrôles d’auteur et de relecteur distincts.
+
+## Livraison et import effectifs
+
+Source 3a25ddcc6b257809951689d7c5764403b6126346, déploiement dpl_M3YQUDcRDFMGf8Bu18bitdmc3gV8 confirmé READY et associé à talentlink.today. Protection Vercel vérifiée avant livraison : enabled=true, prod_deployment_urls_and_all_previews. Aucune modification d’environnement ou de protection durant cette itération.
+
+Le contrôle qualité de production réussit sur dix pages et vérifie aussi que /editorial/launch-quizzes.v1.json répond 404. La préversion fermée réussit. Le paquet contenant les corrections reste hors du contenu public et hors des composants client.
+
+Import réel autorisé de trois lots et douze questions effectué via l’administrateur existant, enregistré seulement comme importateur. Lecture PostgreSQL après commit : 12 versions submitted, zéro reviewed_by, zéro created_by humain. Aucun compte, mentor, jeu, approbation ou publication créé par cet import. Les trois plans de quiz restent dans les lots pour composition après approbation des questions.
+
+Contrôles HTTP anonymes en ligne : accueil et atelier 200 (coquille de page seulement), API des questions 401, fichier éditorial 404, catalogue 200 avec total 0, authentification existante activée et registrationEnabled=false. Les questions sont donc disponibles pour revue administrative et ne sont pas publiées. Aucun e-mail envoyé.
+
+La décision humaine sur le contenu reste attendue. Le dossier de relecture est outputs/TalentLink-premiers-quiz-validation.md ; l’atelier est https://talentlink.today/compte/contributions/. Une fois les questions approuvées et les quiz composés, la publication doit être décidée séparément dans le parcours éditorial.
