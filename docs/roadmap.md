@@ -23,6 +23,7 @@ Implémentation 0.4 : catalogue et moteur sans compte, versions stables, correct
 Jeux, versions, trois options, correction serveur, scores, explications, historique, contributions, modération et recommandations. Exécuter les 17 scénarios du cahier des charges avant déclaration de livraison. Aucun indice de bonne réponse avant soumission. Une réponse rejouée ne double pas le score.
 
 ## 4 — Accompagnement
+Itération 0.5 : messagerie texte encadrée, non-lus internes, blocage et signalements/modération implémentés. MESSAGING_ENABLED reste false ; le calendrier, les séances, rappels et jalons viennent ensuite.
 Messagerie autorisée, blocage, signalements, disponibilités, réservation gratuite, rappels et suivi d’objectifs. Mineurs exclus des parcours privés jusqu’à validation.
 
 ## 5 — Administration et qualité

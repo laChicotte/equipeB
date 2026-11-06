@@ -1,12 +1,12 @@
 # TalentLink — authentification et mentorat
 
-Itération 0.4, 6 novembre 2026. Plateforme gratuite de mentorat et d’apprentissage destinée d’abord aux jeunes en Guinée.
+Itération 0.5, 6 novembre 2026. Plateforme gratuite de mentorat et d’apprentissage destinée d’abord aux jeunes en Guinée.
 
 ## État réel
 
 Le projet est maintenant une application Next.js avec serveur Node.js, API d’authentification, PostgreSQL, formulaires français et thèmes clair/sombre/automatique. Inscription adulte, e-mail de vérification, connexion/déconnexion, compte courant, mot de passe oublié et reset sont implémentés. Les inscriptions ne permettent que les rôles mentoré et mentor.
 
-Les comptes réels restent fermés par défaut. Les profils mentors, l’examen administratif, l’annuaire filtrable, les favoris, les demandes et les programmes sont implémentés. Les mises en relation privées restent fermées par défaut ; TalentLink Play ajoute les quiz publics sans compte, les scores et les contributions modérées. Les séances et la messagerie restent à développer. Une déclaration de majorité ne vaut pas vérification d’âge. Les textes juridiques restent préparatoires.
+Les comptes réels restent fermés par défaut. Les profils mentors, l’examen administratif, l’annuaire filtrable, les favoris, les demandes et les programmes sont implémentés. Les mises en relation privées restent fermées par défaut ; TalentLink Play ajoute les quiz publics sans compte, les scores et les contributions modérées. La messagerie encadrée est implémentée mais désactivée ; les séances restent à développer. Une déclaration de majorité ne vaut pas vérification d’âge. Les textes juridiques restent préparatoires.
 
 La vitrine 0.1 déjà publiée sur Sites reste en ligne. Cet hébergement statique ne fait pas fonctionner les nouvelles API Node.js. Le dossier historique `out/` correspond à cette vitrine, pas à l’authentification 0.2. La version regroupée est préparée sur talentlink.today, protégée par Vercel Authentication pour des essais privés. Resend est configuré ; l’utilisateur a validé le parcours local complet de vérification et de réinitialisation par e-mail.
 
@@ -69,3 +69,7 @@ Après `npm run db:migrate`, exécuter `npm test`, `npm run test:e2e` et `npm ru
 ## TalentLink Play
 
 Voir [le module Play](docs/play.md). `npm run play:demo` démarre une démonstration clairement identifiée sur une base embarquée isolée, sans Neon ni SMTP. `npm run db:smoke-play` vérifie PostgreSQL natif dans une transaction annulée. Les migrations 004/005 préparent le catalogue, les versions immuables, les tentatives et leur attribution explicite au mentorat. Play est activé seulement sur la production privée protégée ; aucun quiz réel n’est publié automatiquement.
+
+## Messagerie encadrée
+
+Voir [la messagerie et ses contrôles](docs/messaging.md). `npm run messaging:demo` démarre une base embarquée isolée pour tester les messages fictifs. `npm run db:smoke-messaging` vérifie PostgreSQL natif dans une transaction annulée. MESSAGING_ENABLED et PRIVATE_COMMUNICATIONS_APPROVED restent false en production.

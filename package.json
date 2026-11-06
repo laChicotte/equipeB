@@ -1,6 +1,6 @@
 {
   "name": "talentlink",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -21,7 +21,9 @@
     "test:preview": "node scripts/preview-check.ts",
     "play:demo": "node scripts/play-demo.ts",
     "play:purge": "node scripts/play-retention.ts",
-    "db:smoke-play": "node scripts/play-smoke.ts"
+    "db:smoke-play": "node scripts/play-smoke.ts",
+    "db:smoke-messaging": "node scripts/messaging-smoke.ts",
+    "messaging:demo": "node scripts/messaging-demo.ts"
   },
   "dependencies": {
     "next": "16.4.5",

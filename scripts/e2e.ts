@@ -9,6 +9,8 @@ import {once} from 'node:events';
 import {embeddedDatabase} from '../src/server/database.ts';
 import {migrate} from '../src/server/migrations.ts';
 import {seedPlayFixture} from '../tests/fixtures/play.ts';
+import {seedMessagingFixture} from '../tests/fixtures/messaging.ts';
+import {hashPassword} from '../src/modules/identity/crypto.ts';
 
 const runId=randomUUID();
 const email=`e2e-${runId}@example.invalid`;
@@ -18,6 +20,7 @@ const directory=path.join('.local',`e2e-${runId}`);
 let server:ChildProcess|undefined;
 let stage='initialisation';
 let playGameId='';
+let messagingProgramId='';
 const errors:string[]=[];
 let serverOutput='';
 async function stop(){
@@ -39,11 +42,11 @@ async function mailToken(subject:string,recipient=email){
 try{
  try{await fetch(base,{signal:AbortSignal.timeout(500)});throw new Error('Test port already in use')}catch(error){if(error instanceof Error&&error.message==='Test port already in use')throw error}
  await mkdir('.local',{recursive:true});
- stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db);playGameId=(await seedPlayFixture(db)).gameId}finally{await db.close()}
+ stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db);playGameId=(await seedPlayFixture(db)).gameId;messagingProgramId=(await seedMessagingFixture(db,await hashPassword(password))).programId}finally{await db.close()}
  stage='serveur Next.js';
  server=spawn(process.execPath,['scripts/e2e-server.ts'],{
   windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,DB_DRIVER:'pglite',PGLITE_PATH:directory,
-    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
+    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',MENTORING_ENABLED:'true',MESSAGING_ENABLED:'true',PRIVATE_COMMUNICATIONS_APPROVED:'false',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
  });
  server.stderr?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000);if(String(chunk).includes('talentlink_auth_error'))errors.push('auth_error')});
  server.stdout?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000)});
@@ -66,6 +69,25 @@ try{
  assert.equal((await playPost('answer',{attemptId,index:0,choice:0},playCookie)).status,200);
  const completed=await(await fetch(`${base}/api/v1/play/state/?id=${attemptId}`,{headers:{cookie:playCookie}})).json();assert.equal(completed.score,30);assert.equal(completed.completed,true);assert.equal(completed.percentage,100);
  assert.equal((await fetch(`${base}/play/`)).status,200);assert.equal((await fetch(`${base}/play/${playGameId}/`)).status,200);
+ const loginMessaging=async(email:string)=>{const r=await post('login',{email,password});assert.equal(r.status,200);return r.headers.get('set-cookie')!.split(';')[0]};
+ const messagingMentor=await loginMessaging('mentor-messaging@example.invalid'),messagingMentee=await loginMessaging('mentee-messaging@example.invalid'),messagingModerator=await loginMessaging('moderation-messaging@example.invalid'),messagingOther=await loginMessaging('other-messaging@example.invalid');
+ const messagePost=(action:string,data:unknown,cookie:string,origin=base)=>fetch(`${base}/api/v1/messaging/${action}/`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
+ const messageGet=(action:string,cookie:string)=>fetch(`${base}/api/v1/messaging/${action}`,{headers:{cookie}});
+ const messageInput={programId:messagingProgramId,clientId:randomUUID(),body:'Bonjour, ceci est un échange synthétique de test HTTP.'};
+ assert.equal((await messagePost('send',messageInput,messagingMentor,'https://evil.invalid')).status,403);
+ const sentMessage=await messagePost('send',messageInput,messagingMentor);assert.equal(sentMessage.status,201);const sentBody=await sentMessage.json();
+ assert.equal((await(await messagePost('send',messageInput,messagingMentor)).json()).id,sentBody.id);
+ assert.equal((await messageGet('messages/?programId='+messagingProgramId,messagingOther)).status,404);
+ const thread=await messageGet('messages/?programId='+messagingProgramId,messagingMentee);assert.equal(thread.status,200);assert.equal((await thread.json()).items.length,1);
+ const unread=await(await messageGet('conversations/',messagingMentee)).json();assert.equal(unread.items[0].unread,1);
+ assert.equal((await messagePost('read',{programId:messagingProgramId,messageId:sentBody.id},messagingMentee)).status,200);
+ assert.equal((await messagePost('block',{programId:messagingProgramId,blocked:true},messagingMentee)).status,200);
+ assert.equal((await messagePost('send',{...messageInput,clientId:randomUUID()},messagingMentor)).status,403);
+ assert.equal((await messagePost('report',{programId:messagingProgramId,messageId:sentBody.id,reason:'other',details:'Parcours de signalement exclusivement synthétique.'},messagingMentee)).status,202);
+ const reports=await(await messageGet('reports/',messagingModerator)).json();assert.equal(reports.items.length,1);
+ assert.equal((await messagePost('moderate',{id:reports.items[0].id,action:'hide',note:'Masquage de test du message synthétique uniquement.'},messagingModerator)).status,200);
+ const hidden=await(await messageGet('messages/?programId='+messagingProgramId,messagingMentee)).json();assert.equal(hidden.items[0].hidden,true);assert.equal(hidden.items[0].body,'');
+ for(const page of ['compte/messages','administration/signalements'])assert.equal((await fetch(`${base}/${page}/`)).status,200);
  assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,400);
  assert.equal((await post('register',{},'','https://other.invalid')).status,403);
  assert.equal((await post('register',{email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,202);
