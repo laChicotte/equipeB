@@ -12,3 +12,9 @@ Contrôles du 6 novembre 2026 :
 La revue des composants porte sur les libellés, états de chargement et de reprise, rendu texte, mises en page adaptatives et séparation des accès. Aucun parcours visuel automatisé du nouveau tableau ni audit exhaustif d’accessibilité ou de performance n’a été réalisé dans cette itération. Ces contrôles restent à effectuer ; les tests HTTP ne prouvent pas le rendu interactif dans le navigateur.
 
 Aucun e-mail, message à une personne réelle, approbation adulte ou changement de rôle. Les verrous existants des communications et de la planification sont conservés. Le tableau ne propose aucune activation des modules ni modification des comptes.
+
+## Livraison privée Vercel
+
+Source déployée : 2a73c67ac443fafa5e564d5e11c313c1f173ac0f. Déploiement dpl_6vHmxrVw6q5yZKnzHqeMwkrEMzHs confirmé READY et associé à talentlink.today et www.talentlink.today sans erreur d’alias. Protection relue après publication : enabled=true et deploymentType=all.
+
+Les requêtes HTTPS anonymes vers /administration/ et /api/v1/administration/overview/ reçoivent HTTP 302 vers vercel.com. Cela confirme la protection et ne constitue pas une validation du parcours applicatif authentifié dans le cloud. Aucun lien de contournement, modification de variables ou changement de rôle pendant cette publication.
