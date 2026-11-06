@@ -14,3 +14,9 @@ Contrôles du 6 novembre 2026 :
 La revue des composants vérifie les libellés, états d’erreur et de chargement, rendu texte, consultation du statut et règles CSS d’impression. Aucun parcours visuel automatisé ni contrôle d’impression/PDF en navigateur effectué pour cette itération. La compilation et les tests HTTP ne remplacent pas ces contrôles. Aucun PDF signé ni vérification publique n’est annoncé.
 
 Aucune modification de rôle ou accès adulte réel ; aucun envoi d’e-mail. L’émission réelle reste fermée avec ATTESTATIONS_ENABLED=false et ATTESTATIONS_APPROVED=false. Les attestations sont non accréditées et identifient un compte, sans collecte de nom légal. Voir attestations.md pour le périmètre et les limites.
+
+## Livraison privée Vercel
+
+Source déployée : e82c4ead17445e132b6ae09ad630058c0441f768. Déploiement dpl_8oyHV1rW933KAmNdcjQtE6xk5Nv1 confirmé READY et associé à talentlink.today et www.talentlink.today, sans erreur d’alias. Les deux variables ATTESTATIONS_ENABLED et ATTESTATIONS_APPROVED ont été explicitement fixées à false en production avant construction.
+
+Protection relue après livraison : enabled=true, deploymentType=all. Les requêtes HTTPS anonymes vers /compte/attestations/, /administration/attestations/ et /api/v1/attestations/config/ reçoivent HTTP 302 vers vercel.com. Cela prouve la protection de ces chemins, sans valider un parcours applicatif authentifié dans le cloud. Aucun lien de contournement créé ; aucune attestation émise dans le cloud.
