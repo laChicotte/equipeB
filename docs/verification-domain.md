@@ -14,6 +14,8 @@
 
 ## Vérification restante après connexion
 
+L’utilisateur a confirmé le 6 novembre 2026 que l’accès à la version privée fonctionne. Cette confirmation clôt le contrôle d’accès utilisateur avant le développement de la messagerie ; elle ne vaut pas approbation d’ouverture publique ou des communications privées.
+
 Le moteur Vercel protège aussi les API : les sondes anonymes ne valident pas les réponses du runtime applicatif. Aucun secret n’a été extrait pour contourner cette protection. L’utilisateur doit ouvrir talentlink.today, se connecter à Vercel puis à TalentLink, et confirmer connexion, navigation et réception d’un lien d’e-mail dans le navigateur autorisé. Ne pas annoncer une validation complète de ces parcours cloud avant ce contrôle.
 
 Les mentors et quiz réels apparaissent seulement après examen humain. L’annuaire et le catalogue peuvent donc être vides. Les demandes/programmes sont hébergés mais leur activation reste soumise aux validations de protection et d’accès adulte. Aucun changement de plan, achat de domaine, transfert ou envoi d’e-mail réel n’a été réalisé pendant cette livraison.
