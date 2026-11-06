@@ -1,3 +1,7 @@
+## Itération 0.7 — administration
+
+Tableau de bord privé et journal filtrable : [docs/administration.md](docs/administration.md). Aucun nouveau droit attribué aux comptes.
+
 ## Itération 0.6 — séances et objectifs
 
 Planning privé par accompagnement, propositions confirmées à deux et objectifs partagés. Guide : [docs/planning.md](docs/planning.md). Fonctions réelles fermées par défaut.

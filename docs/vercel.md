@@ -24,6 +24,6 @@ L’annuaire et les jeux réels peuvent être vides tant qu’aucun contenu rée
 
 Inspecter le déploiement, ses journaux, les domaines, HTTPS et la protection retournée par Vercel. Les anciens tests locaux (43 tests, HTTP, build et PostgreSQL natif) ne prouvent pas à eux seuls le fonctionnement de chaque parcours dans le cloud. Une vérification manuelle authentifiée de connexion/e-mail reste nécessaire après publication privée.
 
-npm run deploy:check contrôle uniquement l’environnement local fermé, pas les variables du projet Vercel. Ne pas considérer son succès comme une preuve de fermeture du cloud. Les migrations 001 à 007 sont déjà appliquées à PostgreSQL de développement ; elles ne sont pas exécutées automatiquement au déploiement. Organiser sauvegardes, séparation des données de production et entretien avant ouverture large.
+npm run deploy:check contrôle uniquement l’environnement local fermé, pas les variables du projet Vercel. Ne pas considérer son succès comme une preuve de fermeture du cloud. Les migrations 001 à 008 sont déjà appliquées à PostgreSQL de développement ; elles ne sont pas exécutées automatiquement au déploiement. Organiser sauvegardes, séparation des données de production et entretien avant ouverture large.
 
 Les premières préversions 0.2 restaient sans identifiants Neon et sans comptes ouverts ; elles sont remplacées par cette livraison regroupée à l’accès privé. La vitrine statique Sites historique reste séparée et ne représente pas le backend à jour.

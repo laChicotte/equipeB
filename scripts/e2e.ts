@@ -71,6 +71,13 @@ try{
  assert.equal((await fetch(`${base}/play/`)).status,200);assert.equal((await fetch(`${base}/play/${playGameId}/`)).status,200);
  const loginMessaging=async(email:string)=>{const r=await post('login',{email,password});assert.equal(r.status,200);return r.headers.get('set-cookie')!.split(';')[0]};
  const messagingMentor=await loginMessaging('mentor-messaging@example.invalid'),messagingMentee=await loginMessaging('mentee-messaging@example.invalid'),messagingModerator=await loginMessaging('moderation-messaging@example.invalid'),messagingOther=await loginMessaging('other-messaging@example.invalid');
+ const adminSession=await loginMessaging('admin-messaging@example.invalid');
+ const adminGet=(action:string,cookie=adminSession)=>fetch(`${base}/api/v1/administration/${action}/`,{headers:{cookie}});
+ const overview=await adminGet('overview');assert.equal(overview.status,200);assert.equal(overview.headers.get('cache-control'),'no-store');assert.ok((await overview.json()).counts.active_accounts>=5);
+ assert.equal((await adminGet('overview',messagingMentor)).status,403);assert.equal((await adminGet('audit',messagingModerator)).status,403);
+ assert.equal((await fetch(`${base}/api/v1/administration/overview/`)).status,401);
+ const audit=await adminGet('audit');assert.equal(audit.status,200);assert.ok(Array.isArray((await audit.json()).items));
+ assert.equal((await fetch(`${base}/administration/`)).status,200);
  const messagePost=(action:string,data:unknown,cookie:string,origin=base)=>fetch(`${base}/api/v1/messaging/${action}/`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
  const messageGet=(action:string,cookie:string)=>fetch(`${base}/api/v1/messaging/${action}`,{headers:{cookie}});
  const messageInput={programId:messagingProgramId,clientId:randomUUID(),body:'Bonjour, ceci est un échange synthétique de test HTTP.'};
