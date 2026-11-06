@@ -1,3 +1,7 @@
+## Premiers quiz publiés
+
+Les trois quiz sourcés ont été publiés le 6 novembre 2026 après validation explicite de l’utilisateur. Liens et vérifications : [docs/verification-editorial-publication.md](docs/verification-editorial-publication.md).
+
 ## Itération 0.11 — premiers quiz à relire
 
 Trois lots éditoriaux sourcés, douze questions soumises à validation humaine. Guide : [docs/editorial-launch.md](docs/editorial-launch.md). Aucune publication automatique.

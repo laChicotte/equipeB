@@ -29,3 +29,7 @@ Aucune donnée de mentor, nouveau compte ou e-mail ajouté. Les inscriptions et 
 ## Vérification
 
 89 tests globaux réussis : schéma, origine explicite, import administrateur, rejeu concurrent, refus d’un paquet changé, absence de compte fictif, garde SQL d’immuabilité, blocage avant revue, jeu après validation simulée et refus d’auto-approbation d’une correction humaine. Les approbations des tests ont lieu seulement sur une base embarquée isolée. Le contrôle PostgreSQL natif vérifie import et rejeu dans une transaction annulée, sans approbation ni publication persistante.
+
+## Publication approuvée
+
+Le 6 novembre 2026, l’utilisateur a validé explicitement les trois quiz. Les douze questions ont été approuvées puis les trois jeux composés et publiés par les services métier, dans une transaction unique. Voir verification-editorial-publication.md pour les liens et contrôles HTTP. Cette décision est distincte de l’import initial, qui n’avait approuvé ni publié de contenu.
