@@ -21,3 +21,11 @@ ADULT_REGISTRATION_APPROVED=false explicitement configuré en production. Les de
 Le protocole recovery-drill.md et le contrôle en lecture seule database/operations/recovery-check.sql sont préparés. Aucune branche Neon n’a été créée et aucun exercice de récupération n’a été exécuté ; cette préparation ne doit pas être présentée comme une sauvegarde restaurée avec succès. Les textes actifs décrivent toujours la découverte sans inscriptions ; avant activation, finaliser leurs versions, les règles de conservation et les procédures opérationnelles listées dans adult-registration.md.
 
 Aucun nouvel essai visuel automatisé du formulaire n’est déclaré dans cette itération. Les essais précédents de navigation confirmés par l’utilisateur restent distincts des nouveaux contrôles de code et HTTP. Les conditions de traitement et obligations applicables doivent être examinées avant de collecter de nouveaux comptes au public.
+
+## Livraison de la préparation
+
+Source e2d86a661611311aec1f081799120ef898903a1a. Déploiement dpl_Cv5DZtdaafWQtm367wqoeKRaCsKs confirmé READY, associé à talentlink.today et www.talentlink.today sans erreur d’alias. Aucun changement de portée de protection ou d’activation des comptes.
+
+Contrôles HTTPS du 6 novembre 2026 à 15:40 UTC : /inscriptions-adultes/ retourne 200, version 2026-11-06-adult-v1 et noindex ; authentification existante activée, registrationEnabled=false ; POST register avec corps vide et Origin canonique refusé 403 avant création de compte. Le catalogue conserve trois quiz publiés. Messagerie, planning et attestations restent fermés ; API administrateur sans session refusée 401. Le SQL d’exercice n’est pas exposé publiquement (404). L’URL technique de déploiement reste protégée (302 Vercel Authentication).
+
+La sauvegarde/récupération reste non vérifiée, conformément à la réponse de l’utilisateur. Les documents adult-registration.md et recovery-drill.md décrivent les actions restantes avant une éventuelle décision d’ouverture. Aucun point de restauration, branche Neon, export de données ou coût supplémentaire créé par cette préparation. Aucun e-mail envoyé.
