@@ -46,3 +46,7 @@ Les tests npm sont isolés et n’utilisent ni votre SMTP ni votre base Neon. db
 - Le téléchargement interrompu avait laissé deux dépendances incomplètes ; elles ont été réinstallées individuellement avant les vérifications finales.
 
 Les scripts n’affichent pas DATABASE_URL, les mots de passe, les jetons ou les corps des requêtes. La configuration privée .env.local et les messages locaux ne font pas partie des livrables versionnés.
+# Validation utilisateur — 6 novembre 2026
+
+L’utilisateur a confirmé le fonctionnement local de l’inscription, de l’e-mail de vérification, de la connexion et de la réinitialisation du mot de passe. La connexion PostgreSQL et le SMTP Resend ont été vérifiés ; un message de test émis par TalentLink a été accepté par SMTP. Domaine déclaré Verified par l’utilisateur : talentlink.today. Les inscriptions publiques Vercel restent fermées. Ce point constitue le jalon avant les modules de mentorat.
+
