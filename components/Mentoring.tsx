@@ -1,11 +1,12 @@
 'use client';
+import {request} from '../src/client/request';
 import {useEffect,useState} from 'react';
 type Profile={id:string;user_id?:string;public_name:string;biography:string;experience:string;skills:string[];expertise:string[];languages:string[];general_location:string;availability:string;formats:string[];professional_links:string[];revision:number;publication_status:string;review_note:string;adult_access_approved_at?:string};
 type RequestItem={id:string;public_name:string;goal:string;status:string;mentor_id:string;mentee_id:string;created_at:string};
 type Account={id:string;role:string;adultAccessApproved:boolean};
 const labels:Record<string,string>={draft:'Brouillon',submitted:'En examen',published:'Publié',rejected:'À revoir',suspended:'Suspendu',pending:'En attente',accepted:'Acceptée',declined:'Refusée',cancelled:'Annulé',active:'Actif',completed:'Terminé',online:'À distance',in_person:'En présentiel'};
 async function api(action:string,input?:unknown){
- const response=await fetch('/api/v1/mentoring/'+action,{cache:'no-store',...(input===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})});
+ const response=await request('/api/v1/mentoring/'+action,{cache:'no-store',...(input===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})});
  const result=await response.json();if(!response.ok)throw new Error(result.message||'Service indisponible.');return result;
 }
 function ProfileContent({profile:p}:{profile:Profile}){return <><p className="mentor-meta">{p.general_location} · {p.languages.join(' / ')}</p><p className="mentor-bio">{p.biography}</p><h3>Expérience</h3><p className="mentor-bio">{p.experience}</p><h3>Compétences et expertise</h3><div className="mentor-tags">{[...p.skills,...p.expertise].map((tag,i)=><span key={i}>{tag}</span>)}</div><h3>Disponibilités</h3><p>{p.availability} · {p.formats.map(f=>labels[f]).join(' / ')}</p>{p.professional_links.length>0&&<><h3>Liens professionnels</h3><ul>{p.professional_links.map((link,i)=><li key={link}><a href={link} target="_blank" rel="noopener noreferrer">Lien professionnel {i+1} ↗</a></li>)}</ul></>}</>}
@@ -40,7 +41,7 @@ export function MentorEditor(){
 }
 export function MentoringWorkspace(){
  const[account,setAccount]=useState<Account|null>(null),[requests,setRequests]=useState<RequestItem[]>([]),[favorites,setFavorites]=useState<Profile[]>([]),[programs,setPrograms]=useState<RequestItem[]>([]),[message,setMessage]=useState('Chargement…'),[busy,setBusy]=useState(false);
- async function load(){const session=await fetch('/api/v1/auth/session',{cache:'no-store'});if(session.status===401){location.replace('/auth/connexion/');return}const data=await session.json();if(!session.ok)throw new Error(data.message);setAccount(data.account);if(data.account.adultAccessApproved){const [r,p,f]=await Promise.all([api('requests'),api('programs'),api('favorites')]);setRequests(r.items);setPrograms(p.items);setFavorites(f.items)}setMessage('')}
+ async function load(){const session=await request('/api/v1/auth/session',{cache:'no-store'});if(session.status===401){location.replace('/auth/connexion/');return}const data=await session.json();if(!session.ok)throw new Error(data.message);setAccount(data.account);if(data.account.adultAccessApproved){const [r,p,f]=await Promise.all([api('requests'),api('programs'),api('favorites')]);setRequests(r.items);setPrograms(p.items);setFavorites(f.items)}setMessage('')}
  useEffect(()=>{load().catch(error=>setMessage(error.message))},[]);
  async function change(id:string,status:string){setBusy(true);try{await api('transition',{id,status});await load();setMessage('Demande mise à jour.')}catch(error){setMessage((error as Error).message)}finally{setBusy(false)}}
  async function program(event:React.FormEvent<HTMLFormElement>,id:string){event.preventDefault();const data=new FormData(event.currentTarget);setBusy(true);try{await api('program',{id,status:data.get('status'),goal:data.get('goal')});await load();setMessage('Programme mis à jour.')}catch(error){setMessage((error as Error).message)}finally{setBusy(false)}}

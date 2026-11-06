@@ -1,3 +1,7 @@
+## Itération 0.9 — qualité et résilience
+
+Navigation clavier, reprise après panne réseau et budgets des ressources de production : [docs/quality.md](docs/quality.md). Commande : npm run test:quality après compilation. Les contrôles visuels et lecteur d’écran restent distincts.
+
 ## Itération 0.8 — attestations de participation
 
 Consultation privée et révocation, émission administrative fermée : [docs/attestations.md](docs/attestations.md). Documents non accrédités, sans certification de compétence.

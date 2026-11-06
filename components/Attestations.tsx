@@ -1,9 +1,10 @@
 'use client';
+import {request} from '../src/client/request';
 import {useEffect,useRef,useState} from 'react';
 type Attestation={id:string;program_id:string;recipient_id:string;mentor_name:string;program_started_at:string;program_completed_at:string;completed_sessions:number;issued_at:string;revoked_at:string|null;revocation_reason:string;revision:number};
 type Candidate={program_id:string;started_at:string;completed_at:string;mentor_name:string;attestation_id:string|null;revoked_at:string|null;completed_sessions:number};
 const date=(value:string)=>new Date(value).toLocaleDateString('fr-FR');
-async function api(action:string,input?:unknown){const r=await fetch('/api/v1/attestations/'+action,{cache:'no-store',...(input===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})});const data=await r.json();if(!r.ok)throw new Error(data.message||'Service indisponible.');return data}
+async function api(action:string,input?:unknown){const r=await request('/api/v1/attestations/'+action,{cache:'no-store',...(input===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})});const data=await r.json();if(!r.ok)throw new Error(data.message||'Service indisponible.');return data}
 export default function Attestations({admin=false}:{admin?:boolean}){
  const[enabled,setEnabled]=useState(false),[items,setItems]=useState<Attestation[]>([]),[candidates,setCandidates]=useState<Candidate[]>([]),[selected,setSelected]=useState<Attestation|null>(null),[busy,setBusy]=useState(true),[notice,setNotice]=useState(''),[loadedAt,setLoadedAt]=useState('');
  const serial=useRef(0);

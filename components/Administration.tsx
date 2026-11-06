@@ -1,11 +1,12 @@
 'use client';
+import {request} from '../src/client/request';
 import {useEffect,useRef,useState} from 'react';
 type Overview={counts:Record<string,number>;observedAt:string;features:Record<string,boolean>};
 type Event={id:string;actor_id:string|null;action:string;resource_type:string;resource_id:string|null;created_at:string};
 type Cursor={before:string;beforeId:string};
 const metrics:Record<string,string>={active_accounts:'Comptes actifs',verified_accounts:'Comptes actifs avec e-mail vérifié',mentors_pending:'Profils mentors à examiner',mentors_published:'Mentors publiés et éligibles',questions_pending:'Questions à examiner',games_pending:'Jeux à examiner',requests_pending:'Demandes en attente',programs_active:'Accompagnements actifs',reports_pending:'Signalements en attente',sessions_upcoming:'Séances confirmées à venir ou en cours',objectives_done:'Objectifs atteints'};
 const resources:Record<string,string>={user:'Comptes',mentoring:'Mentorat',play:'Play',messaging:'Messagerie',planning:'Planification',attestation:'Attestations'};
-async function api(action:string){const r=await fetch('/api/v1/administration/'+action,{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.message||'Service indisponible.');return d}
+async function api(action:string){const r=await request('/api/v1/administration/'+action,{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.message||'Service indisponible.');return d}
 export default function Administration(){
  const[data,setData]=useState<Overview|null>(null),[events,setEvents]=useState<Event[]>([]),[next,setNext]=useState<Cursor|null>(null),[resource,setResource]=useState(''),[busy,setBusy]=useState(true),[notice,setNotice]=useState('');
  const serial=useRef(0);
