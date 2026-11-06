@@ -18,6 +18,8 @@ Les règles préparées sont consultables sur /inscriptions-adultes/, avec noind
 
 ## Conditions restantes avant activation
 
+Le dossier concret de textes est préparé dans [adult-opening-texts.md](adult-opening-texts.md), avec le tableau des durées et la procédure dans [account-lifecycle.md](account-lifecycle.md). Il reste à approuver et à rendre exécutable ; les pages publiques et versions de consentement ne sont pas modifiées par ces brouillons. L’identité du responsable derrière TalentLink Group et les formalités applicables aux transferts hors de Guinée restent à préciser avant l’ouverture.
+
 | Point | État actuel | Décision ou preuve attendue |
 |---|---|---|
 | Sauvegarde et récupération Neon | Récupération historique isolée contrôlée le 6 novembre 2026 ; vingt tables métier et onze migrations concordent | Preuve dans recovery-drill.md ; fixer encore les objectifs RPO/RTO et la stratégie de copie indépendante |
