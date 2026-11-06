@@ -27,7 +27,7 @@ Itération 0.5 : messagerie texte encadrée, non-lus internes, blocage et signal
 Messagerie autorisée, blocage, signalements, disponibilités, réservation gratuite, rappels et suivi d’objectifs. Mineurs exclus des parcours privés jusqu’à validation.
 
 ## 5 — Administration et qualité
-Itération 0.7 : tableau de bord administrateur, indicateurs réels, liens de traitement et journal filtrable/paginé implémentés. Attestations, audit navigateur complet et mesures sur connexion limitée restent à réaliser.
+Itération 0.7 : tableau de bord administrateur, indicateurs réels, liens de traitement et journal filtrable/paginé implémentés. Itération 0.8 : attestations privées de participation avec émission administrative fermée, consultation et révocation implémentées. Audit navigateur complet et mesures sur connexion limitée restent à réaliser.
 Modération avancée, attestations révocables (non accréditées), indicateurs réels, audit d’accessibilité, sécurité, tests E2E et performance sur connexion limitée.
 
 ## 6 — Évolutions

@@ -15,6 +15,8 @@ test('préversion : comptes fermés sans transférer de secrets',()=>{
   assert.equal(deploymentReadiness({MENTORING_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({MESSAGING_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({PLANNING_ENABLED:'true'},'preview').ok,false);
+  assert.equal(deploymentReadiness({ATTESTATIONS_ENABLED:'true'},'preview').ok,false);
+  assert.equal(deploymentReadiness({ATTESTATIONS_APPROVED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({PRIVATE_COMMUNICATIONS_APPROVED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({TALENTLINK_KEEP_BUILD_OUTPUT:'true'},'preview').ok,false);
 });

@@ -18,7 +18,7 @@ export async function handleAdministration(request:Request,action:string,deps:De
   const config=deps.config(),db=await deps.db(),account=await deps.account(request,config,db),service=new AdministrationService(db);
   if(action==='audit')return json(await service.audit(account,Object.fromEntries(new URL(request.url).searchParams)));
   const data=await service.overview(account);const approved=deps.env.NODE_ENV!=='production'||deps.env.PRIVATE_COMMUNICATIONS_APPROVED==='true';
-  return json({...data,features:{mentoring:deps.env.MENTORING_ENABLED==='true',messaging:deps.env.MESSAGING_ENABLED==='true'&&approved,planning:deps.env.PLANNING_ENABLED==='true'&&approved,play:deps.env.PLAY_ENABLED==='true'}});
+  return json({...data,features:{attestations:deps.env.ATTESTATIONS_ENABLED==='true'&&(deps.env.NODE_ENV!=='production'||deps.env.ATTESTATIONS_APPROVED==='true'),mentoring:deps.env.MENTORING_ENABLED==='true',messaging:deps.env.MESSAGING_ENABLED==='true'&&approved,planning:deps.env.PLANNING_ENABLED==='true'&&approved,play:deps.env.PLAY_ENABLED==='true'}});
  }catch(e){
   if(e instanceof AuthError)return json({code:e.code,message:e.message},e.status);
   if(e instanceof ZodError)return json({message:'Filtres invalides.'},400);

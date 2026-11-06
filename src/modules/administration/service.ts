@@ -2,7 +2,7 @@ import {z} from 'zod';
 import type {Database} from '../../server/database.ts';
 import type {Account} from '../identity/access.ts';
 import {MentoringService} from '../mentoring/service.ts';
-const resources=['user','mentoring','play','messaging','planning'] as const;
+const resources=['user','mentoring','play','messaging','planning','attestation'] as const;
 export const auditSchema=z.strictObject({resource:z.enum(resources).optional(),before:z.iso.datetime({offset:true}).optional(),beforeId:z.string().uuid().optional()}).refine(v=>Boolean(v.before)===Boolean(v.beforeId));
 export class AdministrationService {
  db:Database;

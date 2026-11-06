@@ -9,6 +9,7 @@ import {once} from 'node:events';
 import {embeddedDatabase} from '../src/server/database.ts';
 import {migrate} from '../src/server/migrations.ts';
 import {seedPlayFixture} from '../tests/fixtures/play.ts';
+import {seedAttestationFixture} from '../tests/fixtures/attestations.ts';
 import {seedMessagingFixture} from '../tests/fixtures/messaging.ts';
 import {hashPassword} from '../src/modules/identity/crypto.ts';
 
@@ -21,6 +22,7 @@ let server:ChildProcess|undefined;
 let stage='initialisation';
 let playGameId='';
 let messagingProgramId='';
+let attestationProgramId='';
 const errors:string[]=[];
 let serverOutput='';
 async function stop(){
@@ -42,11 +44,11 @@ async function mailToken(subject:string,recipient=email){
 try{
  try{await fetch(base,{signal:AbortSignal.timeout(500)});throw new Error('Test port already in use')}catch(error){if(error instanceof Error&&error.message==='Test port already in use')throw error}
  await mkdir('.local',{recursive:true});
- stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db);playGameId=(await seedPlayFixture(db)).gameId;messagingProgramId=(await seedMessagingFixture(db,await hashPassword(password))).programId}finally{await db.close()}
+ stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db);playGameId=(await seedPlayFixture(db)).gameId;messagingProgramId=(await seedMessagingFixture(db,await hashPassword(password))).programId;attestationProgramId=(await seedAttestationFixture(db,await hashPassword(password))).programId}finally{await db.close()}
  stage='serveur Next.js';
  server=spawn(process.execPath,['scripts/e2e-server.ts'],{
   windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,DB_DRIVER:'pglite',PGLITE_PATH:directory,
-    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',MENTORING_ENABLED:'true',MESSAGING_ENABLED:'true',PLANNING_ENABLED:'true',PRIVATE_COMMUNICATIONS_APPROVED:'false',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
+    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',MENTORING_ENABLED:'true',MESSAGING_ENABLED:'true',PLANNING_ENABLED:'true',ATTESTATIONS_ENABLED:'true',ATTESTATIONS_APPROVED:'false',PRIVATE_COMMUNICATIONS_APPROVED:'false',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
  });
  server.stderr?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000);if(String(chunk).includes('talentlink_auth_error'))errors.push('auth_error')});
  server.stdout?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000)});
@@ -78,6 +80,15 @@ try{
  assert.equal((await fetch(`${base}/api/v1/administration/overview/`)).status,401);
  const audit=await adminGet('audit');assert.equal(audit.status,200);assert.ok(Array.isArray((await audit.json()).items));
  assert.equal((await fetch(`${base}/administration/`)).status,200);
+ const attestationAdmin=await loginMessaging('admin-attestations@example.invalid'),attestationRecipient=await loginMessaging('mentee-attestations@example.invalid');
+ const attPost=(action:string,data:unknown,cookie=attestationAdmin)=>fetch(`${base}/api/v1/attestations/${action}/`,{method:'POST',headers:{Origin:base,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
+ const attGet=(action:string,cookie=attestationRecipient)=>fetch(`${base}/api/v1/attestations/${action}`,{headers:{cookie}});
+ const issue=await attPost('issue',{programId:attestationProgramId});assert.equal(issue.status,201);const issued=await issue.json();
+ assert.equal((await attGet('detail/?id='+issued.id,messagingOther)).status,404);
+ const cert=await(await attGet('detail/?id='+issued.id)).json();assert.equal(cert.attestation.completed_sessions,1);assert.equal(cert.attestation.revoked_at,null);
+ assert.equal((await attPost('revoke',{id:issued.id,revision:1,reason:'Révocation fictive du parcours HTTP.'})).status,200);
+ const revoked=await(await attGet('detail/?id='+issued.id)).json();assert.ok(revoked.attestation.revoked_at);
+ for(const page of ['compte/attestations','administration/attestations'])assert.equal((await fetch(`${base}/${page}/`)).status,200);
  const messagePost=(action:string,data:unknown,cookie:string,origin=base)=>fetch(`${base}/api/v1/messaging/${action}/`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
  const messageGet=(action:string,cookie:string)=>fetch(`${base}/api/v1/messaging/${action}`,{headers:{cookie}});
  const messageInput={programId:messagingProgramId,clientId:randomUUID(),body:'Bonjour, ceci est un échange synthétique de test HTTP.'};

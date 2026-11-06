@@ -7,6 +7,7 @@ export function deploymentReadiness(env:Environment,goal:DeploymentGoal){
   if(goal==='preview'){
     checks.push({id:'preview_accounts_closed',ok:env.AUTH_ENABLED!=='true'&&env.AUTH_REGISTRATION_ENABLED!=='true'&&env.REAL_ACCOUNTS_APPROVED!=='true'});
     checks.push({id:'preview_play_and_mentoring_closed',ok:env.PLAY_ENABLED!=='true'&&env.MENTORING_ENABLED!=='true'});
+    checks.push({id:'preview_attestations_closed',ok:env.ATTESTATIONS_ENABLED!=='true'&&env.ATTESTATIONS_APPROVED!=='true'});
     checks.push({id:'preview_planning_closed',ok:env.PLANNING_ENABLED!=='true'});
     checks.push({id:'preview_messaging_closed',ok:env.MESSAGING_ENABLED!=='true'&&env.PRIVATE_COMMUNICATIONS_APPROVED!=='true'});
     checks.push({id:'clean_build_output',ok:env.TALENTLINK_KEEP_BUILD_OUTPUT!=='true'});

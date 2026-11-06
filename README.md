@@ -1,3 +1,7 @@
+## Itération 0.8 — attestations de participation
+
+Consultation privée et révocation, émission administrative fermée : [docs/attestations.md](docs/attestations.md). Documents non accrédités, sans certification de compétence.
+
 ## Itération 0.7 — administration
 
 Tableau de bord privé et journal filtrable : [docs/administration.md](docs/administration.md). Aucun nouveau droit attribué aux comptes.
