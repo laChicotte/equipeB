@@ -46,7 +46,7 @@ try{
  stage='serveur Next.js';
  server=spawn(process.execPath,['scripts/e2e-server.ts'],{
   windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,DB_DRIVER:'pglite',PGLITE_PATH:directory,
-    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',MENTORING_ENABLED:'true',MESSAGING_ENABLED:'true',PRIVATE_COMMUNICATIONS_APPROVED:'false',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
+    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',MENTORING_ENABLED:'true',MESSAGING_ENABLED:'true',PLANNING_ENABLED:'true',PRIVATE_COMMUNICATIONS_APPROVED:'false',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
  });
  server.stderr?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000);if(String(chunk).includes('talentlink_auth_error'))errors.push('auth_error')});
  server.stdout?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000)});
@@ -87,6 +87,17 @@ try{
  const reports=await(await messageGet('reports/',messagingModerator)).json();assert.equal(reports.items.length,1);
  assert.equal((await messagePost('moderate',{id:reports.items[0].id,action:'hide',note:'Masquage de test du message synthétique uniquement.'},messagingModerator)).status,200);
  const hidden=await(await messageGet('messages/?programId='+messagingProgramId,messagingMentee)).json();assert.equal(hidden.items[0].hidden,true);assert.equal(hidden.items[0].body,'');
+ await messagePost('block',{programId:messagingProgramId,blocked:false},messagingMentee);
+ const planningPost=(action:string,data:unknown,cookie=messagingMentor)=>fetch(`${base}/api/v1/planning/${action}/`,{method:'POST',headers:{Origin:base,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
+ const planningGet=(action:string,cookie=messagingMentor)=>fetch(`${base}/api/v1/planning/${action}`,{headers:{cookie}});
+ const plan={programId:messagingProgramId,clientId:randomUUID(),title:'Préparer le projet HTTP',startsAt:new Date(Date.now()+86400000).toISOString(),durationMinutes:45};
+ const proposal=await planningPost('propose',plan);assert.equal(proposal.status,201);const planned=await proposal.json();
+ assert.equal((await planningPost('session-action',{programId:messagingProgramId,id:planned.id,revision:1,action:'confirm'},messagingMentee)).status,200);
+ assert.equal((await planningGet('board/?programId='+messagingProgramId,messagingOther)).status,404);
+ const target=await planningPost('objective',{programId:messagingProgramId,clientId:randomUUID(),title:'Construire un portfolio de test',dueDate:null},messagingMentee);assert.equal(target.status,201);const targetData=await target.json();
+ assert.equal((await planningPost('objective-action',{programId:messagingProgramId,id:targetData.id,revision:1,status:'done'})).status,200);
+ const roadmap=await(await planningGet('board/?programId='+messagingProgramId)).json();assert.equal(roadmap.sessions[0].status,'confirmed');assert.equal(roadmap.objectives[0].status,'done');
+ assert.equal((await fetch(`${base}/compte/planning/`)).status,200);
  for(const page of ['compte/messages','administration/signalements'])assert.equal((await fetch(`${base}/${page}/`)).status,200);
  assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,400);
  assert.equal((await post('register',{},'','https://other.invalid')).status,403);

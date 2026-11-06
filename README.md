@@ -1,3 +1,7 @@
+## Itération 0.6 — séances et objectifs
+
+Planning privé par accompagnement, propositions confirmées à deux et objectifs partagés. Guide : [docs/planning.md](docs/planning.md). Fonctions réelles fermées par défaut.
+
 # TalentLink — authentification et mentorat
 
 Itération 0.5, 6 novembre 2026. Plateforme gratuite de mentorat et d’apprentissage destinée d’abord aux jeunes en Guinée.

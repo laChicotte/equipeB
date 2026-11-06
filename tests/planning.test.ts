@@ -1,0 +1,40 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {embeddedDatabase} from '../src/server/database.ts';
+import {migrate} from '../src/server/migrations.ts';
+import {seedMessagingFixture} from './fixtures/messaging.ts';
+import {PlanningService} from '../src/modules/planning/service.ts';
+import {planningFlags,handlePlanning} from '../src/server/planning-http.ts';
+import {sessionSchema,objectiveSchema} from '../src/modules/planning/schemas.ts';
+test('planning : schémas stricts, fuseau explicite et activation approuvée',()=>{
+ const input={programId:randomUUID(),clientId:randomUUID(),title:'Séance de test',startsAt:new Date(Date.now()+86400000).toISOString(),durationMinutes:45};
+ for(const extra of [{durationMinutes:0},{durationMinutes:181},{startsAt:'2026-11-10T10:00'},{status:'confirmed'},{proposedBy:randomUUID()}])assert.equal(sessionSchema.safeParse({...input,...extra}).success,false);
+ assert.equal(objectiveSchema.safeParse({programId:input.programId,clientId:input.clientId,title:'Objectif',dueDate:'2027-02-30'}).success,false);
+ assert.equal(planningFlags({NODE_ENV:'production',PLANNING_ENABLED:'true',MENTORING_ENABLED:'true'}).enabled,false);
+ assert.equal(planningFlags({NODE_ENV:'production',PLANNING_ENABLED:'true',MENTORING_ENABLED:'true',PRIVATE_COMMUNICATIONS_APPROVED:'true'}).sendEnabled,true);
+});
+test('planning : confidentialité, réservation, objectifs et protection',async t=>{
+ const db=await embeddedDatabase();t.after(()=>db.close());await migrate(db);const f=await seedMessagingFixture(db),s=new PlanningService(db,true,true);
+ const input={programId:f.programId,clientId:randomUUID(),title:'Séance de préparation',startsAt:new Date(Date.now()+86400000).toISOString(),durationMinutes:45};
+ let sessionId='';
+ await t.test('compte réel relu, accès adulte et rôle vérifiés',async()=>{await assert.rejects(new PlanningService(db).programs(f.mentor),{status:403});await assert.rejects(s.board(f.other,{programId:f.programId}),{status:404});await assert.rejects(s.board(f.admin,{programId:f.programId}),{status:404});await assert.rejects(s.board(null,{programId:f.programId}),{status:401});await db.query('UPDATE app_user SET adult_access_approved_at=NULL WHERE id=$1',[f.mentee.id]);await assert.rejects(s.propose(f.mentor,input),{status:403});await db.query('UPDATE app_user SET adult_access_approved_at=now() WHERE id=$1',[f.mentee.id]);});
+ await t.test('proposition idempotente, confirmation par partenaire seulement',async()=>{const first=await s.propose(f.mentor,input);sessionId=first.id;assert.equal((await s.propose(f.mentor,input)).id,first.id);await assert.rejects(s.propose(f.mentor,{...input,title:'Autre intitulé'}),{status:409});await assert.rejects(s.sessionAction(f.mentor,{programId:f.programId,id:sessionId,revision:1,action:'confirm'}),{status:409});await s.sessionAction(f.mentee,{programId:f.programId,id:sessionId,revision:1,action:'confirm'});await assert.rejects(s.sessionAction(f.mentee,{programId:f.programId,id:sessionId,revision:1,action:'cancel'}),{status:409});});
+ await t.test('chevauchement refusé et créneaux adjacents acceptés',async()=>{await assert.rejects(s.propose(f.mentor,{...input,clientId:randomUUID()}),{code:'time_conflict'});await s.propose(f.mentor,{...input,clientId:randomUUID(),startsAt:new Date(Date.parse(input.startsAt)+45*60000).toISOString()});await assert.rejects(s.sessionAction(f.mentor,{programId:f.programId,id:sessionId,revision:2,action:'complete'}),{status:403});});
+ await t.test('annulation possible après blocage et suspension',async()=>{await db.query('INSERT INTO user_block(blocker_id,blocked_id) VALUES($1,$2)',[f.mentee.id,f.mentor.id]);await assert.rejects(s.propose(f.mentor,{...input,clientId:randomUUID()}),{code:'blocked'});await db.query("UPDATE mentoring_program SET status='suspended' WHERE id=$1",[f.programId]);assert.equal((await s.board(f.mentor,{programId:f.programId})).canWrite,false);await s.sessionAction(f.mentee,{programId:f.programId,id:sessionId,revision:2,action:'cancel'});await db.query('DELETE FROM user_block');await db.query("UPDATE mentoring_program SET status='active' WHERE id=$1",[f.programId]);});
+ await t.test('objectifs partagés, rejeu et révision concurrente',async()=>{const data={programId:f.programId,clientId:randomUUID(),title:'Préparer un portfolio <script>test</script>',dueDate:'2027-01-15'};const o=await s.objective(f.mentee,data);assert.equal((await s.objective(f.mentee,data)).id,o.id);await s.objectiveAction(f.mentor,{programId:f.programId,id:o.id,revision:1,status:'doing'});await assert.rejects(s.objectiveAction(f.mentee,{programId:f.programId,id:o.id,revision:1,status:'done'}),{status:409});await s.objectiveAction(f.mentee,{programId:f.programId,id:o.id,revision:2,status:'done'});const board=await s.board(f.mentor,{programId:f.programId});assert.equal(board.objectives[0].title,data.title);assert.equal(board.objectives[0].due_date,data.dueDate);assert.equal(board.objectives[0].status,'done');});
+ await t.test('confirmations concurrentes sur deux accompagnements et clôture mentor',async()=>{
+ const {MentoringService}=await import('../src/modules/mentoring/service.ts');const mentoring=new MentoringService(db,true);
+ const request=await mentoring.createRequest(f.other,{mentorId:f.mentor.id,goal:'Deuxième accompagnement synthétique pour les collisions de créneaux.'});await mentoring.transition(f.mentor,{id:request.id,status:'accepted'});
+ const [program]=await db.query<{id:string}>('SELECT id FROM mentoring_program WHERE request_id=$1',[request.id]);
+ const startsAt=new Date(Date.now()+2*86400000).toISOString();
+ const a=await s.propose(f.mentor,{...input,startsAt,clientId:randomUUID()}),b=await s.propose(f.mentor,{...input,startsAt,programId:program.id,clientId:randomUUID()});
+ const results=await Promise.allSettled([s.sessionAction(f.mentee,{programId:f.programId,id:a.id,revision:1,action:'confirm'}),s.sessionAction(f.other,{programId:program.id,id:b.id,revision:1,action:'confirm'})]);assert.equal(results.filter(r=>r.status==='fulfilled').length,1);assert.equal(results.filter(r=>r.status==='rejected'&&r.reason.code==='time_conflict').length,1);
+ const [confirmed]=await db.query<{id:string;program_id:string}>(`SELECT id,program_id FROM mentoring_session WHERE id IN ($1,$2) AND status='confirmed'`,[a.id,b.id]);
+ await db.query("UPDATE mentoring_session SET starts_at=now()-interval '2 hours',ends_at=now()-interval '1 hour' WHERE id=$1",[confirmed.id]);
+ const participant=confirmed.program_id===f.programId?f.mentee:f.other;
+ await assert.rejects(s.sessionAction(participant,{programId:confirmed.program_id,id:confirmed.id,revision:2,action:'complete'}),{status:403});
+ await s.sessionAction(f.mentor,{programId:confirmed.program_id,id:confirmed.id,revision:2,action:'complete'});
+ });
+ await t.test('HTTP : fermeture sans base, session, Origin et schéma',async()=>{const closed=await handlePlanning(new Request('http://localhost/api/v1/planning/config'),'config',{flags:()=>({enabled:false,sendEnabled:false}),db:async()=>{throw Error('must not connect')},config:()=>{throw Error('must not configure')},account:async()=>null});assert.deepEqual(await closed.json(),{enabled:false,sendEnabled:false});const deps={db:async()=>db,flags:()=>({enabled:true,sendEnabled:true}),config:()=>({origin:'http://localhost',secret:'x'.repeat(40)}) as never,account:async()=>f.mentor};const req=(origin:string)=>new Request('http://localhost/api/v1/planning/propose',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({...input,clientId:randomUUID(),status:'confirmed'})});assert.equal((await handlePlanning(req('https://evil.invalid'),'propose',deps)).status,403);assert.equal((await handlePlanning(req('http://localhost'),'propose',deps)).status,400);assert.equal((await handlePlanning(new Request('http://localhost/api/v1/planning/programs'),'programs',{...deps,account:async()=>null})).status,401);});
+});
