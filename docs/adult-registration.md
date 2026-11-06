@@ -20,7 +20,7 @@ Les règles préparées sont consultables sur /inscriptions-adultes/, avec noind
 
 | Point | État actuel | Décision ou preuve attendue |
 |---|---|---|
-| Sauvegarde et récupération Neon | Non vérifiées, confirmé par l’utilisateur | Exécuter recovery-drill.md et conserver un résultat réel |
+| Sauvegarde et récupération Neon | Récupération historique isolée contrôlée le 6 novembre 2026 ; vingt tables métier et onze migrations concordent | Preuve dans recovery-drill.md ; fixer encore les objectifs RPO/RTO et la stratégie de copie indépendante |
 | Règles, conditions et confidentialité pour de nouveaux comptes | Règles préparées ; documents publics actuels décrivent encore la découverte fermée | Valider les textes d’ouverture et leur nouvelle version, notamment données des profils mentors et transferts des prestataires |
 | Conservation et clôture des comptes | Traitement manuel existant ; pas de suppression automatique des comptes | Fixer les durées, les responsabilités et la procédure de demande sans mot de passe |
 | E-mail | Connexion SMTP/TLS vérifiable sans envoi ; envoi de validation déjà éprouvé dans les étapes antérieures | Vérifier quotas actuels, surveillance des échecs et un parcours réel avec destinataire explicitement autorisé avant activation |
