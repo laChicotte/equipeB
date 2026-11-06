@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../src/content/registration.ts';
 import {existsSync} from 'node:fs';
 import {randomBytes,randomUUID} from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -16,7 +17,7 @@ try{
  try{
   assert.deepEqual(await migrate(db),[]);
   const service=new IdentityService(db,{async send(mail){mails.push(mail)}},'http://127.0.0.1:3000',randomBytes(32).toString('hex'));
-  await service.register({email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true});
+  await service.register({email,password,role:'mentee',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true});
   await assert.rejects(service.login({email,password}),{status:403});
   await service.consume({token:token()},'verify');
   const session=await service.login({email,password});

@@ -35,3 +35,6 @@ Bibliothèque, communauté, IA assistée avec validation humaine, audio/vidéo, 
 
 ## Lancement découverte 0.10
 Autorisé par l’utilisateur le 6 novembre 2026 : vitrine, annuaire et quiz publics, inscriptions fermées. Textes et contact téléphonique mis à jour ; entretien quotidien des données techniques expirées. Aucune activation des parcours privés ni des mineurs. Voir public-launch.md pour les limites et contrôles.
+
+## Préparation des comptes adultes 0.12
+Règles versionnées, accords serveur, verrou de production distinct et limites d’inscription séparées. Inscription toujours fermée ; sauvegarde/récupération isolée non vérifiée et explicitement laissée à préparer par l’utilisateur. Voir adult-registration.md.

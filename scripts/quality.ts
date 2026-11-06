@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../src/content/registration.ts';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {get} from 'node:http';
@@ -24,6 +25,7 @@ try{
   assert.ok(gzipBytes<=250*1024,path+' exceeds the 250 KiB initial HTML/JS/CSS gzip budget');assert.ok(jsGzip<=200*1024,path+' exceeds the 200 KiB JS gzip budget');assert.ok(cssGzip<=30*1024,path+' exceeds the 30 KiB CSS gzip budget');
   report.push({path,initialAssets:assets.size,htmlGzipBytes:gzipSync(page.body).length,jsGzipBytes:jsGzip,cssGzipBytes:cssGzip,totalEstimatedGzipBytes:gzipBytes,localWireBytes:wireBytes,idealTransferSecondsAt400Kbps:Number((gzipBytes*8/400000).toFixed(2))});
  }
+ const adultPolicy=await read('/inscriptions-adultes/');assert.equal(adultPolicy.status,200);assert.ok(adultPolicy.body.toString().includes(REGISTRATION_RULES_VERSION));assert.match(adultPolicy.body.toString(),/<meta[^>]+name="robots"[^>]+content="[^"]*noindex/);
  const editorialSource=await read('/editorial/launch-quizzes.v1.json');assert.equal(editorialSource.status,404,'Editorial answer file must never be public');
  const privateApi=await read('/api/v1/auth/session/');assert.equal(privateApi.headers['referrer-policy'],'no-referrer');assert.equal(privateApi.headers['cache-control'],'no-store');
  await mkdir('.local',{recursive:true});await writeFile('.local/quality-report.json',JSON.stringify({measuredAt:new Date().toISOString(),scope:'Production HTML and initial referenced JS/CSS; accounts and all private features closed; no browser execution.',limits:{totalGzipKiB:250,jsGzipKiB:200,cssGzipKiB:30},networkModel:'Ideal transfer at 400 kilobits/s, excluding RTT, parsing, execution, API data, images and subsequent navigation. Not a browser performance measurement.',routes:report},null,2));

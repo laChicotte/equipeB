@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {deploymentReadiness} from '../src/server/deployment-readiness.ts';
 import {smtpSettings} from '../src/server/smtp-settings.ts';
 import {authConfig,handleAuth} from '../src/server/auth-http.ts';
-const production={NODE_ENV:'production',AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',REAL_ACCOUNTS_APPROVED:'true',
+const production={NODE_ENV:'production',AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',REAL_ACCOUNTS_APPROVED:'true',ADULT_REGISTRATION_APPROVED:'true',
   APP_URL:'https://talentlink.example.invalid',AUTH_SECRET:'synthetic-auth-secret-not-for-real-use-2026',DB_DRIVER:'postgres',
   DATABASE_URL:'postgresql://fixture:private-db-password@db.example.neon.tech/fixture?sslmode=require',
   MAIL_DRIVER:'smtp',SMTP_URL:'smtps://fixture:private-smtp-password@smtp.example.invalid',MAIL_FROM:'TalentLink <fixture@example.invalid>'};
@@ -11,6 +11,7 @@ test('préversion : comptes fermés sans transférer de secrets',()=>{
   assert.equal(deploymentReadiness({},'preview').ok,true);
   assert.equal(deploymentReadiness({AUTH_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({AUTH_REGISTRATION_ENABLED:'true'},'preview').ok,false);
+  assert.equal(deploymentReadiness({ADULT_REGISTRATION_APPROVED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({PLAY_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({MENTORING_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({MESSAGING_ENABLED:'true'},'preview').ok,false);

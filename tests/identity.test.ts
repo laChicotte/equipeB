@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../src/content/registration.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
@@ -12,7 +13,7 @@ import type { AuthConfig, AuthDependencies } from '../src/server/auth-http.ts';
 import type { Mail } from '../src/server/mail.ts';
 
 const password='TalentLink-test-unique-2026';
-const registration=(email:string)=>({email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true});
+const registration=(email:string)=>({email,password,role:'mentee',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true});
 const tokenFrom=(mail:Mail)=>mail.text.match(/#token=([a-f0-9]{64})/)![1];
 test('validation : élévation de rôle, mineurs déclarés et consentements refusés',()=>{
   for(const overrides of [{role:'admin'},{role:'moderator'},{adultConfirmed:false},{termsAccepted:false},{privacyAccepted:false},{role:'mentor'},{email_verified_at:'2026-01-01'}]){

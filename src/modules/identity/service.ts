@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../../content/registration.ts';
 import {LEGAL_VERSION} from '../../content/operator.ts';
 import { createHmac } from 'node:crypto';
 import type { Database, Sql } from '../../server/database.ts';
@@ -48,13 +49,14 @@ export class IdentityService {
   async register(input:unknown) {
     const value=registerSchema.parse(input);
     await this.rate('register',value.email);
+    await this.rate('register-global','all',30);
     const hash=await hashPassword(value.password);
     const pending=await this.db.transaction(async sql=>{
       const [user]=await sql.query<User>(`INSERT INTO app_user(email,password_hash,role,adult_declared_at)
         VALUES($1,$2,$3,now()) ON CONFLICT DO NOTHING RETURNING *`,[value.email,hash,value.role]);
       if(!user) return null;
-      for(const purpose of ['terms','privacy',...(value.role==='mentor'?['mentor_charter']:[])]) {
-        await sql.query('INSERT INTO consent(user_id,purpose,document_version) VALUES($1,$2,$3)',[user.id,purpose,LEGAL_VERSION]);
+      for(const purpose of ['terms','privacy','adult_registration_rules',...(value.role==='mentor'?['mentor_charter']:[])]) {
+        await sql.query('INSERT INTO consent(user_id,purpose,document_version) VALUES($1,$2,$3)',[user.id,purpose,purpose==='adult_registration_rules'?REGISTRATION_RULES_VERSION:LEGAL_VERSION]);
       }
       const token=await this.issue(sql,user,'verify');
       await sql.query(`INSERT INTO audit_event(actor_id,action,resource_type,resource_id) VALUES($1,'account.registered','user',$1)`,[user.id]);

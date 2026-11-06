@@ -5,6 +5,7 @@ type Check={id:string;ok:boolean};
 export function deploymentReadiness(env:Environment,goal:DeploymentGoal){
   const checks:Check[]=[];
   if(goal==='preview'){
+    checks.push({id:'preview_adult_registration_closed',ok:env.ADULT_REGISTRATION_APPROVED!=='true'});
     checks.push({id:'preview_accounts_closed',ok:env.AUTH_ENABLED!=='true'&&env.AUTH_REGISTRATION_ENABLED!=='true'&&env.REAL_ACCOUNTS_APPROVED!=='true'});
     checks.push({id:'preview_play_and_mentoring_closed',ok:env.PLAY_ENABLED!=='true'&&env.MENTORING_ENABLED!=='true'});
     checks.push({id:'preview_attestations_closed',ok:env.ATTESTATIONS_ENABLED!=='true'&&env.ATTESTATIONS_APPROVED!=='true'});
@@ -15,6 +16,7 @@ export function deploymentReadiness(env:Environment,goal:DeploymentGoal){
     checks.push({id:'explicit_real_account_approval',ok:env.REAL_ACCOUNTS_APPROVED==='true'});
     checks.push({id:'authentication_enabled',ok:env.AUTH_ENABLED==='true'});
     checks.push({id:'registration_enabled',ok:env.AUTH_REGISTRATION_ENABLED==='true'});
+    checks.push({id:'explicit_adult_registration_approval',ok:env.ADULT_REGISTRATION_APPROVED==='true'});
     let origin=false;try{const url=new URL(env.APP_URL||'');origin=url.protocol==='https:'&&!url.username&&!url.password&&url.pathname==='/'&&!url.search&&!url.hash}catch{}
     checks.push({id:'https_origin',ok:origin});
     checks.push({id:'random_auth_secret',ok:!!env.AUTH_SECRET&&env.AUTH_SECRET.length>=32&&!/replace|change-me/i.test(env.AUTH_SECRET)});

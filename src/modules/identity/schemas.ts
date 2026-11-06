@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../../content/registration.ts';
 import { z } from 'zod';
 const email = z.string().trim().toLowerCase().max(254).email();
 const password = z.string().min(12, 'Utilisez au moins 12 caractères.').max(128);
@@ -7,6 +8,8 @@ export const registerSchema = z.object({
   email, password,
   role: z.enum(['mentee','mentor']),
   adultConfirmed: z.literal(true),
+  registrationRulesAccepted:z.literal(true),
+  registrationRulesVersion:z.literal(REGISTRATION_RULES_VERSION),
   termsAccepted: z.literal(true),
   privacyAccepted: z.literal(true),
   mentorCharterAccepted: z.boolean().optional(),

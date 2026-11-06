@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../src/content/registration.ts';
 import {spawn} from 'node:child_process';
 import type {ChildProcess} from 'node:child_process';
 import {randomBytes,randomUUID} from 'node:crypto';
@@ -121,16 +122,16 @@ try{
  const roadmap=await(await planningGet('board/?programId='+messagingProgramId)).json();assert.equal(roadmap.sessions[0].status,'confirmed');assert.equal(roadmap.objectives[0].status,'done');
  assert.equal((await fetchWithinDeadline(`${base}/compte/planning/`)).status,200);
  for(const page of ['compte/messages','administration/signalements'])assert.equal((await fetchWithinDeadline(`${base}/${page}/`)).status,200);
- assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,400);
+ assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true})).status,400);
  assert.equal((await post('register',{},'','https://other.invalid')).status,403);
- assert.equal((await post('register',{email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,202);
+ assert.equal((await post('register',{email,password,role:'mentee',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true})).status,202);
  assert.equal((await post('login',{email,password})).status,403);
  assert.equal((await post('verify-email',{token:await mailToken('Vérifiez')})).status,200);
  const logged=await post('login',{email,password});assert.equal(logged.status,200);
  const cookie=logged.headers.get('set-cookie')!.split(';')[0];assert.match(logged.headers.get('set-cookie')!,/HttpOnly/);
  assert.equal((await(await current(cookie)).json()).account.email,email);
  const mentorEmail=`mentor-${runId}@example.invalid`;
- assert.equal((await post('register',{email:mentorEmail,password,role:'mentor',adultConfirmed:true,termsAccepted:true,privacyAccepted:true,mentorCharterAccepted:true})).status,202);
+ assert.equal((await post('register',{email:mentorEmail,password,role:'mentor',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true,mentorCharterAccepted:true})).status,202);
  assert.equal((await post('verify-email',{token:await mailToken('Vérifiez',mentorEmail)})).status,200);
  const mentorLogin=await post('login',{email:mentorEmail,password});assert.equal(mentorLogin.status,200);
  const mentorCookie=mentorLogin.headers.get('set-cookie')!.split(';')[0];

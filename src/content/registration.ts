@@ -1,0 +1,2 @@
+export const REGISTRATION_RULES_VERSION='2026-11-06-adult-v1';
+export const MINIMUM_REGISTRATION_AGE=18;

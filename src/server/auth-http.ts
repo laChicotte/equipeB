@@ -8,6 +8,7 @@ import { requirePermission } from '../modules/identity/access.ts';
 import {smtpSettings} from './smtp-settings.ts';
 
 export type AuthConfig={origin:string;secure:boolean;registrationEnabled:boolean;secret:string};
+export function registrationEnabled(env:Record<string,string|undefined>=process.env){return env.AUTH_REGISTRATION_ENABLED==='true'&&(env.NODE_ENV!=='production'||env.ADULT_REGISTRATION_APPROVED==='true')}
 export function authConfig():AuthConfig {
   if(process.env.AUTH_ENABLED!=='true') throw new AuthError(503,'auth_disabled','Les comptes ne sont pas encore ouverts.');
   const url=new URL(process.env.APP_URL || 'http://127.0.0.1:3000');
@@ -22,7 +23,7 @@ export function authConfig():AuthConfig {
     if(process.env.REAL_ACCOUNTS_APPROVED!=='true')throw new Error('Real account activation is not approved');
     smtpSettings(process.env,true);
   }
-  return {origin:url.origin,secure,secret,registrationEnabled:process.env.AUTH_REGISTRATION_ENABLED==='true'};
+  return {origin:url.origin,secure,secret,registrationEnabled:registrationEnabled()};
 }
 export function cookieName(config:AuthConfig){return config.secure?'__Host-tl_session':'tl_session'}
 function cookie(token:string,config:AuthConfig,clear=false) {
@@ -66,7 +67,7 @@ export async function handleAuth(request:Request,action:string,deps:AuthDependen
     if(request.method==='GET') {
       const account=await service.account(token);requirePermission(account,'account:read');return json({account});
     }
-    await service.rate('global','all',500);
+    await service.rate(action==='register'?'global-registration':'global','all',action==='register'?100:500);
     const input=await body(request);
     switch(action){
       case 'register':return json(await service.register(input),202);
@@ -80,6 +81,7 @@ export async function handleAuth(request:Request,action:string,deps:AuthDependen
     }
   }catch(error){
     if(error instanceof AuthError)return json({code:error.code,message:error.message},error.status,error.status===429?{'Retry-After':'900'}:{});
+    if(error instanceof ZodError&&error.issues.some(issue=>issue.path[0]==='registrationRulesVersion'))return json({code:'registration_rules_updated',message:'Les règles d’inscription ont été actualisées. Rechargez la page et relisez-les avant de continuer.'},409);
     if(error instanceof ZodError)return json({code:'validation_failed',message:'Vérifiez les champs du formulaire et les consentements requis.',fields:[...new Set(error.issues.map(issue=>String(issue.path[0]||'form')))]},400);
     const reference=randomUUID();console.error('talentlink_auth_error',reference);
     return json({code:'service_unavailable',message:'Le service est temporairement indisponible.',reference},503);

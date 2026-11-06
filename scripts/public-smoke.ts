@@ -1,3 +1,4 @@
+import {REGISTRATION_RULES_VERSION} from '../src/content/registration.ts';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {randomBytes,randomUUID} from 'node:crypto';
@@ -16,7 +17,7 @@ server.stdout?.on('data',()=>{});server.stderr?.on('data',()=>{});
 try{let ready=false;for(let i=0;i<120;i++){if(server.exitCode!==null)break;try{if((await fetch(base+'/api/health/',{signal:AbortSignal.timeout(1000)})).ok){ready=true;break}}catch{}await pause(400)}assert.ok(ready);
  const post=(action:string,input:unknown,cookie='')=>fetch(base+action,{method:'POST',headers:{Origin:base,'Content-Type':'application/json',cookie},body:JSON.stringify(input)});
  const config=await(await fetch(base+'/api/v1/auth/config/')).json();assert.deepEqual(config,{enabled:true,registrationEnabled:false});
- assert.equal((await post('/api/v1/auth/register/',{email:'blocked-public@example.invalid',password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,403);
+ assert.equal((await post('/api/v1/auth/register/',{email:'blocked-public@example.invalid',password,role:'mentee',adultConfirmed:true,registrationRulesAccepted:true,registrationRulesVersion:REGISTRATION_RULES_VERSION,termsAccepted:true,privacyAccepted:true})).status,403);
  assert.equal((await fetch(base+'/api/v1/administration/overview/')).status,401);
  const login=await post('/api/v1/auth/login/',{email:'admin-public@example.invalid',password});assert.equal(login.status,200);const cookie=login.headers.get('set-cookie')!.split(';')[0];assert.equal((await fetch(base+'/api/v1/administration/overview/',{headers:{cookie}})).status,200);
  assert.equal((await fetch(base+'/api/v1/mentoring/directory/')).status,200);assert.equal((await fetch(base+'/api/v1/play/catalog/')).status,200);

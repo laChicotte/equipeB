@@ -1,3 +1,7 @@
+## Itération 0.12 — préparation des inscriptions adultes
+
+Double verrou de production, règles versionnées et limites anti-abus. Les inscriptions restent fermées. Voir [docs/adult-registration.md](docs/adult-registration.md) et [docs/recovery-drill.md](docs/recovery-drill.md).
+
 ## Premiers quiz publiés
 
 Les trois quiz sourcés ont été publiés le 6 novembre 2026 après validation explicite de l’utilisateur. Liens et vérifications : [docs/verification-editorial-publication.md](docs/verification-editorial-publication.md).
