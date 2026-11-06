@@ -32,3 +32,6 @@ Modération avancée, attestations révocables (non accréditées), indicateurs 
 
 ## 6 — Évolutions
 Bibliothèque, communauté, IA assistée avec validation humaine, audio/vidéo, opportunités puis Expo. Chaque activation sensible ou payante nécessite une décision explicite.
+
+## Lancement découverte 0.10
+Autorisé par l’utilisateur le 6 novembre 2026 : vitrine, annuaire et quiz publics, inscriptions fermées. Textes et contact téléphonique mis à jour ; entretien quotidien des données techniques expirées. Aucune activation des parcours privés ni des mineurs. Voir public-launch.md pour les limites et contrôles.

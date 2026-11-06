@@ -1,3 +1,9 @@
+# Hébergement Vercel — lancement découverte
+
+Le choix public du 6 novembre 2026 remplace le régime privé intégral décrit ci-dessous. Le périmètre, les variables, le contact et le retour arrière actuels sont décrits dans [public-launch.md](public-launch.md). Les domaines de production deviennent publics après validation de la nouvelle source ; les inscriptions et fonctions sensibles restent fermées.
+
+## Historique de la version privée
+
 # Hébergement Vercel — version privée
 
 Le 6 novembre 2026, l’utilisateur a demandé de regrouper toutes les fonctionnalités développées sur Vercel avec talentlink.today, puis a choisi explicitement un accès privé protégé par sa connexion Vercel.

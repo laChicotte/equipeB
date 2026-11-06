@@ -1,3 +1,7 @@
+## Itération 0.10 — lancement découverte
+
+Périmètre public autorisé : vitrine, annuaire, quiz validés ; nouvelles inscriptions fermées. Guide de lancement, contact et retour arrière : [docs/public-launch.md](docs/public-launch.md).
+
 ## Itération 0.9 — qualité et résilience
 
 Navigation clavier, reprise après panne réseau et budgets des ressources de production : [docs/quality.md](docs/quality.md). Commande : npm run test:quality après compilation. Les contrôles visuels et lecteur d’écran restent distincts.

@@ -1,6 +1,6 @@
 {
   "name": "talentlink",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -28,7 +28,9 @@
     "planning:demo": "node scripts/planning-demo.ts",
     "db:smoke-administration": "node scripts/administration-smoke.ts",
     "db:smoke-attestations": "node scripts/attestations-smoke.ts",
-    "test:quality": "node scripts/quality.ts"
+    "test:quality": "node scripts/quality.ts",
+    "test:public": "node scripts/public-smoke.ts",
+    "db:smoke-maintenance": "node scripts/maintenance-smoke.ts"
   },
   "dependencies": {
     "next": "16.4.5",

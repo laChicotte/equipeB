@@ -1,3 +1,4 @@
+import {LEGAL_VERSION} from '../../content/operator.ts';
 import { createHmac } from 'node:crypto';
 import type { Database, Sql } from '../../server/database.ts';
 import type { Mailer } from '../../server/mail.ts';
@@ -53,7 +54,7 @@ export class IdentityService {
         VALUES($1,$2,$3,now()) ON CONFLICT DO NOTHING RETURNING *`,[value.email,hash,value.role]);
       if(!user) return null;
       for(const purpose of ['terms','privacy',...(value.role==='mentor'?['mentor_charter']:[])]) {
-        await sql.query('INSERT INTO consent(user_id,purpose,document_version) VALUES($1,$2,$3)',[user.id,purpose,'2026-11-prelaunch']);
+        await sql.query('INSERT INTO consent(user_id,purpose,document_version) VALUES($1,$2,$3)',[user.id,purpose,LEGAL_VERSION]);
       }
       const token=await this.issue(sql,user,'verify');
       await sql.query(`INSERT INTO audit_event(actor_id,action,resource_type,resource_id) VALUES($1,'account.registered','user',$1)`,[user.id]);
