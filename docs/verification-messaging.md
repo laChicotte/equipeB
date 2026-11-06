@@ -13,3 +13,9 @@ La démonstration utilise une base embarquée séparée, sans Neon ni SMTP. Aucu
 La version Vercel conserve MESSAGING_ENABLED=false, PRIVATE_COMMUNICATIONS_APPROVED=false et MENTORING_ENABLED=false. Aucun accès adulte réel n’est approuvé. Les parcours de communication sont validés localement ; ils ne sont pas ouverts aux utilisateurs réels.
 
 Voir messaging.md pour les comptes fictifs de démonstration et les limites, notamment l’actualisation manuelle et la procédure de conservation à définir avant ouverture.
+
+## Livraison privée Vercel
+
+Source : 1eb3def008935c9ab87afebc8d6b9a7f6d574551. Déploiement dpl_CMEK1pT5H3BWraREVMEpZv7XZUDv confirmé READY, sans erreur d’alias, associé à talentlink.today et www.talentlink.today. Protection relue après livraison : enabled=true, deploymentType=all. Les deux variables de messagerie ont été explicitement fixées à false en production avant cette construction.
+
+Le contrôle HTTP anonyme depuis le terminal a échoué sur la résolution réseau locale ; il ne fournit donc pas de nouvelle preuve HTTP ou TLS. Les informations de livraison et de protection ci-dessus viennent de l’API Vercel. Aucun contournement d’authentification créé et aucun parcours de communication réel exécuté sur le cloud.
