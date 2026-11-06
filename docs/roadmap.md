@@ -15,6 +15,7 @@ Synthèse, architecture, arborescence, modèle initial, tokens et parcours : doc
 Configurer PostgreSQL de développement, migrations Prisma, service mail de test. Inscription adulte, confirmation e-mail, connexion/déconnexion, expiration/révocation des sessions et reset. Tests d’intégration sur base isolée. Refus des sessions et jetons invalides. Aucun mot de passe en clair ou jeton complet dans les logs. Démontrer l’isolation de deux utilisateurs avant ouverture.
 
 ## 2 — Mentorat
+Implémentation 0.3 : profils texte, revue administrative, annuaire filtrable/paginé, favoris, demandes et objectifs de programmes. Mises en relation toujours fermées ; limites et vérifications dans mentoring.md. Photos, avis, séances et bilans détaillés restent différés.
 Profils, vérification administrative, annuaire paginé, filtres, demandes et transitions valides. Rejet serveur pour mentor non vérifié et utilisateur non autorisé. Test des doublons, concurrence et confidentialité.
 
 ## 3 — Play (avant messagerie)

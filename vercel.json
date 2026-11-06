@@ -6,6 +6,7 @@
   "env": {
     "AUTH_ENABLED": "false",
     "AUTH_REGISTRATION_ENABLED": "false",
-    "REAL_ACCOUNTS_APPROVED": "false"
+    "REAL_ACCOUNTS_APPROVED": "false",
+    "MENTORING_ENABLED": "false"
   }
 }

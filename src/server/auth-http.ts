@@ -28,7 +28,7 @@ export function cookieName(config:AuthConfig){return config.secure?'__Host-tl_se
 function cookie(token:string,config:AuthConfig,clear=false) {
   return `${cookieName(config)}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${clear?0:SESSION_SECONDS}${config.secure?'; Secure':''}`;
 }
-function currentToken(request:Request,config:AuthConfig) {
+export function currentToken(request:Request,config:AuthConfig) {
   const name=cookieName(config);
   const found=request.headers.get('cookie')?.split(';').map(value=>value.trim()).find(value=>value.startsWith(`${name}=`));
   const token=found?.slice(name.length+1);
@@ -37,7 +37,7 @@ function currentToken(request:Request,config:AuthConfig) {
 function json(value:unknown,status=200,headers:Record<string,string>={}) {
   return Response.json(value,{status,headers:{'Cache-Control':'no-store','Pragma':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer',...headers}});
 }
-async function body(request:Request):Promise<unknown> {
+export async function body(request:Request):Promise<unknown> {
   if(request.headers.get('content-type')?.split(';')[0].trim()!=='application/json') throw new AuthError(415,'content_type','Utilisez un formulaire JSON.');
   const reader=request.body?.getReader();
   if(!reader) throw new AuthError(400,'invalid_body','Formulaire invalide.');

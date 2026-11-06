@@ -1,6 +1,6 @@
 {
   "name": "talentlink",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,6 +13,7 @@
     "db:check": "node scripts/database.ts check",
     "db:migrate": "node scripts/database.ts migrate",
     "db:smoke": "node scripts/native-smoke.ts",
+    "db:smoke-mentoring": "node scripts/mentoring-smoke.ts",
     "test:e2e": "node scripts/e2e.ts",
     "deploy:check": "node scripts/deployment.ts preview",
     "deploy:check-accounts": "node scripts/deployment.ts accounts",

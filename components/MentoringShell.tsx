@@ -1,0 +1,2 @@
+import ThemeSelect from './ThemeSelect';
+export default function MentoringShell({children}:{children:React.ReactNode}){return <main className="mentoring-page"><div className="auth-top"><a href="/" className="brand">talent<span>link</span></a><ThemeSelect/></div><nav className="mentoring-nav" aria-label="Mentorat"><a href="/mentors/">Annuaire</a><a href="/compte/">Mon compte</a><a href="/compte/mentorat/">Mes accompagnements</a></nav><section>{children}</section></main>}
