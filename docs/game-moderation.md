@@ -1,6 +1,6 @@
 # Validation des contributions — conception
 
-Question : brouillon → soumise → en révision → approuvée/rejetée → archivée. Jeu : brouillon → en validation → publié → archivé. Ces workflows ne sont pas encore implémentés.
+Question : brouillon → soumise → en révision → approuvée/rejetée → archivée. Jeu : brouillon → en validation → publié → archivé. Ces workflows sont implémentés dans le service Play et l’atelier de contribution ; voir play.md pour les contrôles et limites.
 
 Mentor vérifié : rédiger, prévisualiser, enregistrer et soumettre. Administrateur autorisé autre que l’auteur : vérifier exactitude, trois options distinctes, unicité de la correction, explication, sources, droits et doublons. Une correction impose une nouvelle version. Toute proposition IA suit le même contrôle humain.
 

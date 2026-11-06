@@ -11,6 +11,8 @@ test('préversion : comptes fermés sans transférer de secrets',()=>{
   assert.equal(deploymentReadiness({},'preview').ok,true);
   assert.equal(deploymentReadiness({AUTH_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({AUTH_REGISTRATION_ENABLED:'true'},'preview').ok,false);
+  assert.equal(deploymentReadiness({PLAY_ENABLED:'true'},'preview').ok,false);
+  assert.equal(deploymentReadiness({MENTORING_ENABLED:'true'},'preview').ok,false);
   assert.equal(deploymentReadiness({TALENTLINK_KEEP_BUILD_OUTPUT:'true'},'preview').ok,false);
 });
 test('ouverture réelle : validation humaine, TLS, secrets et SMTP requis',()=>{

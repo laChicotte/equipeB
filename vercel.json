@@ -7,6 +7,7 @@
     "AUTH_ENABLED": "false",
     "AUTH_REGISTRATION_ENABLED": "false",
     "REAL_ACCOUNTS_APPROVED": "false",
-    "MENTORING_ENABLED": "false"
+    "MENTORING_ENABLED": "false",
+    "PLAY_ENABLED": "false"
   }
 }

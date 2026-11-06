@@ -69,7 +69,8 @@ export class MentoringService {
  async eligible(sql:Sql,id:string){const [p]=await sql.query(`SELECT p.user_id FROM mentor_profile p JOIN app_user u ON u.id=p.user_id WHERE ${visible} AND p.user_id=$1 FOR SHARE OF p,u`,[id]);if(!p)throw deny()}
  async createRequest(account:Account|null,input:unknown){this.gate();const v=requestSchema.parse(input);return this.db.transaction(async sql=>{
   const user=await this.actor(sql,account,'mentee',true);if(user.id===v.mentorId)throw deny();await this.eligible(sql,v.mentorId);
-  const rows=await sql.query<{id:string}>(`INSERT INTO mentoring_request(mentee_id,mentor_id,goal) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING id`,[user.id,v.mentorId,v.goal]);
+  if(v.sourceAttemptId&&!(await sql.query('SELECT id FROM game_attempt WHERE id=$1 AND user_id=$2 AND completed_at IS NOT NULL',[v.sourceAttemptId,user.id])).length)throw deny();
+  const rows=await sql.query<{id:string}>(`INSERT INTO mentoring_request(mentee_id,mentor_id,goal,source_attempt_id) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING RETURNING id`,[user.id,v.mentorId,v.goal,v.sourceAttemptId||null]);
   if(!rows[0])throw conflict();await this.audit(sql,user.id,'mentoring.requested',rows[0].id);return {id:rows[0].id,message:'Demande envoyée. Elle est visible dans l’espace du mentor.'};
  })}
  async requests(account:Account|null){return this.db.transaction(async sql=>{const user=await this.actor(sql,account,undefined,true);return sql.query(`SELECT r.*,p.public_name FROM mentoring_request r JOIN mentor_profile p ON p.user_id=r.mentor_id WHERE r.mentee_id=$1 OR r.mentor_id=$1 ORDER BY r.created_at DESC LIMIT 100`,[user.id])})}

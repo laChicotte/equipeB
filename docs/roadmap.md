@@ -19,6 +19,7 @@ Implémentation 0.3 : profils texte, revue administrative, annuaire filtrable/pa
 Profils, vérification administrative, annuaire paginé, filtres, demandes et transitions valides. Rejet serveur pour mentor non vérifié et utilisateur non autorisé. Test des doublons, concurrence et confidentialité.
 
 ## 3 — Play (avant messagerie)
+Implémentation 0.4 : catalogue et moteur sans compte, versions stables, corrections/score serveur, contributions et publication contrôlée, historique facultatif, recommandations et indicateurs. Activation publique toujours fermée ; démonstration isolée disponible. Badges et classements optionnels restent différés.
 Jeux, versions, trois options, correction serveur, scores, explications, historique, contributions, modération et recommandations. Exécuter les 17 scénarios du cahier des charges avant déclaration de livraison. Aucun indice de bonne réponse avant soumission. Une réponse rejouée ne double pas le score.
 
 ## 4 — Accompagnement

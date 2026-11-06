@@ -1,0 +1,2 @@
+import ThemeSelect from './ThemeSelect';
+export default function PlayShell({children}:{children:React.ReactNode}){return <main className="mentoring-page play-page"><div className="auth-top"><a href="/" className="brand">talent<span>link</span></a><ThemeSelect/></div><nav className="mentoring-nav" aria-label="TalentLink Play"><a href="/play/">Les jeux</a><a href="/compte/jeux/">Mes jeux</a><a href="/compte/contributions/">Contribuer</a><a href="/mentors/">Les mentors</a><a href="/compte/">Mon compte</a></nav><section>{children}</section></main>}

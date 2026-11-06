@@ -1,6 +1,6 @@
 {
   "name": "talentlink",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,7 +18,10 @@
     "deploy:check": "node scripts/deployment.ts preview",
     "deploy:check-accounts": "node scripts/deployment.ts accounts",
     "mail:check": "node scripts/deployment.ts smtp",
-    "test:preview": "node scripts/preview-check.ts"
+    "test:preview": "node scripts/preview-check.ts",
+    "play:demo": "node scripts/play-demo.ts",
+    "play:purge": "node scripts/play-retention.ts",
+    "db:smoke-play": "node scripts/play-smoke.ts"
   },
   "dependencies": {
     "next": "16.4.5",
@@ -38,5 +41,7 @@
     "@types/pg": "^8.15.0",
     "@types/nodemailer": "^7.0.0"
   },
-  "engines": {"node": ">=22.18.0"}
+  "engines": {
+    "node": ">=22.18.0"
+  }
 }

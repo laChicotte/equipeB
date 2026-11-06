@@ -1,6 +1,6 @@
-# TalentLink Play — spécification différée
+# TalentLink Play — règles de conception
 
-Cette itération contient une présentation du concept, pas de jeu jouable. Play suit les profils, l’annuaire et les demandes ; il précède la messagerie.
+Implémentation 0.4 disponible : catalogue, moteur public, score serveur, explications, historique facultatif et recommandations. Voir play.md pour le périmètre exact, l’activation et les limites. Play suit les profils, l’annuaire et les demandes ; il précède la messagerie.
 
 Chaque question publiée possède exactement trois propositions et une seule bonne réponse. Après validation serveur : correction, explication, ressource facultative et bouton suivant. Bonne réponse : 10 points ; erreur : 0 ; aucun malus. Paramètres de score versionnés par tentative.
 

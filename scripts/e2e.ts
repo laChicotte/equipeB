@@ -8,6 +8,7 @@ import {setTimeout as pause} from 'node:timers/promises';
 import {once} from 'node:events';
 import {embeddedDatabase} from '../src/server/database.ts';
 import {migrate} from '../src/server/migrations.ts';
+import {seedPlayFixture} from '../tests/fixtures/play.ts';
 
 const runId=randomUUID();
 const email=`e2e-${runId}@example.invalid`;
@@ -16,6 +17,7 @@ const base='http://127.0.0.1:4387';
 const directory=path.join('.local',`e2e-${runId}`);
 let server:ChildProcess|undefined;
 let stage='initialisation';
+let playGameId='';
 const errors:string[]=[];
 let serverOutput='';
 async function stop(){
@@ -37,11 +39,11 @@ async function mailToken(subject:string,recipient=email){
 try{
  try{await fetch(base,{signal:AbortSignal.timeout(500)});throw new Error('Test port already in use')}catch(error){if(error instanceof Error&&error.message==='Test port already in use')throw error}
  await mkdir('.local',{recursive:true});
- stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db)}finally{await db.close()}
+ stage='base de test';const db=await embeddedDatabase(directory);try{await migrate(db);playGameId=(await seedPlayFixture(db)).gameId}finally{await db.close()}
  stage='serveur Next.js';
  server=spawn(process.execPath,['scripts/e2e-server.ts'],{
   windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,DB_DRIVER:'pglite',PGLITE_PATH:directory,
-    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
+    AUTH_ENABLED:'true',AUTH_REGISTRATION_ENABLED:'true',AUTH_SECRET:randomBytes(32).toString('hex'),APP_URL:base,MAIL_DRIVER:'file',PLAY_ENABLED:'true',NODE_ENV:'development',NEXT_TELEMETRY_DISABLED:'1'},
  });
  server.stderr?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000);if(String(chunk).includes('talentlink_auth_error'))errors.push('auth_error')});
  server.stdout?.on('data',chunk=>{serverOutput=(serverOutput+String(chunk)).slice(-4000)});
@@ -52,6 +54,18 @@ try{
  assert.ok(ready,'Next.js API did not become ready');
  stage='parcours HTTP';
  const health=await fetch(`${base}/api/health/`);assert.equal(health.status,200);assert.deepEqual(await health.json(),{status:'ok'});assert.equal(health.headers.get('cache-control'),'no-store');
+ const playPost=(action:string,data:unknown,cookie='',origin=base)=>fetch(`${base}/api/v1/play/${action}/`,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',cookie},body:JSON.stringify(data)});
+ const catalog=await fetch(`${base}/api/v1/play/catalog/`);assert.equal(catalog.status,200);const catalogBody=await catalog.json();assert.equal(catalogBody.total,1);assert.ok(!JSON.stringify(catalogBody).includes('correct_index'));
+ assert.equal((await playPost('start',{gameId:playGameId},'','https://evil.invalid')).status,403);
+ const started=await playPost('start',{gameId:playGameId});assert.equal(started.status,201);assert.match(started.headers.get('set-cookie')!,/HttpOnly/);
+ const playCookie=started.headers.get('set-cookie')!.split(';')[0],attemptId=(await started.json()).id;
+ const initial=await fetch(`${base}/api/v1/play/state/?id=${attemptId}`,{headers:{cookie:playCookie}});const initialBody=await initial.json();assert.equal(initialBody.question.options.length,3);assert.ok(!JSON.stringify(initialBody).includes('correctIndex'));
+ assert.equal((await fetch(`${base}/api/v1/play/state/?id=${attemptId}`)).status,404);
+ for(let index=0;index<3;index++){const response=await playPost('answer',{attemptId,index,choice:index},playCookie);assert.equal(response.status,200);const feedback=await response.json();assert.equal(feedback.points,10);assert.ok(feedback.explanation)}
+ assert.equal((await playPost('answer',{attemptId,index:0,choice:0,points:999},playCookie)).status,400);
+ assert.equal((await playPost('answer',{attemptId,index:0,choice:0},playCookie)).status,200);
+ const completed=await(await fetch(`${base}/api/v1/play/state/?id=${attemptId}`,{headers:{cookie:playCookie}})).json();assert.equal(completed.score,30);assert.equal(completed.completed,true);assert.equal(completed.percentage,100);
+ assert.equal((await fetch(`${base}/play/`)).status,200);assert.equal((await fetch(`${base}/play/${playGameId}/`)).status,200);
  assert.equal((await post('register',{email,password,role:'admin',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,400);
  assert.equal((await post('register',{},'','https://other.invalid')).status,403);
  assert.equal((await post('register',{email,password,role:'mentee',adultConfirmed:true,termsAccepted:true,privacyAccepted:true})).status,202);

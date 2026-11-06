@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 const base='http://127.0.0.1:4389';
 try{await fetch(base,{signal:AbortSignal.timeout(500)});throw new Error('Test port is already in use')}catch(error){if(error instanceof Error&&error.message==='Test port is already in use')throw error}
 const server=spawn(process.execPath,['scripts/e2e-server.ts','--production'],{windowsHide:true,stdio:['ignore','pipe','pipe','ipc'],env:{...process.env,
-  NODE_ENV:'production',TEST_SERVER_PORT:'4389',AUTH_ENABLED:'false',AUTH_REGISTRATION_ENABLED:'false',REAL_ACCOUNTS_APPROVED:'false',
+  NODE_ENV:'production',TEST_SERVER_PORT:'4389',AUTH_ENABLED:'false',AUTH_REGISTRATION_ENABLED:'false',REAL_ACCOUNTS_APPROVED:'false',PLAY_ENABLED:'false',
   DATABASE_URL:'',AUTH_SECRET:'',SMTP_URL:'',MAIL_FROM:'',MAIL_DRIVER:'',APP_URL:'',DB_DRIVER:'postgres',NEXT_TELEMETRY_DISABLED:'1'}});
 server.stdout?.on('data',()=>{});server.stderr?.on('data',()=>{});
 try{
@@ -14,6 +14,7 @@ try{
  assert.ok(ready);
  assert.equal((await fetch(`${base}/`)).status,200);
  assert.equal((await fetch(`${base}/auth/connexion/`)).status,200);
+ const play=await fetch(`${base}/api/v1/play/config/`);assert.deepEqual(await play.json(),{enabled:false});
  const config=await fetch(`${base}/api/v1/auth/config/`);assert.deepEqual(await config.json(),{enabled:false,registrationEnabled:false});
  assert.equal((await fetch(`${base}/api/v1/auth/session/`)).status,503);
  const registration=await fetch(`${base}/api/v1/auth/register/`,{method:'POST',headers:{Origin:base,'Content-Type':'application/json'},body:'{}'});
