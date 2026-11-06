@@ -34,3 +34,11 @@ Les dix pages respectent les budgets : 250 Kio gzip au total, 200 Kio de JavaScr
 Les outils de contrôle visuel du navigateur ne sont pas disponibles dans cette session. Aucun nouvel essai visuel mobile, lecteur d’écran, zoom, impression/PDF ni mesure navigateur sous réseau/CPU bridés n’est déclaré réussi. Les correctifs de code n’établissent pas une conformité WCAG complète. La matrice de contrôles manuels reste dans quality.md.
 
 Aucune migration, modification de rôle, approbation adulte, donnée fictive persistante ou envoi d’e-mail. Les activations sensibles restent fermées. La nouvelle limite d’attente peut afficher une expiration alors que le serveur a terminé une écriture : vérifier l’état avant de réessayer. Les protections d’idempotence existantes sont conservées.
+
+## Livraison privée Vercel
+
+Source déployée : 096ab4b910292538720fa3e989856880cb106d77. Déploiement dpl_6M5Apedki5HN1WenbhqeKeDjNEqV confirmé READY, associé à talentlink.today et www.talentlink.today sans erreur d’alias. Protection relue après livraison : enabled=true, deploymentType=all.
+
+Un premier envoi a échoué sur le transport du connecteur ; après rétablissement, l’historique a confirmé qu’aucun déploiement n’avait été créé par cette tentative. Le nouvel envoi ci-dessus a abouti. Aucun changement de protection, d’environnement sensible ou de compte n’a été effectué.
+
+Les requêtes HTTPS anonymes vers /auth/connexion/ et /administration/ reçoivent HTTP 302 vers vercel.com. Ce contrôle confirme la protection, sans valider un parcours applicatif authentifié ou les Web Vitals du cloud. Aucun lien de contournement créé.
