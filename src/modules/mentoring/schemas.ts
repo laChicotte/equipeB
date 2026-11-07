@@ -6,6 +6,7 @@ export const profileSchema=z.object({
  expertise:tags.pipe(z.array(z.string()).min(1)),languages:tags.pipe(z.array(z.string()).min(1)),generalLocation:text(2,100),
  availability:text(2,300),formats:z.array(z.enum(['online','in_person'])).min(1).max(2),
  professionalLinks:z.array(z.string().max(300).url().refine(value=>{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password},'Lien HTTPS requis')).max(3),
+ photoId:z.uuid().nullable().optional(),
  revision:z.number().int().nonnegative(),
 }).strict();
 export const reviewSchema=z.object({id:z.uuid(),revision:z.number().int().positive(),decision:z.enum(['publish','reject','suspend']),note:text(10,1000)}).strict();

@@ -1,3 +1,7 @@
+## Itération 0.15 — documents et photos
+
+PDF joints aux ressources et photos des mentors, stockage privé Neon, contrôles de fichiers et publication après revue : [guide des fichiers](docs/files.md).
+
 ## Itération 0.14 — progression personnelle détaillée
 
 Sous-objectifs, jalons datés, bilans privés et historique sont disponibles dans le suivi des objectifs personnels. Guide : [docs/personal-progress.md](docs/personal-progress.md).
