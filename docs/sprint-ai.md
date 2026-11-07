@@ -43,3 +43,9 @@ Les appels réels dans trois préversions protégées n’ont publié aucun cont
 Le propriétaire a choisi de déployer le module et de reporter l’activation. AI_SPRINT_ENABLED reste donc false en production ; le formulaire de génération est indisponible et les quiz existants restent jouables. Aucun achat, changement de plan ni recharge automatique n’a été effectué. Les routes techniques de diagnostic sont propres à ces préversions protégées et sont absentes du code livré en production et du dépôt.
 
 Pour activer ultérieurement : résoudre l’accès AI Gateway dans l’équipe talent-link1, réussir un appel réel contrôlé sans publication de contenu de test, puis passer AI_SPRINT_ENABLED à true et redéployer. Tester ensuite avec un vrai utilisateur confirmé : accord, génération, jeu, ajout au catalogue et signalement. Une validation automatisée ne devient jamais une validation humaine.
+
+### Livraison sur talentlink.today
+
+Déploiement de production dpl_44kyDmkmAyUW87LFWtqmVQAZGpuR, état READY, source 853eb52a5d11f195634520ba8a24fbdfa87e8bd6. Vérifications HTTP du 7 novembre 2026 : /play/ 200 et titre du mode Sprint présent ; configuration Sprint 200 avec enabled=false, limites 3/30 et cinq questions ; tentative de génération 503 sprint_closed ; signalement d’origine étrangère 403 ; diagnostic technique absent (404). Le catalogue conserve ses trois quiz, sans jeu IA de test. Configuration des fichiers activée et inscriptions toujours ouvertes. L’URL technique du déploiement renvoie vers la protection Vercel (302), tandis que le domaine public reste accessible.
+
+Le code et les preuves sont committés localement. L’envoi GitHub a échoué dans l’environnement Codex avec wincredman/terminal prompts disabled ; il reste à effectuer dans le PowerShell interactif du propriétaire. Le déploiement Vercel utilise les fichiers de la révision indiquée ci-dessus.
