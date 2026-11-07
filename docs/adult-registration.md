@@ -2,7 +2,7 @@
 
 ## Périmètre demandé
 
-L’utilisateur a demandé de préparer l’ouverture des inscriptions adultes, pas de les activer. Le site reste en découverte publique avec AUTH_REGISTRATION_ENABLED=false. ADULT_REGISTRATION_APPROVED=false est ajouté en production. Les mises en relation, messages, séances, émissions d’attestations et parcours des mineurs restent fermés.
+Le 7 novembre 2026, l’utilisateur a explicitement demandé de finaliser et ouvrir les inscriptions adultes. Il a également confirmé que les formalités de traitement et de transfert n’ont pas encore été vérifiées. L’activation attend cette clarification et les vérifications techniques restantes : voir [data-formalities-request.md](data-formalities-request.md), qui contient une demande prête à compléter. Le site reste en découverte publique avec AUTH_REGISTRATION_ENABLED=false et ADULT_REGISTRATION_APPROVED=false. Les mises en relation, messages, séances, émissions d’attestations et parcours des mineurs restent fermés.
 
 ## Préparation technique
 
@@ -28,7 +28,7 @@ Le dossier concret de textes est préparé dans [adult-opening-texts.md](adult-o
 | E-mail | Connexion SMTP/TLS vérifiable sans envoi ; envoi de validation déjà éprouvé dans les étapes antérieures | Vérifier quotas actuels, surveillance des échecs et un parcours réel avec destinataire explicitement autorisé avant activation |
 | Support et incidents | Téléphone public fourni ; réception e-mail du domaine reportée | Confirmer la prise en charge des demandes et incidents ; ne pas promettre une boîte e-mail réceptrice |
 | Accès adultes approuvés et mentors | Aucune approbation automatique | Garder une décision séparée, avec procédures adaptées, avant tout accès privé |
-| Ouverture publique | Non autorisée par la demande de préparation seule | Après les validations ci-dessus, décider explicitement de l’activation |
+| Ouverture publique | Demandée explicitement le 7 novembre 2026 ; pas encore exécutée | Clarifier les formalités puis terminer les vérifications ci-dessus avant activation ; ne pas redemander l’autorisation produit déjà donnée |
 
 Il ne faut pas simplement basculer les deux variables : le texte des conditions et de la confidentialité actuellement publié dit que les inscriptions sont fermées. La préparation technique n’est pas une certification juridique ou une preuve de restauration.
 
