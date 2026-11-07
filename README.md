@@ -1,3 +1,7 @@
+## Itération 0.14 — progression personnelle détaillée
+
+Sous-objectifs, jalons datés, bilans privés et historique sont disponibles dans le suivi des objectifs personnels. Guide : [docs/personal-progress.md](docs/personal-progress.md).
+
 ## Itération 0.13 — prototype fonctionnel regroupé
 
 Les inscriptions des personnes déclarant avoir au moins 18 ans sont ouvertes depuis le 7 novembre 2026 : [ouverture et contrôles](docs/registration-opening.md). La confirmation e-mail reste obligatoire ; les habilitations privées sont distinctes de l’inscription.

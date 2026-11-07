@@ -5,6 +5,7 @@ import {authConfig,currentToken,body} from './auth-http.ts';
 import {IdentityService} from '../modules/identity/service.ts';
 import type {Account} from '../modules/identity/access.ts';
 import {AuthError} from '../modules/identity/errors.ts';
+import {ProgressService} from '../modules/learning/progress.ts';
 import {LearningService} from '../modules/learning/service.ts';
 type Dependencies={enabled:()=>boolean;db:()=>Promise<Database>;account:(r:Request,db:Database)=>Promise<Account|null>;origin:()=>string;secret:()=>string};
 const defaults:Dependencies={enabled:()=>process.env.LEARNING_ENABLED==='true',db:getDatabase,secret:()=>authConfig().secret,origin:()=>authConfig().origin,account:async(r,db)=>{if(process.env.AUTH_ENABLED!=='true')return null;const c=authConfig();return new IdentityService(db,{async send(){}},c.origin,c.secret).account(currentToken(r,c))}};
@@ -12,7 +13,7 @@ const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache
 export async function handleLearning(request:Request,action:string,deps:Dependencies=defaults){try{
  if(action==='config'&&request.method==='GET')return json({enabled:deps.enabled()});
  if(!deps.enabled())return json({message:'Cet espace n’est pas activé sur cet environnement.'},503);
- const reads=['resources','resource','profile','dashboard','feed','queue'],writes=['resource','favorite','profile','goal','read-notice','post','react','follow','review'];
+ const reads=['resources','resource','profile','dashboard','feed','queue','goal-detail'],writes=['resource','favorite','profile','goal','read-notice','post','react','follow','review','step','step-complete','goal-review'];
  if(!['GET','POST'].includes(request.method))return json({message:'Méthode non autorisée.'},405);
  if(!(request.method==='GET'?reads:writes).includes(action))return json({message:'Action introuvable.'},404);
  if(request.method==='POST'&&(request.headers.get('origin')!==deps.origin()||request.headers.get('sec-fetch-site')==='cross-site'))return json({message:'Origine non autorisée.'},403);
@@ -23,6 +24,7 @@ export async function handleLearning(request:Request,action:string,deps:Dependen
   if(action==='resources')return json(await service.resources(account,Object.fromEntries(url.searchParams)));
   if(action==='resource')return json(await service.resource(z.uuid().parse(url.searchParams.get('id'))));
   if(action==='profile')return json(await service.profile(account));
+  if(action==='goal-detail')return json(await new ProgressService(db).detail(account,z.uuid().parse(url.searchParams.get('id'))));
   if(action==='dashboard')return json(await service.dashboard(account));
   if(action==='feed')return json(await service.feed(account,Object.fromEntries(url.searchParams)));
   if(action==='queue')return json(await service.queue(account));
@@ -33,6 +35,9 @@ export async function handleLearning(request:Request,action:string,deps:Dependen
   if(action==='resource')return json(await service.submitResource(account,input),201);
   if(action==='profile')return json(await service.saveProfile(account,input));
   if(action==='favorite')return json(await service.favorite(account,input));
+  if(action==='step')return json(await new ProgressService(db).step(account,input),201);
+  if(action==='step-complete')return json(await new ProgressService(db).complete(account,input));
+  if(action==='goal-review')return json(await new ProgressService(db).review(account,input),201);
   if(action==='goal')return json(await service.goal(account,input));
   if(action==='read-notice')return json(await service.readNotice(account,input));
   if(action==='post')return json(await service.post(account,input),201);
