@@ -2,7 +2,7 @@
 
 État au 6 novembre 2026 : proposition à approuver et à éprouver avant l’ouverture adulte. Aucune suppression de compte, modification SQL ou purge nouvelle n’est exécutée par ce document.
 
-Décision de l’utilisateur : les objectifs suivants sont acceptés — suppression des comptes non confirmés après 30 jours, prise en charge des demandes sous 7 jours, clôture visée sous 30 jours après vérification et revue des comptes inactifs après 24 mois. Cette décision autorise leur préparation technique ; elle ne constate pas leur mise en œuvre et ne valide pas les autres durées proposées. L’identité du responsable de TalentLink Group reste à préciser. Les inscriptions demeurent fermées.
+Décision de l’utilisateur : les objectifs suivants sont acceptés — suppression des comptes non confirmés après 30 jours, prise en charge des demandes sous 7 jours, clôture visée sous 30 jours après vérification et revue des comptes inactifs après 24 mois. Cette décision autorise leur préparation technique ; elle ne constate pas leur mise en œuvre et ne valide pas les autres durées proposées. Le 7 novembre 2026, BANGOURA Aboubacar Sidiki a accepté d’être désigné responsable du projet : enseignant et entrepreneur, résidant à Conakry, République de Guinée. TalentLink Group est un collectif de quatre personnes né lors d’un hackathon, sans structure enregistrée déclarée. Les inscriptions demeurent fermées.
 
 ## Durées proposées et réalité technique
 
@@ -35,4 +35,4 @@ Ces objectifs sont proposés pour l’exploitation ; ils ne sont pas des délais
 
 ## Décisions à prendre
 
-Confirmer l’identité du responsable légal, le responsable opérationnel du support et sa capacité à tenir ces délais ; accepter ou modifier les durées ; vérifier les formalités de traitement et de transfert ; définir le canal sûr de vérification/remise. Ensuite seulement, implémenter et éprouver les opérations manuelles nécessaires. Une reprise HTTP complète, les objectifs RPO/RTO et une copie indépendante de Neon restent des chantiers d’exploitation distincts.
+L’identité du responsable du projet est confirmée ; préciser encore l’organisation opérationnelle du support et sa capacité à tenir ces délais ; accepter ou modifier les durées ; vérifier les formalités de traitement et de transfert ; définir le canal sûr de vérification/remise. Ensuite seulement, implémenter et éprouver les opérations manuelles nécessaires. Une reprise HTTP complète, les objectifs RPO/RTO et une copie indépendante de Neon restent des chantiers d’exploitation distincts.

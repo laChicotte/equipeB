@@ -18,7 +18,7 @@ Les règles préparées sont consultables sur /inscriptions-adultes/, avec noind
 
 ## Conditions restantes avant activation
 
-Le dossier concret de textes est préparé dans [adult-opening-texts.md](adult-opening-texts.md), avec le tableau des durées et la procédure dans [account-lifecycle.md](account-lifecycle.md). Il reste à approuver et à rendre exécutable ; les pages publiques et versions de consentement ne sont pas modifiées par ces brouillons. L’identité du responsable derrière TalentLink Group et les formalités applicables aux transferts hors de Guinée restent à préciser avant l’ouverture.
+Le dossier concret de textes est préparé dans [adult-opening-texts.md](adult-opening-texts.md), avec le tableau des durées et la procédure dans [account-lifecycle.md](account-lifecycle.md). Il reste à approuver et à rendre exécutable ; les pages publiques et versions de consentement ne sont pas modifiées par ces brouillons. Le responsable désigné est BANGOURA Aboubacar Sidiki, enseignant et entrepreneur à Conakry, République de Guinée (confirmation du 7 novembre 2026). TalentLink Group est un projet collectif de quatre personnes né lors d’un hackathon, sans structure enregistrée déclarée. Les formalités applicables aux transferts hors de Guinée restent à vérifier avant l’ouverture.
 
 | Point | État actuel | Décision ou preuve attendue |
 |---|---|---|

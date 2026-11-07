@@ -14,7 +14,7 @@ Le service peut être interrompu pour maintenance ou incident. Une réponse rés
 
 ## Information proposée sur les données des comptes
 
-L’identité du responsable du traitement doit être complétée avant publication : le nom TalentLink Group, Conakry, République de Guinée, a été fourni, mais sa qualité de structure juridique ou de nom de projet porté par une personne reste à confirmer. Contact public retenu : +224 625 59 51 69. La boîte notifications@talentlink.today sert à l’envoi technique ; sa réception n’est pas configurée. Ne pas y adresser de demande de droits ni répondre aux messages automatiques.
+TalentLink Group est un projet collectif porté par quatre personnes, né lors d’un hackathon, sans structure juridique enregistrée déclarée à ce stade. Le responsable désigné du projet et du traitement des données est BANGOURA Aboubacar Sidiki, enseignant et entrepreneur, résidant à Conakry, République de Guinée. Ces informations ont été fournies et autorisées pour les textes du projet par l’intéressé le 7 novembre 2026. Contact public retenu : +224 625 59 51 69. La boîte notifications@talentlink.today sert à l’envoi technique ; sa réception n’est pas configurée. Ne pas y adresser de demande de droits ni répondre aux messages automatiques.
 
 Le compte utilise l’adresse e-mail, un mot de passe haché, le rôle, la déclaration de majorité, les accords versionnés et les dates techniques. Les sessions et liens personnels sont enregistrés sous forme hachée. Ces données servent à fournir l’accès demandé, appliquer les accords et protéger le service. L’acceptation des règles n’est pas une autorisation de publicité. Aucune prospection commerciale n’est prévue.
 
