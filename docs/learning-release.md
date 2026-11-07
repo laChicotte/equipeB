@@ -21,3 +21,13 @@ Les essais locaux couvrent les rôles, la revue distincte, les droits déclarés
 ## Retour arrière
 
 Remettre LEARNING_ENABLED=false puis redéployer si un problème affecte le module. Les nouvelles tables additives restent en place et les données éventuellement créées sont conservées. Ne pas supprimer de compte ou annuler le schéma pour revenir à l’état fermé. Ne pas réexposer les anciens déploiements ou relancer une ancienne source aux inscriptions ouvertes.
+
+## Livraison réalisée et contrôles
+
+Déploiement de production `dpl_GgP78YKDbsRnZjJogvZJ4mBSnvQU`, état READY, source `634fd497b8696584674f437fbb09664266559852`, version 0.13.0. URL technique : talentlink-3xa1kie9v-talent-link1.vercel.app. Les alias talentlink.today et www.talentlink.today sont attribués à cette version. Build Vercel terminé en 52 secondes ; contrôle TypeScript, douze tests locaux ciblés et build local réussis. Les 98 tests de la livraison prototype précédente étaient également réussis.
+
+La migration 012 a ensuite été appliquée à la branche de production, avec le même checksum que la branche de test. Relevé réel après migration : un compte, trois quiz publiés, zéro ressource et zéro publication communautaire. La base locale n’a pas été importée ; les données existantes et leurs rôles restent inchangés. LEARNING_ENABLED=true a été ajouté uniquement à la cible production.
+
+Contrôle HTTP direct réussi le 7 novembre 2026 à 04:03:46 UTC, reproductible avec `node scripts/learning-live-check.mjs` tant que l’état initial de cette livraison est conservé : six pages en 200, module activé, catalogue de ressources vide en 200/no-store/nosniff, quatre API privées en 401, inscription toujours fermée en 403, écriture d’objectif sans session en 401 et origine étrangère en 403, catalogue Play contenant toujours trois jeux. Les routes /prototype/ et /api/prototype/ renvoient 404, les pages contrôlées n’exposent aucun mot de passe fictif ni lien de prototype. www redirige en 308 vers l’apex ; l’URL technique redirige vers Vercel SSO en 302 et reste protégée. Vercel Authentication conserve la protection des URL techniques et des préversions.
+
+Le connecteur de lecture Vercel a rencontré des limites sur les réponses privées et le catalogue strict ; les vérifications finales utilisent donc des requêtes directes sans paramètre de partage. La recherche de logs error/fatal du nouveau déploiement sur les quinze minutes précédant 04:00:44 UTC n’a retourné aucun événement. Cela ne constitue pas une surveillance continue. Le parcours authentifié de l’utilisateur réel et la revue visuelle des nouveaux écrans en production restent à réaliser ; aucun mot de passe réel, compte de test ou e-mail sortant n’a été utilisé pour ces contrôles.

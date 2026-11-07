@@ -1,5 +1,7 @@
 ## Itération 0.13 — prototype fonctionnel regroupé
 
+Les nouveaux modules sont aussi intégrés aux comptes existants sur talentlink.today depuis le 7 novembre 2026 : [livraison et vérifications](docs/learning-release.md). Les contenus fictifs restent locaux ; les inscriptions et fonctions sensibles conservent leurs états antérieurs.
+
 Lancer `npm run prototype` puis ouvrir http://127.0.0.1:4399/prototype/. Comptes et base fictifs persistants, modules existants activés pour les essais, bibliothèque, communauté, profil et progression personnelle ajoutés. Guide et périmètre réel : [docs/prototype.md](docs/prototype.md). Aucun changement de configuration du site public.
 
 ## Itération 0.12 — préparation des inscriptions adultes
