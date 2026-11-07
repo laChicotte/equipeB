@@ -18,7 +18,7 @@ Les contraintes PostgreSQL imposent trois options non vides et distinctes, avec 
 
 Question : brouillon → soumise → en révision/approuvée/rejetée ; une version approuvée peut être archivée. Une correction est enregistrée dans un nouveau brouillon. Jeu : brouillon → soumis → publié/archivé. La publication transactionnelle contrôle toutes les versions, leur état approuvé et leur catégorie. Les propositions d’un mentor n’apparaissent jamais automatiquement dans le catalogue.
 
-L’atelier signale les autres questions dont l’énoncé normalisé est identique. Ce signal n’est pas une détection sémantique exhaustive : exactitude, sources et droits restent contrôlés humainement. Les questions IA suivent la même procédure. Les douze catégories initiales sont de la taxonomie, pas des quiz prétendument validés.
+L’atelier signale les autres questions dont l’énoncé normalisé est identique. Ce signal n’est pas une détection sémantique exhaustive : exactitude, sources et droits restent contrôlés humainement. Les questions assistées par IA proposées dans cet atelier suivent la même procédure ; les Sprints IA ont un parcours automatique distinct et identifié. Les douze catégories initiales sont de la taxonomie, pas des quiz prétendument validés.
 
 ## Jouer et confidentialité
 
@@ -63,4 +63,4 @@ Cette commande d’entretien explicite supprime les tentatives visiteurs expiré
 
 ## Limites
 
-Pas de quiz public publié automatiquement, ni d’avis ou de participation inventés. Couvertures, badges, défis et classements optionnels sont différés. La banque de questions et les listes de gestion sont limitées à 200 versions/100 jeux ; pagination administrative avancée à ajouter si le volume l’exige. L’interface permet création et archivage des catégories ; leur renommage/réactivation est disponible par API administrative. La source facultative est un lien HTTPS, jamais téléchargé par le serveur. Les indicateurs ne constituent pas une évaluation certifiée des compétences. La messagerie reste hors de cette itération.
+Les quiz éditoriaux suivent la validation humaine décrite ci-dessus. Le mode Sprint IA dispose désormais d’un parcours distinct de publication automatique, identifié et documenté dans [sprint-ai.md](sprint-ai.md). Aucun avis ou participation n’est inventé. Couvertures, badges, défis et classements optionnels sont différés. La banque de questions et les listes de gestion sont limitées à 200 versions/100 jeux ; pagination administrative avancée à ajouter si le volume l’exige. L’interface permet création et archivage des catégories ; leur renommage/réactivation est disponible par API administrative. La source facultative est un lien HTTPS, jamais téléchargé par le serveur. Les indicateurs ne constituent pas une évaluation certifiée des compétences. La messagerie reste hors de cette itération.

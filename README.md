@@ -121,3 +121,7 @@ Voir [le module Play](docs/play.md). `npm run play:demo` démarre une démonstra
 ## Messagerie encadrée
 
 Voir [la messagerie et ses contrôles](docs/messaging.md). `npm run messaging:demo` démarre une base embarquée isolée pour tester les messages fictifs. `npm run db:smoke-messaging` vérifie PostgreSQL natif dans une transaction annulée. MESSAGING_ENABLED et PRIVATE_COMMUNICATIONS_APPROVED restent false en production.
+
+## Version 0.16 — Mode Sprint IA
+
+Création de quiz publics à partir d’un sujet, catégorie et niveau ; cinq questions, chronomètre serveur de trois minutes, contrôle automatisé distinct, signalements et quotas. Configuration et limites : [docs/sprint-ai.md](docs/sprint-ai.md).
