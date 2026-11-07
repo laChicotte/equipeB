@@ -125,3 +125,7 @@ Voir [la messagerie et ses contrôles](docs/messaging.md). `npm run messaging:de
 ## Version 0.16 — Mode Sprint IA
 
 Création de quiz publics à partir d’un sujet, catégorie et niveau ; cinq questions, chronomètre serveur de trois minutes, contrôle automatisé distinct, signalements et quotas. Configuration et limites : [docs/sprint-ai.md](docs/sprint-ai.md).
+
+### Complément 0.16.1 — signalements Sprint
+
+File administrative paginée sur `/administration/sprints/`, consultation des corrections et retrait journalisé, disponible même lorsque la génération IA est désactivée.

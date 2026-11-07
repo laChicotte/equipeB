@@ -16,20 +16,28 @@ const json=(v:unknown,status=200)=>Response.json(v,{status,headers:{'Cache-Contr
 export async function handleSprint(request:Request,deps:Dependencies=defaults){
  try{
   const enabled=deps.env.PLAY_ENABLED==='true'&&deps.env.AI_SPRINT_ENABLED==='true'&&!!deps.env.AI_GATEWAY_MODEL;
-  if(request.method==='GET')return json({enabled,dailyPerAccount:3,dailyGlobal:30,questions:5});
+  const url=new URL(request.url),action=url.searchParams.get('action')||'';
+  if(request.method==='GET'){
+   if(!action)return json({enabled,dailyPerAccount:3,dailyGlobal:30,questions:5});
+   if(!['reports','review'].includes(action))return json({message:'Action introuvable.'},404);
+   const db=await deps.db(),account=await deps.account(request,db),service=new SprintService(db,deps.generate,deps.env.AI_GATEWAY_MODEL||'');
+   if(action==='review')return json(await service.review(account,url.searchParams.get('id')));
+   return json(await service.reports(account,{status:url.searchParams.get('status')||'published',after:url.searchParams.get('after')||''}));
+  }
   if(request.method!=='POST')return json({message:'Méthode non autorisée.'},405);
-  const reporting=new URL(request.url).searchParams.get('action')==='report';
-  if(!enabled&&!reporting)throw new AuthError(503,'sprint_closed','Le mode Sprint IA n’est pas encore disponible.');
+  if(!['','report','archive'].includes(action))return json({message:'Action introuvable.'},404);
+  if(!enabled&&!['report','archive'].includes(action))throw new AuthError(503,'sprint_closed','Le mode Sprint IA n’est pas encore disponible.');
   if(request.headers.get('origin')!==new URL(deps.env.APP_URL!).origin||request.headers.get('sec-fetch-site')==='cross-site')throw new AuthError(403,'invalid_origin','Cette requête n’est pas autorisée.');
   const db=await deps.db(),account=await deps.account(request,db);
-  if(!account)throw new AuthError(401,'unauthenticated','Connecte-toi pour créer un Sprint IA.');
+  if(!account)throw new AuthError(401,'unauthenticated','Connecte-toi pour continuer.');
   const service=new SprintService(db,deps.generate,deps.env.AI_GATEWAY_MODEL!);
   const input=await body(request);
-  if(reporting)return json(await service.report(account,input));
+  if(action==='report')return json(await service.report(account,input));
+  if(action==='archive')return json(await service.archive(account,input));
   return json(await service.create(account,input),201);
  }catch(error){
   if(error instanceof AuthError)return json({code:error.code,message:error.message},error.status);
-  if(error instanceof ZodError)return json({code:'validation_failed',message:'Choisis un sujet général, une catégorie et un niveau, puis accepte la publication publique.'},400);
+  if(error instanceof ZodError)return json({code:'validation_failed',message:new URL(request.url).searchParams.get('action')?'Vérifie le jeu, le motif, les filtres ou la confirmation demandée.':'Choisis un sujet général, une catégorie et un niveau, puis accepte la publication publique.'},400);
   console.error('talentlink_sprint_error',randomUUID());return json({message:'Le service est temporairement indisponible.'},503);
  }
 }

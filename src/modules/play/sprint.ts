@@ -73,4 +73,41 @@ export class SprintService {
    return {message:'Signalement transmis à l’administration.'};
   });
  }
+ async reports(account:Account|null,input:unknown){
+  const v=z.object({status:z.enum(['published','archived','all']).default('published'),after:z.union([z.literal(''),z.uuid()]).default('')}).strict().parse(input);
+  return this.db.transaction(async sql=>{
+   await new MentoringService(this.db).actor(sql,account,'admin');
+   const rows=await sql.query<{id:string;title:string;status:string;reports:number;incorrect:number;inappropriate:number;personal_data:number}>(`SELECT g.id,g.title,g.status,count(*)::integer AS reports,
+    count(*) FILTER(WHERE r.reason='incorrect')::integer AS incorrect,
+    count(*) FILTER(WHERE r.reason='inappropriate')::integer AS inappropriate,
+    count(*) FILTER(WHERE r.reason='personal_data')::integer AS personal_data
+    FROM quiz_game g JOIN ai_sprint_report r ON r.game_id=g.id
+    WHERE g.generation_id IS NOT NULL AND ($1='all' OR g.status=$1) AND ($2::uuid IS NULL OR g.id>$2::uuid)
+    GROUP BY g.id ORDER BY g.id LIMIT 21`,[v.status,v.after||null]);
+   const more=rows.length>20,items=rows.slice(0,20);return {items,next:more?items[items.length-1].id:null};
+  });
+ }
+ async review(account:Account|null,input:unknown){
+  const id=z.uuid().parse(input);
+  return this.db.transaction(async sql=>{
+   await new MentoringService(this.db).actor(sql,account,'admin');
+   const [game]=await sql.query<{id:string;title:string;description:string;status:string;model:string;created_at:string}>(`SELECT g.id,g.title,g.description,g.status,r.model,g.created_at FROM quiz_game g JOIN ai_sprint_generation r ON r.id=g.generation_id WHERE g.id=$1`,[id]);
+   if(!game)throw new AuthError(404,'not_found','Sprint introuvable.');
+   const questions=await sql.query(`SELECT v.stem,v.options,v.correct_index,v.explanation FROM game_question x JOIN quiz_question_version v ON v.id=x.version_id WHERE x.game_id=$1 ORDER BY x.ordinal`,[id]);
+   return {...game,questions};
+  });
+ }
+ async archive(account:Account|null,input:unknown){
+  const v=z.object({gameId:z.uuid(),confirm:z.literal(true)}).strict().parse(input);
+  return this.db.transaction(async sql=>{
+   const user=await new MentoringService(this.db).actor(sql,account,'admin');
+   const [game]=await sql.query<{status:string}>('SELECT status FROM quiz_game WHERE id=$1 AND generation_id IS NOT NULL FOR UPDATE',[v.gameId]);
+   if(!game)throw new AuthError(404,'not_found','Sprint introuvable.');
+   if(game.status==='archived')return {message:'Ce Sprint est déjà retiré du catalogue.'};
+   if(game.status!=='published')throw new AuthError(409,'conflict','Ce Sprint ne peut pas être retiré dans cet état.');
+   await sql.query("UPDATE quiz_game SET status='archived',reviewed_by=$2 WHERE id=$1",[v.gameId,user.id]);
+   await sql.query("INSERT INTO audit_event(actor_id,action,resource_type,resource_id) VALUES($1,'play.sprint.archived','play',$2)",[user.id,v.gameId]);
+   return {message:'Sprint retiré du catalogue. Les parties déjà commencées restent consultables.'};
+  });
+ }
 }

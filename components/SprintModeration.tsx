@@ -1,0 +1,25 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+import {request} from '../src/client/request';
+type Item={id:string;title:string;status:string;reports:number;incorrect:number;inappropriate:number;personal_data:number};
+type Review={id:string;title:string;description:string;status:string;model:string;questions:{stem:string;options:string[];correct_index:number;explanation:string}[]};
+async function api(params:URLSearchParams,input?:unknown,signal?:AbortSignal){
+ const r=await request('/api/v1/play/sprint?'+params,{signal,...(input===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)})});
+ const d=await r.json();if(!r.ok)throw new Error(d.message||'Service indisponible.');return d;
+}
+export default function SprintModeration(){
+ const[items,setItems]=useState<Item[]>([]),[status,setStatus]=useState('published'),[after,setAfter]=useState(''),[next,setNext]=useState<string|null>(null),[review,setReview]=useState<Review|null>(null),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[message,setMessage]=useState(''),[reload,setReload]=useState(0);
+ const reviewSerial=useRef(0),reviewHeading=useRef<HTMLHeadingElement>(null);
+ useEffect(()=>{reviewHeading.current?.focus()},[review?.id]);
+ useEffect(()=>{
+  const c=new AbortController();setLoading(true);setMessage('');setReview(null);reviewSerial.current++;
+  api(new URLSearchParams({action:'reports',status,after}),undefined,c.signal).then(d=>{if(!c.signal.aborted){setItems(d.items);setNext(d.next)}}).catch(e=>{if(!c.signal.aborted){setItems([]);setNext(null);setMessage(e.message)}}).finally(()=>{if(!c.signal.aborted)setLoading(false)});
+  return()=>{c.abort();reviewSerial.current++};
+ },[status,after,reload]);
+ async function inspect(id:string){const serial=++reviewSerial.current;setBusy(true);setMessage('');setReview(null);try{const d=await api(new URLSearchParams({action:'review',id}));if(serial===reviewSerial.current)setReview(d)}catch(e){if(serial===reviewSerial.current)setMessage((e as Error).message)}finally{if(serial===reviewSerial.current)setBusy(false)}}
+ async function archive(e:React.FormEvent<HTMLFormElement>){e.preventDefault();if(!review)return;setBusy(true);setMessage('');try{const d=await api(new URLSearchParams({action:'archive'}),{gameId:review.id,confirm:true});setReview({...review,status:'archived'});setItems(items=>items.map(i=>i.id===review.id?{...i,status:'archived'}:i));setMessage(d.message)}catch(error){setMessage((error as Error).message)}finally{setBusy(false)}}
+ return <><a href="/administration/">← Administration</a><div className="eyebrow">TALENTLINK PLAY</div><h1>Signalements des Sprints IA</h1><p>Examine les questions, corrections et motifs signalés avant de décider du retrait. Cette page reste disponible même lorsque la génération IA est fermée.</p>
+ <div className="mentor-actions"><label className="field">Afficher<select value={status} disabled={busy||loading} onChange={e=>{setStatus(e.target.value);setAfter('')}}><option value="published">Jeux publiés signalés</option><option value="archived">Jeux retirés signalés</option><option value="all">Tous les jeux signalés</option></select></label><button disabled={busy||loading} onClick={()=>{setAfter('');setReload(v=>v+1)}}>Actualiser depuis le début</button></div>
+ {message&&<p className="info" role="status">{message}</p>}{loading?<p role="status">Chargement des signalements…</p>:<><div aria-busy={busy}>{!items.length&&!message&&<p>Aucun Sprint signalé pour ce filtre.</p>}{items.map(g=><article className="mentor-card" key={g.id}><h2>{g.title}</h2><p>{g.status==='archived'?'Retiré':'Publié'} · {g.reports} signalement(s)</p><ul><li>Correction incorrecte : {g.incorrect}</li><li>Contenu inapproprié : {g.inappropriate}</li><li>Information personnelle : {g.personal_data}</li></ul><button className="button" disabled={busy} onClick={()=>void inspect(g.id)}>Examiner les questions</button></article>)}</div><nav className="mentor-actions" aria-label="Pages des signalements">{after&&<button disabled={busy} onClick={()=>setAfter('')}>Retour au début</button>}{next&&<button disabled={busy} onClick={()=>setAfter(next)}>Page suivante</button>}</nav></>}
+ {review&&<section className="mentor-card" aria-labelledby="sprint-review-title"><h2 id="sprint-review-title" ref={reviewHeading} tabIndex={-1}>Examen : {review.title}</h2><p>{review.description}</p><p className="fine">Généré par IA · {review.model}. Le contrôle automatisé ne garantit pas l’exactitude.</p><ol>{review.questions.map((q,i)=><li key={i}><h3>{q.stem}</h3><ul>{q.options.map((option,index)=><li key={index}>{option}{index===q.correct_index?' — correction proposée':''}</li>)}</ul><p>{q.explanation}</p></li>)}</ol>{review.status==='published'?<form className="auth-form" onSubmit={archive}><label className="check"><input type="checkbox" required disabled={busy}/>Je confirme le retrait de ce jeu du catalogue public.</label><button className="button" disabled={busy}>Retirer le Sprint du catalogue</button></form>:<p>Ce Sprint est retiré du catalogue.</p>}</section>}</>;
+}
