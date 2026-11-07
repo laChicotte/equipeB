@@ -1,5 +1,7 @@
 # Préparation des inscriptions adultes — itération 0.12
 
+Mise à jour du 7 novembre 2026 : les inscriptions adultes sont maintenant ouvertes sur talentlink.today, après demande explicite de l’utilisateur et correction des indicateurs et textes. Voir [registration-opening.md](registration-opening.md) pour la version déployée et les vérifications réelles. Le reste de ce document décrit la préparation historique et les travaux d’exploitation encore distincts de cette activation.
+
 ## Périmètre demandé
 
 Le 7 novembre 2026, l’utilisateur a explicitement demandé de finaliser et ouvrir les inscriptions adultes. Il a également confirmé que les formalités de traitement et de transfert n’ont pas encore été vérifiées. L’activation attend cette clarification et les vérifications techniques restantes : voir [data-formalities-request.md](data-formalities-request.md), qui contient une demande prête à compléter. Le site reste en découverte publique avec AUTH_REGISTRATION_ENABLED=false et ADULT_REGISTRATION_APPROVED=false. Les mises en relation, messages, séances, émissions d’attestations et parcours des mineurs restent fermés.
