@@ -1,6 +1,6 @@
 {
   "name": "talentlink",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -32,7 +32,9 @@
     "test:public": "node scripts/public-smoke.ts",
     "db:smoke-maintenance": "node scripts/maintenance-smoke.ts",
     "editorial:check": "node scripts/editorial.ts",
-    "editorial:import": "node scripts/editorial.ts --apply"
+    "editorial:import": "node scripts/editorial.ts --apply",
+    "prototype": "node scripts/prototype.ts",
+    "test:prototype": "node scripts/prototype-check.mjs"
   },
   "dependencies": {
     "next": "16.4.5",

@@ -1,5 +1,9 @@
 # Plan et critères d’acceptation
 
+## Priorité actuelle — prototype fonctionnel 0.13
+
+Le 7 novembre 2026, l’utilisateur a demandé de privilégier les modules et leur essai complet. `npm run prototype` regroupe les fonctions existantes sur une base locale persistante avec comptes fictifs et e-mails locaux. Bibliothèque, communauté modérée, profil d’apprentissage, progression personnelle et notifications de revue sont implémentés. Voir [prototype.md](prototype.md) pour les parcours et les éléments du prompt qui restent à développer. Le contrôle de récupération Neon a été effectué dans une étape précédente ; voir recovery-drill.md. Les descriptions historiques ci-dessous conservent le contexte de chaque livraison.
+
 ## 0 — Cadrage
 Synthèse, architecture, arborescence, modèle initial, tokens et parcours : documents présents. Les décisions différées sont signalées explicitement.
 

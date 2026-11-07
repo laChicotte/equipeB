@@ -1,0 +1,6 @@
+import {handleLearning} from '../../../../../src/server/learning-http.ts';
+export const runtime='nodejs';
+export const dynamic='force-dynamic';
+type Context={params:Promise<{action:string}>};
+export async function GET(r:Request,{params}:Context){return handleLearning(r,(await params).action)}
+export async function POST(r:Request,{params}:Context){return handleLearning(r,(await params).action)}

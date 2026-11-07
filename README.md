@@ -1,3 +1,7 @@
+## Itération 0.13 — prototype fonctionnel regroupé
+
+Lancer `npm run prototype` puis ouvrir http://127.0.0.1:4399/prototype/. Comptes et base fictifs persistants, modules existants activés pour les essais, bibliothèque, communauté, profil et progression personnelle ajoutés. Guide et périmètre réel : [docs/prototype.md](docs/prototype.md). Aucun changement de configuration du site public.
+
 ## Itération 0.12 — préparation des inscriptions adultes
 
 Double verrou de production, règles versionnées et limites anti-abus. Les inscriptions restent fermées. Voir [docs/adult-registration.md](docs/adult-registration.md) et [docs/recovery-drill.md](docs/recovery-drill.md).

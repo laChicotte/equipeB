@@ -2,13 +2,15 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import nodemailer from 'nodemailer';
 import {smtpSettings} from './smtp-settings.ts';
+import {localPrototype} from './prototype.ts';
 export type Mail = {to:string;subject:string;text:string};
 export interface Mailer {send(mail:Mail):Promise<void>}
 export function mailer(): Mailer {
   if (process.env.MAIL_DRIVER === 'file' && process.env.NODE_ENV !== 'production') {
     return {async send(mail) {
-      await mkdir('.local/mail',{recursive:true});
-      await writeFile(`.local/mail/${randomUUID()}.json`,JSON.stringify(mail,null,2),{mode:0o600});
+      const directory=localPrototype()?'.local/prototype-mail':'.local/mail';
+      await mkdir(directory,{recursive:true});
+      await writeFile(`${directory}/${randomUUID()}.json`,JSON.stringify(mail,null,2),{mode:0o600});
     }};
   }
   const settings=smtpSettings();

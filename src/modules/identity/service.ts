@@ -1,4 +1,5 @@
 import {REGISTRATION_RULES_VERSION} from '../../content/registration.ts';
+import {localPrototype} from '../../server/prototype.ts';
 import {LEGAL_VERSION} from '../../content/operator.ts';
 import { createHmac } from 'node:crypto';
 import type { Database, Sql } from '../../server/database.ts';
@@ -48,6 +49,7 @@ export class IdentityService {
   }
   async register(input:unknown) {
     const value=registerSchema.parse(input);
+    if(localPrototype()&&!value.email.endsWith('@example.invalid'))throw new AuthError(400,'demo_email','Pour ce prototype, utilise une adresse fictive se terminant par @example.invalid.');
     await this.rate('register',value.email);
     await this.rate('register-global','all',30);
     const hash=await hashPassword(value.password);
