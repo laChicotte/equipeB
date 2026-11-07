@@ -35,3 +35,9 @@ Le prototype local utilise uniquement .local/prototype-files lorsque son mode d�
 Migration et bucket privé testés sur la branche assets-release-20261107 / br-royal-pond-bdby327k avant application à la production. Un objet de contrôle sans donnée utilisateur a été envoyé et relu à l’identique ; un accès non signé a reçu 403. Le store applicatif S3 a également réussi un vrai PutObject/GetObject avec un marqueur privé sans référence dans les données de l’application. Les objets de contrôle sont conservés comme traces techniques ; aucune suppression de fichier utilisateur n’a été exécutée. Le fichier temporaire utilisé pour le test SDK a été retiré après son exécution.
 
 TypeScript, 106 tests et compilation ont réussi. Les essais ciblés couvrent taille et format, retrait des métadonnées photo, consentement, rôles, confidentialité, revue distincte, publication/retrait, panne du stockage, quotas et intégrité, origine/session et en-têtes de téléchargement. La validation visuelle et le parcours complet avec une vraie contribution humaine restent à examiner dans le navigateur. Aucun compte réel ni photo de personne n’a été créé pour ces tests.
+
+### Mise en production du 7 novembre 2026
+
+Déploiement Vercel dpl_3TYCrwMgXaP5SXtqrxZ5pTbPU7cY, état READY, source 001ae5cf458b8bc8d4546678f281e9a1af9e6469, associé à talentlink.today. La migration 014 est appliquée en production avec l’empreinte SHA-256 d8f3bbe2c89a69e8cf41a5fa661324f5b10f29c3d214e1fbdab1d3f39e810dc3. Le bucket reste privé et ASSETS_ENABLED est activé.
+
+Contrôles HTTP sur le domaine public vers 08:11 UTC : configuration des fichiers 200 avec enabled=true ; bibliothèque, espace ressources et profil mentor 200 ; fichier inexistant 404 ; dépôt sans session 401 ; dépôt d’origine étrangère 403 ; route de prototype 404. Ces contrôles complètent les tests automatisés sans constituer une validation visuelle ni un dépôt réalisé avec un vrai compte.
