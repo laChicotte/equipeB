@@ -4,6 +4,7 @@ import {randomBytes} from 'node:crypto';
 import {embeddedDatabase} from '../src/server/database.ts';
 import {migrate} from '../src/server/migrations.ts';
 import {PlayService} from '../src/modules/play/service.ts';
+import {ContributionProgressService} from '../src/modules/play/contribution-progress.ts';
 import {handlePlay,playConfig} from '../src/server/play-http.ts';
 import {MentoringService} from '../src/modules/mentoring/service.ts';
 import type {Account} from '../src/modules/identity/access.ts';
@@ -98,6 +99,27 @@ test('Play : parcours public et modération sur base isolée',async t=>{
   await mentoring.createRequest(mentee,{mentorId:mentor.id,goal:'Un objectif cohérent pour approfondir les sciences.',sourceAttemptId:savedId});
   const stats=await play.stats(admin) as {started:number;completed:number;mentor_clicks:number;attributed:number};assert.equal(stats.started,2);assert.equal(stats.completed,2);assert.equal(stats.mentor_clicks,1);assert.equal(stats.attributed,1);
   const serialized=JSON.stringify(stats);assert.ok(!serialized.includes('@'));assert.ok(!serialized.includes('owner_hash'));
+ });
+ await t.test('bilan des contributions : propriété, dernière version, usage agrégé et habilitations',async()=>{
+  const service=new ContributionProgressService(db);
+  for(const user of [null,mentee,unverified])await assert.rejects(service.progress(user),{status:user?403:401});
+  const mine=await service.progress(mentor);assert.deepEqual(mine.questions,{draft:1,submitted:0,in_review:0,approved:2,rejected:0,archived:0});assert.deepEqual(mine.games,{draft:0,submitted:0,published:0,archived:1});assert.equal(mine.completedAttempts,1);assert.equal(mine.playableGames,0);
+  const ownAdmin=await service.progress(admin);assert.equal(ownAdmin.questions.approved,1);assert.equal(ownAdmin.games.published,1);assert.equal(ownAdmin.completedAttempts,1);assert.equal(ownAdmin.playableGames,1);assert.equal((await service.progress(admin2)).completedAttempts,0);
+  for(const value of ['@','user_id','owner_hash','snapshot','score','correct_index',mentee.id,mentor.id])assert.ok(!JSON.stringify(mine).includes(value));
+  const [original]=await db.query<{question_id:string}>('SELECT question_id FROM quiz_question_version WHERE id=$1',[versions[0]]);await play.saveQuestion(mentor,{...qinput(category),questionId:original.question_id});const revised=await service.progress(mentor);assert.equal(revised.questions.draft,2);assert.equal(revised.questions.approved,1);assert.equal(Object.values(revised.questions).reduce((a,b)=>a+b,0),3);
+  const [generation]=await db.query<{id:string}>("INSERT INTO ai_sprint_generation(user_id,request_key,input_hash,model) VALUES($1,gen_random_uuid(),$2,'fixture') RETURNING id",[mentor.id,'a'.repeat(64)]);
+  await db.query("INSERT INTO quiz_game(author_id,title,description,category_id,level,duration_minutes,generation_id) VALUES($1,'Sprint de test','Création synthétique exclue du bilan humain.',$2,'beginner',3,$3)",[mentor.id,category,generation.id]);
+  const [aiQuestion]=await db.query<{id:string}>('INSERT INTO quiz_question(author_id) VALUES($1) RETURNING id',[mentor.id]);await db.query("INSERT INTO quiz_question_version(question_id,version,category_id,level,stem,options,correct_index,explanation,created_by,generation_id,status) VALUES($1,1,$2,'beginner','Question générée pour le test',ARRAY['a','b','c'],0,'Une explication synthétique suffisamment longue.',$3,$4,'ai_ready')",[aiQuestion.id,category,mentor.id,generation.id]);assert.deepEqual(await service.progress(mentor),revised);
+  await db.query("WITH added AS (INSERT INTO quiz_question(author_id) SELECT $1 FROM generate_series(1,201) RETURNING id) INSERT INTO quiz_question_version(question_id,version,category_id,level,stem,options,correct_index,explanation,created_by) SELECT id,1,$2,'beginner','Question synthétique supplémentaire',ARRAY['a','b','c'],0,'Explication synthétique pour la vérification du total.',$1 FROM added",[mentor.id,category]);assert.equal((await service.progress(mentor)).questions.draft,203);
+  await db.query("UPDATE mentor_profile SET publication_status='suspended' WHERE user_id=$1",[mentor.id]);await assert.rejects(service.progress(mentor),{status:403});await db.query("UPDATE mentor_profile SET publication_status='published' WHERE user_id=$1",[mentor.id]);
+  await db.query('UPDATE app_user SET disabled_at=now() WHERE id=$1',[admin.id]);await assert.rejects(service.progress(admin),{status:403});await db.query('UPDATE app_user SET disabled_at=NULL WHERE id=$1',[admin.id]);
+ });
+ await t.test('HTTP bilan de contributions : lecture privée, requête stricte et refus des écritures',async()=>{
+  const config={origin:'http://localhost',secure:false,secret:'x'.repeat(40),enabled:true};const deps={db:async()=>db,config:()=>config,account:async()=>mentor};
+  const read=await handlePlay(new Request(config.origin),'contribution-progress',deps);assert.equal(read.status,200);assert.equal(read.headers.get('cache-control'),'no-store');assert.equal(read.headers.get('referrer-policy'),'no-referrer');
+  assert.equal((await handlePlay(new Request(config.origin),'contribution-progress',{...deps,account:async()=>null})).status,401);
+  assert.equal((await handlePlay(new Request(config.origin+'?userId='+admin.id),'contribution-progress',deps)).status,400);
+  assert.equal((await handlePlay(new Request(config.origin,{method:'POST'}),'contribution-progress',deps)).status,405);
  });
  await t.test('retrait de question et catégorie, expiration des parties',async()=>{
   await play.reviewQuestion(admin,{id:versions[0],decision:'archived',note:'Retrait synthétique pour tester la visibilité.'});assert.equal((await play.catalog({})).total,0);

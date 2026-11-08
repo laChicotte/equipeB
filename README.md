@@ -145,3 +145,12 @@ Créneaux structurés dans le profil mentor, fuseau IANA explicite, contrôle de
 ## Version 0.20 — centre de notifications
 
 Notifications privées paginées, compteur de non-lues et lecture des éléments affichés. Les décisions de validation des profils et quiz rejoignent les alertes de bibliothèque et de communauté existantes. Aucun e-mail ni notification sur appareil ajouté. Voir [docs/notifications.md](docs/notifications.md).
+
+
+## Version 0.21 — vérification des attestations
+
+Partage volontaire par lien révocable, projection publique sans identité et émission toujours fermée. Voir [docs/attestations.md](docs/attestations.md).
+
+## Version 0.22 — bilan des contributions Play
+
+Compteurs personnels des questions et quiz, disponibilité réelle au catalogue et parties entièrement terminées sans données individuelles des joueurs. Voir [docs/contribution-progress.md](docs/contribution-progress.md).

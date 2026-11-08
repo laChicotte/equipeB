@@ -1,4 +1,5 @@
 import {PlayProgressService} from '../modules/play/progress.ts';
+import {ContributionProgressService} from '../modules/play/contribution-progress.ts';
 import {randomUUID} from 'node:crypto';
 import {z,ZodError} from 'zod';
 import {getDatabase} from './database.ts';
@@ -29,9 +30,9 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
   const c=deps.config(),url=new URL(request.url),method=request.method;
   if(action==='config'&&method==='GET')return json({enabled:c.enabled});
   const publicActions=['catalog','categories','start','state','answer','recommendations','mentor-click'];
-  if(![...publicActions,'questions','question','submit-question','review-question','games','game','submit-game','review-game','category','history','progress','stats'].includes(action))return json({message:'Action introuvable.'},404);
+  if(![...publicActions,'questions','question','submit-question','review-question','games','game','submit-game','review-game','category','history','progress','contribution-progress','stats'].includes(action))return json({message:'Action introuvable.'},404);
   if(!['GET','POST'].includes(method))return json({message:'Méthode non autorisée.'},405);
-  if(action==='progress'){
+  if(action==='progress'||action==='contribution-progress'){
    if(method!=='GET')return json({message:'Méthode non autorisée.'},405);
    z.object({}).strict().parse(Object.fromEntries(url.searchParams));
   }
@@ -51,6 +52,7 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
    if(action==='questions')return json({items:await service.questions(account)});
    if(action==='games')return json({items:await service.games(account)});
    if(action==='progress')return json(await new PlayProgressService(db).progress(account));
+   if(action==='contribution-progress')return json(await new ContributionProgressService(db).progress(account));
    if(action==='history')return json({items:await service.history(account)});
    if(action==='stats')return json(await service.stats(account));
   }else{
