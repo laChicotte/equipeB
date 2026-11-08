@@ -19,3 +19,10 @@ Aucune migration, nouvelle table, attribution persistante de récompense ou tâc
 ## Vérification
 
 Tests isolés : plafonds et seuils, lundi inclus et lundi suivant exclu, jours UTC, parties incomplètes, anonymes, autre compte, répétitions, absence d’accès adulte et changement du fuseau SQL. Les protections HTTP restent couvertes par les tests existants du bilan Play. Aucune partie fictive créée en production ; parcours visuel authentifié à vérifier manuellement.
+
+
+## Livraison du 8 novembre 2026
+
+Source `4e8ff7c7e32b779ee07e8758f79da6e07436eb22`, version 0.23.0. Déploiement Vercel `dpl_JCRHXnS8Fjm5QLYWQsMBUgpPXtXk` READY sur talentlink.today. Aucune migration, partie artificielle ou création de compte en production.
+
+164 tests réussis ; TypeScript et compilation réussis (42 pages statiques). Contrôles HTTP : Mes jeux 200, bilan anonyme 401/no-store, POST 405, paramètre de compte injecté 400, catalogue public 200 (trois quiz), inscriptions toujours ouvertes. Le résultat autorisé des défis a été vérifié sur fixtures isolées ; parcours visuel authentifié non déclaré comme testé.
