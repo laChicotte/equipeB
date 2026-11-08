@@ -27,3 +27,10 @@ Aucune publication, import de contenu ou création de compte automatique au dép
 ## Vérification
 
 Tests isolés : droits d’accès, schéma strict, absence de publication après import, concurrence, rejeu, provenance sans faux auteur, refus/retrait conservés, empreinte modifiée, contraintes SQL et revue humaine explicitement simulée. Les tests ordinaires de contributions continuent de couvrir la revue distincte. Contrôle TypeScript et compilation ; interface authentifiée à vérifier manuellement.
+
+
+## Livraison du 8 novembre 2026
+
+Source `6c875378e4ab14a2a5306fe911c29946f8bd9eb2`, version 0.25.0. Déploiement `dpl_75bmQJ66jHTbWLG5xr9pASAaBKaJ` READY sur talentlink.today. Migration 020 validée sur `br-lingering-band-bdljirbb`, puis appliquée à `br-delicate-darkness-bdhflh27` : 20 migrations enregistrées. Aucun contenu importé ou publié, aucun compte créé en production.
+
+167 tests réussis, TypeScript et compilation réussis (42 pages statiques). Contrôles HTTP : atelier ressources 200, aperçu et import anonymes 401/no-store, Origin étranger 403, bibliothèque publique 200 avec zéro ressource publiée, catalogue Play 200 avec trois quiz. URL technique Vercel protégée (302). Les autorisations administrateur et les publications ont été testées avec fixtures isolées ; aucun compte réel emprunté et aucun parcours visuel authentifié déclaré comme testé.
