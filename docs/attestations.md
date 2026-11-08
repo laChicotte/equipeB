@@ -46,3 +46,10 @@ La réponse publique est limitée à la référence, au titre générique, à la
 API POST `share` privée (30 opérations par compte et quart d’heure), POST `verify` anonyme (plafond global 120 par quart d’heure), Origin exact, corps borné et schémas stricts ; réponses no-store/no-referrer. La limite globale peut temporairement bloquer les vérifications en cas de trafic excessif. Aucune liste publique ni recherche par référence.
 
 Validation : tests isolés PGlite de propriété, rotation, retrait, hash seul, révocation, désactivation, projection minimale et contrôles HTTP ; TypeScript et compilation. Le parcours visuel authentifié et l’impression restent à vérifier manuellement.
+
+
+### Livraison du 8 novembre 2026
+
+Source : `83cfb3e5d073321982a4c648d009c957c5850248` (0.21.0). Déploiement Vercel `dpl_5KYiUBmeR9zGiHtSfsifVK2xxg8L`, état READY, alias talentlink.today. Migration 019 appliquée d’abord sur la branche de validation `br-lingering-band-bdljirbb`, puis sur la production `br-delicate-darkness-bdhflh27` : 19 migrations enregistrées. Aucune attestation ni donnée de démonstration créée en production.
+
+Validation : 160 tests réussis ; contrôle TypeScript réussi ; compilation réussie (42 pages statiques). Contrôles HTTP du domaine public : page de vérification 200, jeton inconnu 404, partage anonyme 401, Origin étranger 403, GET de vérification 405. Réponses API no-store/no-referrer. Configuration attestations et génération Sprint IA toujours fermées. Les liens valides et la révocation ont été testés avec des fixtures isolées uniquement ; le parcours visuel authentifié reste à valider manuellement.
