@@ -1,3 +1,4 @@
+import {writeNotice} from '../notifications/write.ts';
 import {partyBadges} from './achievements.ts';
 import type {Database,Sql} from '../../server/database.ts';
 import type {Account} from '../identity/access.ts';
@@ -53,7 +54,7 @@ export class PlayService {
   if(!q)throw missing();if(q.author_id===user.id||q.created_by===user.id)throw deny();
   if(v.decision==='archived'?!['approved','submitted','in_review','rejected'].includes(q.status):!['submitted','in_review'].includes(q.status))throw conflict();
   await sql.query('UPDATE quiz_question_version SET status=$2,reviewed_by=$3,review_note=$4,reviewed_at=now() WHERE id=$1',[v.id,v.decision,user.id,v.note]);
-  await this.audit(sql,user.id,'play.question.'+v.decision,v.id);return {message:'Décision enregistrée.'};
+  await this.audit(sql,user.id,'play.question.'+v.decision,v.id);if(q.status!==v.decision)await writeNotice(sql,q.created_by||q.author_id,user.id,'Une de vos questions Play : '+({in_review:'examen en cours',approved:'approuvée',rejected:'correction demandée',archived:'retirée'})[v.decision]+'.','/compte/contributions/');return {message:'Décision enregistrée.'};
  })}
  async games(account:Account|null){return this.db.transaction(async sql=>{const user=await this.actor(sql,account);return sql.query(`SELECT g.*,(SELECT count(*)::integer FROM ai_sprint_report r WHERE r.game_id=g.id) AS reports,c.name AS category,(SELECT count(*)::integer FROM game_question x WHERE x.game_id=g.id) AS question_count,(SELECT coalesce(jsonb_agg(jsonb_build_object('id',v.id,'stem',v.stem,'status',v.status) ORDER BY x.ordinal),'[]'::jsonb) FROM game_question x JOIN quiz_question_version v ON v.id=x.version_id WHERE x.game_id=g.id) AS questions FROM quiz_game g JOIN game_category c ON c.id=g.category_id WHERE g.author_id=$1 OR $2='admin' ORDER BY g.created_at DESC LIMIT 100`,[user.id,user.role])})}
  async createGame(account:Account|null,input:unknown){const v=gameSchema.parse(input);return this.db.transaction(async sql=>{
@@ -66,14 +67,14 @@ export class PlayService {
  })}
  async submitGame(account:Account|null,id:string){return this.db.transaction(async sql=>{const user=await this.actor(sql,account);const rows=await sql.query("UPDATE quiz_game SET status='submitted' WHERE id=$1 AND author_id=$2 AND status='draft' RETURNING id",[id,user.id]);if(!rows.length)throw conflict();await this.audit(sql,user.id,'play.game.submitted',id);return {message:'Quiz soumis à validation.'}})}
  async reviewGame(account:Account|null,id:string,publish:boolean){return this.db.transaction(async sql=>{
-  const user=await this.actor(sql,account,true);const [g]=await sql.query<{category_id:string;status:string}>('SELECT category_id,status FROM quiz_game WHERE id=$1 FOR UPDATE',[id]);if(!g)throw missing();
+  const user=await this.actor(sql,account,true);const [g]=await sql.query<{category_id:string;status:string;author_id:string}>('SELECT category_id,status,author_id FROM quiz_game WHERE id=$1 FOR UPDATE',[id]);if(!g)throw missing();
   if(publish){
    if(g.status!=='submitted')throw conflict();await this.activeCategory(sql,g.category_id);
    const q=await sql.query<{status:string;category_id:string}>(`SELECT v.status,v.category_id FROM game_question x JOIN quiz_question_version v ON v.id=x.version_id WHERE x.game_id=$1 ORDER BY x.ordinal FOR SHARE OF v`,[id]);
    if(q.length<1||q.length>30||q.some(item=>item.status!=='approved'||item.category_id!==g.category_id))throw new AuthError(400,'invalid_game','Le quiz contient une question retirée ou non approuvée.');
   }else if(!['published','submitted','draft'].includes(g.status))throw conflict();
   await sql.query("UPDATE quiz_game SET status=$2,reviewed_by=$3,published_at=CASE WHEN $4 THEN now() ELSE published_at END WHERE id=$1",[id,publish?'published':'archived',user.id,publish]);
-  await this.audit(sql,user.id,publish?'play.game.published':'play.game.archived',id);return {message:publish?'Quiz publié.':'Quiz archivé.'};
+  await this.audit(sql,user.id,publish?'play.game.published':'play.game.archived',id);await writeNotice(sql,g.author_id,user.id,publish?'Un de vos quiz Play a été publié.':'Un de vos quiz Play a été retiré du catalogue.','/compte/contributions/');return {message:publish?'Quiz publié.':'Quiz archivé.'};
  })}
  async catalog(input:unknown){const v=catalogSchema.parse(input);const values:unknown[]=['%'+v.q.replace(/[\\%_]/g,'\\$&')+'%',v.maxMinutes,v.maxQuestions];let where=available+" AND (g.title ILIKE $1 OR g.description ILIKE $1 OR c.name ILIKE $1 OR c.expertise ILIKE $1) AND g.duration_minutes<=$2 AND (SELECT count(*) FROM game_question x WHERE x.game_id=g.id)<=$3";
   if(v.category){values.push(v.category);where+=' AND g.category_id=$'+values.length}if(v.level){values.push(v.level);where+=' AND g.level=$'+values.length}

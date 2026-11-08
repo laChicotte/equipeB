@@ -141,3 +141,7 @@ Badges de fin de quiz pour les visiteurs et bilan privé dans Mes jeux pour les 
 ## Version 0.19 — disponibilités hebdomadaires
 
 Créneaux structurés dans le profil mentor, fuseau IANA explicite, contrôle des chevauchements et filtre de l’annuaire par jour. Publication après revue du profil, sans réservation automatique. Voir [docs/mentor-availability.md](docs/mentor-availability.md).
+
+## Version 0.20 — centre de notifications
+
+Notifications privées paginées, compteur de non-lues et lecture des éléments affichés. Les décisions de validation des profils et quiz rejoignent les alertes de bibliothèque et de communauté existantes. Aucun e-mail ni notification sur appareil ajouté. Voir [docs/notifications.md](docs/notifications.md).

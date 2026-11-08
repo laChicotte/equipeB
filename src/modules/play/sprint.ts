@@ -1,3 +1,4 @@
+import {writeNotice} from '../notifications/write.ts';
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
 import type {Database} from '../../server/database.ts';
@@ -101,12 +102,13 @@ export class SprintService {
   const v=z.object({gameId:z.uuid(),confirm:z.literal(true)}).strict().parse(input);
   return this.db.transaction(async sql=>{
    const user=await new MentoringService(this.db).actor(sql,account,'admin');
-   const [game]=await sql.query<{status:string}>('SELECT status FROM quiz_game WHERE id=$1 AND generation_id IS NOT NULL FOR UPDATE',[v.gameId]);
+   const [game]=await sql.query<{status:string;author_id:string}>('SELECT status,author_id FROM quiz_game WHERE id=$1 AND generation_id IS NOT NULL FOR UPDATE',[v.gameId]);
    if(!game)throw new AuthError(404,'not_found','Sprint introuvable.');
    if(game.status==='archived')return {message:'Ce Sprint est déjà retiré du catalogue.'};
    if(game.status!=='published')throw new AuthError(409,'conflict','Ce Sprint ne peut pas être retiré dans cet état.');
    await sql.query("UPDATE quiz_game SET status='archived',reviewed_by=$2 WHERE id=$1",[v.gameId,user.id]);
    await sql.query("INSERT INTO audit_event(actor_id,action,resource_type,resource_id) VALUES($1,'play.sprint.archived','play',$2)",[user.id,v.gameId]);
+   await writeNotice(sql,game.author_id,user.id,'Un Sprint IA que vous aviez créé a été retiré du catalogue.','/play/');
    return {message:'Sprint retiré du catalogue. Les parties déjà commencées restent consultables.'};
   });
  }

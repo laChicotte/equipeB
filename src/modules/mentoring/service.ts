@@ -1,3 +1,4 @@
+import {writeNotice} from '../notifications/write.ts';
 import {availabilityTimezone,weeklySlots} from './availability.ts';
 import {ownedAsset} from '../learning/asset-access.ts';
 import type {Database,Sql} from '../../server/database.ts';
@@ -68,7 +69,7 @@ export class MentoringService {
   if(v.decision==='suspend'&&p.publication_status!=='published')throw conflict();
   await sql.query(`UPDATE mentor_profile SET publication_status=$2,verification_status=$3,verified_by=$4,verified_at=CASE WHEN $4::uuid IS NULL THEN NULL ELSE now() END,review_note=$5,revision=revision+1,updated_at=now() WHERE user_id=$1`,[v.id,v.decision==='publish'?'published':v.decision==='reject'?'rejected':'suspended',v.decision==='publish'?'verified':v.decision==='reject'?'rejected':'pending',v.decision==='publish'?admin.id:null,v.note]);
   if(v.decision!=='publish')await this.suspendPrograms(sql,v.id);
-  await this.audit(sql,admin.id,'mentor.review.'+v.decision,v.id);return {message:'Décision enregistrée.'};
+  await this.audit(sql,admin.id,'mentor.review.'+v.decision,v.id);await writeNotice(sql,v.id,admin.id,v.decision==='publish'?'Votre profil mentor a été publié.':v.decision==='reject'?'Votre profil mentor nécessite une correction.':'La publication de votre profil mentor a été suspendue.','/compte/profil-mentor/');return {message:'Décision enregistrée.'};
  })}
  private gate(){if(!this.enabled)throw new AuthError(403,'mentoring_closed','Les mises en relation ne sont pas encore ouvertes.')}
  async eligible(sql:Sql,id:string){const [p]=await sql.query(`SELECT p.user_id FROM mentor_profile p JOIN app_user u ON u.id=p.user_id WHERE ${visible} AND p.user_id=$1 FOR SHARE OF p,u`,[id]);if(!p)throw deny()}
