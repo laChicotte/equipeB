@@ -18,7 +18,7 @@ Une seule référence est créée par programme. Les émissions concurrentes son
 
 ## Consultation et révocation
 
-Le titulaire avec compte actif, vérifié et accès adulte approuvé, ainsi qu’un administrateur actif vérifié, peuvent consulter le document. Le mentor, le modérateur et les autres comptes ne reçoivent aucun droit général de lecture. Il n’existe pas de vérification publique par référence ni de lien de partage anonyme dans cette version privée.
+Le titulaire avec compte actif, vérifié et accès adulte approuvé, ainsi qu’un administrateur actif vérifié, peuvent consulter le document. Le mentor, le modérateur et les autres comptes ne reçoivent aucun droit général de lecture. La référence seule ne permet aucune vérification publique. Depuis la version 0.21, le titulaire peut créer un lien de vérification révocable (voir ci-dessous).
 
 La consultation et la révocation restent disponibles même lorsque l’émission est fermée. La révocation exige un administrateur et un motif de 10 à 500 caractères, visible par le titulaire. Elle conserve l’attestation et sa référence, avec état révoqué et date. Une révision obsolète ou une seconde révocation est refusée.
 
@@ -33,3 +33,16 @@ Migration additive 009. Aucun changement des migrations existantes. Les essais P
 Listes limitées aux 100 documents du titulaire et aux 100 clôtures les plus récentes. Pas d’attestation pour le mentor dans cette première version, de nom légal, signature électronique, QR public, service d’envoi ou réémission. Le partage externe, les conditions d’émission, la conservation et les responsabilités opérationnelles doivent être définis avant ouverture réelle.
 
 Commandes : npm test ; npm run test:e2e ; npm run db:smoke-attestations ; npm run build ; npm run test:preview.
+
+
+## Partage volontaire — 0.21
+
+Le titulaire seul peut créer ou remplacer un lien depuis son document. L’administration ne peut pas activer le partage pour une autre personne. Chaque remplacement invalide le lien précédent ; le retrait est idempotent. L’émission reste fermée et aucun document n’a été créé pour cette livraison.
+
+Le lien utilise un secret aléatoire de 256 bits dans le fragment de `/verification-attestation/#…`. Seul son SHA-256 est enregistré (migration additive 019). Le fragment est retiré de l’adresse après chargement, puis le visiteur confirme la vérification ; le secret est transmis dans un corps POST, jamais dans le chemin ou la chaîne de requête. Le lien n’est montré qu’à sa création. Aucun secret n’est copié dans l’audit.
+
+La réponse publique est limitée à la référence, au titre générique, à la date de délivrance et au statut en vigueur/révoqué. Aucun identifiant de titulaire, nom du mentor, période, motif ou détail de séance. Le lien ne prouve pas l’identité de son porteur. Une attestation révoquée reste signalée comme telle sur son lien existant ; aucun nouveau lien ne peut alors être créé. Un compte désactivé rend sa vérification indisponible. Le titulaire peut retirer un lien même après révocation.
+
+API POST `share` privée (30 opérations par compte et quart d’heure), POST `verify` anonyme (plafond global 120 par quart d’heure), Origin exact, corps borné et schémas stricts ; réponses no-store/no-referrer. La limite globale peut temporairement bloquer les vérifications en cas de trafic excessif. Aucune liste publique ni recherche par référence.
+
+Validation : tests isolés PGlite de propriété, rotation, retrait, hash seul, révocation, désactivation, projection minimale et contrôles HTTP ; TypeScript et compilation. Le parcours visuel authentifié et l’impression restent à vérifier manuellement.

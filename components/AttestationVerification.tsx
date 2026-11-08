@@ -1,0 +1,10 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {request} from '../src/client/request';
+type Result={reference:string;issuedAt:string;status:'valid'|'revoked';title:string};
+export default function AttestationVerification(){
+ const [token,setToken]=useState(''),[result,setResult]=useState<Result|null>(null),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
+ useEffect(()=>{const value=window.location.hash.slice(1);if(/^[0-9a-f]{64}$/.test(value))setToken(value);window.history.replaceState(null,'',window.location.pathname)},[]);
+ async function verify(event:React.FormEvent<HTMLFormElement>){event.preventDefault();if(busy)return;setBusy(true);setResult(null);setMessage('');try{const response=await request('/api/v1/attestations/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token}),cache:'no-store'});const data=await response.json();if(!response.ok)throw new Error(data.message);setResult(data.attestation)}catch(error){setMessage(error instanceof Error?error.message:'Vérification indisponible.')}finally{setBusy(false)}}
+ return <section className="auth-card"><h1>Vérifier une attestation</h1><p>Le titulaire doit vous fournir un lien de partage. La référence seule ne permet pas la vérification.</p><form className="auth-form" onSubmit={verify}><label>Code de partage<input value={token} onChange={event=>setToken(event.target.value)} required pattern="[0-9a-f]{64}" autoComplete="off" spellCheck={false}/></label><button className="button" disabled={busy}>{busy?'Vérification…':'Vérifier le statut actuel'}</button></form><p role="status">{message}</p>{result&&<article><h2>{result.title}</h2><p><strong>{result.status==='valid'?'Attestation en vigueur':'Attestation révoquée'}</strong></p><p>Référence : {result.reference}</p><p>Délivrée le {new Date(result.issuedAt).toLocaleDateString('fr-FR')}</p></article>}<p>Cette vérification ne révèle pas l’identité du titulaire et ne prouve pas celle de la personne présentant le lien. Une attestation de participation ne constitue ni un diplôme ni une certification de compétence.</p></section>
+}

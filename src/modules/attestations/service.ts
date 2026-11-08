@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {randomBytes,createHash} from 'node:crypto';
 import type {Database,Sql} from '../../server/database.ts';
 import type {Account} from '../identity/access.ts';
 import {MentoringService} from '../mentoring/service.ts';
@@ -12,6 +13,8 @@ const columns='a.id,a.program_id,a.recipient_id,a.mentor_name,a.program_started_
 export class AttestationService {
  db:Database;enabled:boolean;
  constructor(db:Database,enabled=false){this.db=db;this.enabled=enabled}
+ async share(account:Account|null,input:unknown){const v=z.strictObject({id:z.string().uuid(),enabled:z.boolean()}).parse(input);return this.db.transaction(async sql=>{const u=await this.actor(sql,account);const [a]=await sql.query<{revoked_at:unknown}>('SELECT revoked_at FROM participation_attestation WHERE id=$1 AND recipient_id=$2 FOR UPDATE',[v.id,u.id]);if(!a)throw missing();if(v.enabled&&a.revoked_at)throw conflict();const token=v.enabled?randomBytes(32).toString('hex'):null;await sql.query('UPDATE participation_attestation SET share_token_hash=$2 WHERE id=$1',[v.id,token?createHash('sha256').update(token).digest('hex'):null]);await this.audit(sql,u.id,v.enabled?'attestation.shared':'attestation.unshared',v.id);return {token,message:token?'Nouveau lien créé. Tout lien précédent est désactivé.':'Les liens de partage sont désactivés.'}})}
+ async verify(input:unknown){const v=z.strictObject({token:z.string().regex(/^[0-9a-f]{64}$/)}).parse(input);const [a]=await this.db.query<{id:string;issued_at:string;revoked_at:string|null}>(`SELECT a.id,a.issued_at,a.revoked_at FROM participation_attestation a JOIN app_user u ON u.id=a.recipient_id WHERE a.share_token_hash=$1 AND u.disabled_at IS NULL`,[createHash('sha256').update(v.token).digest('hex')]);if(!a)throw missing();return {reference:a.id,issuedAt:a.issued_at,status:a.revoked_at?'revoked':'valid',title:'Attestation de participation TalentLink'}}
  private async actor(sql:Sql,account:Account|null){const u=await new MentoringService(this.db).actor(sql,account);if(u.role!=='admin'&&!u.adult_access_approved_at)throw new AuthError(403,'forbidden','Cette action n’est pas autorisée.');return u}
  private async audit(sql:Sql,user:string,action:string,id:string){await sql.query("INSERT INTO audit_event(actor_id,action,resource_type,resource_id) VALUES($1,$2,'attestation',$3)",[user,action,id])}
  async own(account:Account|null){return this.db.transaction(async sql=>{const u=await this.actor(sql,account);return sql.query(`SELECT ${columns} FROM participation_attestation a WHERE a.recipient_id=$1 ORDER BY a.issued_at DESC LIMIT 100`,[u.id])})}
