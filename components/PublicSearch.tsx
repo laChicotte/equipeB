@@ -1,0 +1,23 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {request} from '../src/client/request';
+type Kind='all'|'play'|'resource'|'mentor';
+type Params={q:string;type:Kind;page:number};
+type Item={id:string;title:string;summary:string;meta:string;href:string;aiGenerated?:boolean};
+type Result={q:string;type:Kind;page:number;pageSize:number;total:number;groups:{kind:Kind;label:string;available:boolean;total:number;items:Item[]}[]};
+const labels:Record<Kind,string>={all:'Tous les contenus',play:'TalentLink Play',resource:'Bibliothèque',mentor:'Mentors'};
+function href(p:Params){return '/recherche/?'+new URLSearchParams({q:p.q,type:p.type,page:String(p.page)})}
+export default function PublicSearch(){
+ const[params,setParams]=useState<Params|null>(null),[query,setQuery]=useState(''),[type,setType]=useState<Kind>('all'),[result,setResult]=useState<Result|null>(null),[loading,setLoading]=useState(false),[message,setMessage]=useState(''),[reload,setReload]=useState(0);
+ useEffect(()=>{const sync=()=>{const p=new URLSearchParams(location.search),t=p.get('type')||'all';const next:Params={q:(p.get('q')||'').trim(),type:Object.hasOwn(labels,t)?t as Kind:'all',page:Number(p.get('page')||'1')};setQuery(next.q);setType(next.type);setParams(next)};sync();addEventListener('popstate',sync);return()=>removeEventListener('popstate',sync)},[]);
+ useEffect(()=>{if(!params)return;setResult(null);setMessage('');if(params.q.length<2){setLoading(false);if(params.q)setMessage('Saisis au moins deux caractères.');return}const controller=new AbortController();setLoading(true);
+  request('/api/v1/search/?'+new URLSearchParams({q:params.q,type:params.type,page:String(params.page)}),{signal:controller.signal}).then(async r=>{const d=await r.json();if(!r.ok)throw new Error(d.message);return d}).then(d=>{if(!controller.signal.aborted)setResult(d)}).catch(e=>{if(!controller.signal.aborted)setMessage(e.message)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});
+  return()=>controller.abort();
+ },[params,reload]);
+ function submit(e:React.FormEvent){e.preventDefault();const next={q:query.trim(),type,page:1};history.pushState(null,'',href(next));setParams(next)}
+ return <div className="public-search"><div className="eyebrow">EXPLORER TALENTLINK</div><h1>Un sujet, plusieurs découvertes.</h1><p>Retrouve des quiz, des ressources et des mentors publiés. Les espaces privés restent hors de cette recherche.</p>
+ <form className="mentor-filters" role="search" onSubmit={submit}><label className="field">Que veux-tu apprendre ?<input type="search" name="q" required minLength={2} maxLength={100} value={query} onChange={e=>setQuery(e.target.value)} placeholder="Ex. numérique, sciences, entrepreneuriat"/></label><label className="field">Type de contenu<select name="type" value={type} onChange={e=>setType(e.target.value as Kind)}>{Object.entries(labels).map(([k,label])=><option key={k} value={k}>{label}</option>)}</select></label><button className="button" disabled={loading}>Rechercher</button></form>
+ {message&&<p className="info" role="alert">{message} <button disabled={loading} onClick={()=>setReload(v=>v+1)}>Réessayer</button></p>}{loading&&<p role="status">Recherche en cours…</p>}
+ {result&&<><h2>{result.total} résultat{result.total!==1?'s':''} pour « {result.q} »</h2>{result.groups.map(g=><section key={g.kind} aria-labelledby={'search-'+g.kind}><h3 id={'search-'+g.kind}>{g.label} · {g.total}</h3>{!g.available?<p>Ce module n’est pas ouvert sur cet environnement.</p>:!g.items.length?<p>Aucun contenu publié ne correspond à cette recherche.</p>:<div className="search-results">{g.items.map(item=><article className="mentor-card" key={item.id}><p className="mentor-meta">{item.meta}{item.aiGenerated?' · Sprint IA':''}</p><h4><a href={item.href}>{item.title}</a></h4><p>{item.summary}</p></article>)}</div>}{result.type==='all'&&g.total>g.items.length&&<p><a className="button secondary" href={href({q:result.q,type:g.kind,page:1})}>Voir les {g.total} résultats {g.label}</a></p>}</section>)}{result.type!=='all'&&result.total>result.pageSize&&<nav className="mentor-pagination" aria-label="Pages des résultats">{result.page>1&&<a href={href({...params!,page:result.page-1})}>Précédente</a>}<span>Page {result.page} / {Math.ceil(result.total/result.pageSize)}</span>{result.page*result.pageSize<result.total&&<a href={href({...params!,page:result.page+1})}>Suivante</a>}</nav>}{result.total===0&&<p>Essaie un mot plus court ou un autre thème. Aucun profil ni contenu de démonstration n’est ajouté aux résultats.</p>}</>}
+ {!params?.q&&!loading&&<p>Commence par un mot ou une compétence. La recherche porte uniquement sur les contenus publics.</p>}</div>;
+}

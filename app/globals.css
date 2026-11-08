@@ -3,3 +3,5 @@
 #navigation-principale a{display:inline-flex;align-items:center;min-height:44px}@media(max-width:900px){.mobile-toggle{min-width:44px;min-height:44px}}
 
 .public-launch-info{padding:18px 6%;background:var(--soft);border-bottom:1px solid var(--line);font-size:14px;line-height:1.7}
+
+.domain-chips a{border:1px solid var(--line);border-radius:30px;padding:9px 14px;text-decoration:none;color:var(--muted);font-size:12px;display:inline-flex;align-items:center;gap:8px}.domain-chips a:hover{color:var(--green);border-color:var(--green)}.public-search section{margin:32px 0}.search-results{display:grid;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr))}.search-results h4{font-size:22px;line-height:1.4;margin:10px 0}.search-results h4 a{color:var(--ink);overflow-wrap:anywhere}.public-search .mentor-card{margin:0}.public-search .mentor-card p{overflow-wrap:anywhere}@media(max-width:650px){.search-results{grid-template-columns:1fr}.domain-chips a{font-size:11px;padding:8px 10px}}

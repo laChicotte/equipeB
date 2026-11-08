@@ -18,7 +18,7 @@ export class MentoringService {
  async search(input:unknown){
   const v=searchSchema.parse(input);const values:unknown[]=[];const where=[visible];
   const add=(value:unknown,condition:(p:string)=>string)=>{values.push(value);where.push(condition('$'+values.length))};
-  if(v.q)add('%'+v.q.replace(/[\\%_]/g,'\\$&')+'%',p=>`(p.public_name ILIKE ${p} OR p.biography ILIKE ${p} OR array_to_string(p.skills,' ') ILIKE ${p})`);
+  if(v.q)add('%'+v.q.replace(/[\\%_]/g,'\\$&')+'%',p=>`(p.public_name ILIKE ${p} OR p.biography ILIKE ${p} OR array_to_string(p.skills,' ') ILIKE ${p} OR array_to_string(p.expertise,' ') ILIKE ${p})`);
   for(const [value,column] of [[v.expertise,'expertise'],[v.language,'languages']] as const)if(value)add(value,p=>`EXISTS(SELECT 1 FROM unnest(p.${column}) t WHERE lower(t)=lower(${p}))`);
   for(const [value,column] of [[v.location,'general_location'],[v.availability,'availability']] as const)if(value)add('%'+value.replace(/[\\%_]/g,'\\$&')+'%',p=>`p.${column} ILIKE ${p}`);
   if(v.format)add(v.format,p=>`${p}=ANY(p.formats)`);

@@ -1,0 +1,10 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {request} from '../src/client/request';
+type Resource={title:string;summary:string;body:string;category:string;rights:string;source_url:string;file_id:string|null};
+export default function ResourceReader({id}:{id:string}){
+ const[data,setData]=useState<Resource|null>(null),[message,setMessage]=useState(''),[loading,setLoading]=useState(true),[reload,setReload]=useState(0);
+ useEffect(()=>{const c=new AbortController();setData(null);setLoading(true);setMessage('');request('/api/v1/learning/resource/?id='+encodeURIComponent(id),{signal:c.signal}).then(async r=>{const d=await r.json();if(!r.ok)throw new Error(d.message);return d}).then(d=>{if(!c.signal.aborted)setData(d)}).catch(e=>{if(!c.signal.aborted)setMessage(e.message)}).finally(()=>{if(!c.signal.aborted)setLoading(false)});return()=>c.abort()},[id,reload]);
+ function download(){if(!data)return;const url=URL.createObjectURL(new Blob([data.title+'\n\n'+data.body+'\n\nDroits : '+data.rights],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='talentlink-ressource.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+ return <div className="learning"><a href="/bibliotheque/">← Bibliothèque</a><div className="eyebrow">LECTURE D’UNE RESSOURCE</div>{loading?<p role="status">Chargement…</p>:message?<div className="info" role="alert"><p>{message}</p><button onClick={()=>setReload(v=>v+1)}>Réessayer</button></div>:data&&<article className="learning-reader"><p>{data.category}</p><h1>{data.title}</h1><p>{data.summary}</p><div className="learning-text">{data.body}</div>{data.file_id&&<p><a className="button secondary" href={'/api/files/'+data.file_id+'/'}>Télécharger le document PDF</a></p>}<p><strong>Droits et attribution :</strong> {data.rights}</p>{data.source_url&&<p><a href={data.source_url} target="_blank" rel="noopener noreferrer">Consulter la source externe</a></p>}<div className="mentor-actions"><button onClick={download}>Télécharger le texte</button><button onClick={()=>window.print()}>Imprimer</button></div></article>}</div>;
+}

@@ -129,3 +129,7 @@ Création de quiz publics à partir d’un sujet, catégorie et niveau ; cinq qu
 ### Complément 0.16.1 — signalements Sprint
 
 File administrative paginée sur `/administration/sprints/`, consultation des corrections et retrait journalisé, disponible même lorsque la génération IA est désactivée.
+
+## Version 0.17 — recherche publique unifiée
+
+Recherche des quiz, ressources et mentors publiés depuis `/recherche/`, la navigation et le formulaire d’accueil. Filtres par type, pagination et lecture directe des ressources. Aucune recherche dans les espaces privés et aucun appel IA. Voir [docs/public-search.md](docs/public-search.md).

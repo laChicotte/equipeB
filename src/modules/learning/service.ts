@@ -20,7 +20,7 @@ export class LearningService {
  async resources(account:Account|null,input:unknown){const v=listSchema.parse(input);return this.db.transaction(async sql=>{
   const user=account?await this.actor(sql,account):null;if(v.favorites==='true'&&!user)throw forbidden();
   const values=[user?.id||null,'%'+v.q.replace(/[\\%_]/g,'\\$&')+'%',v.category,v.kind,v.favorites==='true'];
-  const where=`r.status='published' AND (r.title ILIKE $2 OR r.summary ILIKE $2 OR r.body ILIKE $2) AND ($3='' OR r.category=$3) AND ($4='' OR r.kind=$4) AND (NOT $5::boolean OR EXISTS(SELECT 1 FROM library_favorite f WHERE f.resource_id=r.id AND f.user_id=$1))`;
+  const where=`r.status='published' AND (r.title ILIKE $2 OR r.summary ILIKE $2 OR r.body ILIKE $2 OR r.category ILIKE $2) AND ($3='' OR r.category=$3) AND ($4='' OR r.kind=$4) AND (NOT $5::boolean OR EXISTS(SELECT 1 FROM library_favorite f WHERE f.resource_id=r.id AND f.user_id=$1))`;
   const [count]=await sql.query<{total:number}>(`SELECT count(*)::integer AS total FROM library_resource r WHERE ${where}`,values);
   const items=await sql.query(`SELECT r.id,r.title,r.summary,r.category,r.kind,r.rights,r.created_at,EXISTS(SELECT 1 FROM library_favorite f WHERE f.resource_id=r.id AND f.user_id=$1) AS favorite FROM library_resource r WHERE ${where} ORDER BY r.created_at DESC,r.id LIMIT 12 OFFSET $6`,[...values,(v.page-1)*12]);
   const categories=await sql.query<{category:string}>("SELECT DISTINCT category FROM library_resource WHERE status='published' ORDER BY category");
