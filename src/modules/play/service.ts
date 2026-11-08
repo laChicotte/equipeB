@@ -125,9 +125,11 @@ export class PlayService {
   }
   return {index:v.index,choice:v.choice,correct:v.choice===q.correct_index,correctIndex:q.correct_index,points:previous?.points??(v.choice===q.correct_index?a.points_per_answer:0),explanation:q.explanation,source:q.source};
  })}
- async recommendations(owner:string,account:Account|null,id:string,click=false){
-  const expertise=await this.db.transaction(async sql=>{const a=await this.attempt(sql,id,owner,account);if(!a.completed_at)throw conflict();if(click)await sql.query('UPDATE game_attempt SET mentor_click_at=coalesce(mentor_click_at,now()) WHERE id=$1',[id]);return a.snapshot.expertise});
-  const mentors=await new MentoringService(this.db).search({expertise});return {expertise,items:mentors.items.slice(0,3),directory:'/mentors/?expertise='+encodeURIComponent(expertise)};
+ async recommendations(owner:string,account:Account|null,id:string,click=false,resourcesEnabled=false){
+  const topic=await this.db.transaction(async sql=>{const a=await this.attempt(sql,id,owner,account);if(!a.completed_at)throw conflict();if(click)await sql.query('UPDATE game_attempt SET mentor_click_at=coalesce(mentor_click_at,now()) WHERE id=$1',[id]);return {expertise:a.snapshot.expertise,category:a.snapshot.category}});
+  const expertise=topic.expertise;
+  const resources=resourcesEnabled?await this.db.query<{id:string;title:string;summary:string;category:string;kind:string}>(`SELECT id,title,summary,category,kind FROM library_resource WHERE status='published' AND lower(btrim(category))=ANY($1::text[]) ORDER BY created_at DESC,id LIMIT 3`,[[...new Set([topic.expertise,topic.category].map(value=>value.trim().toLowerCase()))]]):[];
+  const mentors=await new MentoringService(this.db).search({expertise});return {expertise,items:mentors.items.slice(0,3),directory:'/mentors/?expertise='+encodeURIComponent(expertise),resources:{enabled:resourcesEnabled,items:resources,search:'/recherche/?type=resource&q='+encodeURIComponent(topic.category)}};
  }
  async history(account:Account|null){return this.db.transaction(async sql=>{const user=await new MentoringService(this.db).actor(sql,account,undefined,true);return sql.query(`SELECT id,snapshot->>'title' AS title,snapshot->>'category' AS category,score,jsonb_array_length(snapshot->'questions')*points_per_answer AS max_score,started_at,completed_at,extract(epoch FROM (completed_at-started_at))::integer AS duration_seconds FROM game_attempt WHERE user_id=$1 ORDER BY started_at DESC LIMIT 100`,[user.id])})}
  async stats(account:Account|null){return this.db.transaction(async sql=>{await this.actor(sql,account,true);

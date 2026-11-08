@@ -1,6 +1,6 @@
 # Plan et critères d’acceptation
 
-## Priorité actuelle — prototype fonctionnel 0.23
+## Priorité actuelle — prototype fonctionnel 0.24
 
 Bibliothèque avec PDF et photos mentors livrés, Sprint IA préparé mais génération différée à la demande du propriétaire. La file dédiée de modération des Sprints complète désormais les listes de l’atelier. Voir [sprint-ai.md](sprint-ai.md).
 
@@ -17,6 +17,8 @@ Le centre de notifications privé regroupe les décisions de validation, avec co
 Le bilan personnel des contributions Play distingue les dernières versions des questions, les quiz publiés et jouables et les parties entièrement terminées. Aucun score individuel de joueur n’est exposé. Voir [contribution-progress.md](contribution-progress.md).
 
 Les défis hebdomadaires privés complètent Mes jeux : pratique, diversité des quiz et retour sur deux jours distincts. La semaine suit le calendrier UTC/Conakry, sans classement public. Voir [weekly-challenges.md](weekly-challenges.md).
+
+Les résultats Play proposent désormais des ressources publiées de la bibliothèque selon le domaine du quiz, sans analyse des réponses ni nouvelle collecte. Voir [play-library.md](play-library.md).
 
 ## 0 — Cadrage
 Synthèse, architecture, arborescence, modèle initial, tokens et parcours : documents présents. Les décisions différées sont signalées explicitement.

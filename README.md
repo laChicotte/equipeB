@@ -159,3 +159,8 @@ Compteurs personnels des questions et quiz, disponibilité réelle au catalogue 
 ## Version 0.23 — défis hebdomadaires Play
 
 Trois objectifs privés de pratique, découverte de quiz et régularité, calculés sur les parties enregistrées de la semaine à l’heure de Conakry. Voir [docs/weekly-challenges.md](docs/weekly-challenges.md).
+
+
+## Version 0.24 — de Play à la bibliothèque
+
+Suggestions de ressources publiées après une partie, sélectionnées par domaine, avec lecture directe et recherche complémentaire. Voir [docs/play-library.md](docs/play-library.md).

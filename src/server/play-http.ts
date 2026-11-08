@@ -19,8 +19,8 @@ export function playConfig():PlayConfig{
  if(process.env.PLAY_ENABLED==='true'&&(secret.length<32||/replace|change-me/i.test(secret)))throw new Error('Missing secret');
  return {origin:url.origin,secure:url.protocol==='https:',secret,enabled:process.env.PLAY_ENABLED==='true'};
 }
-type Dependencies={db:()=>Promise<Database>;config:()=>PlayConfig;account:(request:Request,db:Database)=>Promise<Account|null>};
-const defaults:Dependencies={db:getDatabase,config:playConfig,account:async(request,db)=>{
+type Dependencies={resourcesEnabled?:()=>boolean;db:()=>Promise<Database>;config:()=>PlayConfig;account:(request:Request,db:Database)=>Promise<Account|null>};
+const defaults:Dependencies={resourcesEnabled:()=>process.env.LEARNING_ENABLED==='true',db:getDatabase,config:playConfig,account:async(request,db)=>{
  if(process.env.AUTH_ENABLED!=='true')return null;
  const config=authConfig();return new IdentityService(db,{async send(){}},config.origin,config.secret).account(currentToken(request,config));
 }};
@@ -48,7 +48,7 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
   if(method==='GET'){
    if(action==='categories')return json({items:await service.categories()});
    if(action==='catalog')return json(await service.catalog(Object.fromEntries(url.searchParams)));
-   if(action==='state'||action==='recommendations'){if(!owner)throw new AuthError(404,'not_found','Partie introuvable dans ce navigateur.');return json(action==='state'?await service.state(owner,account,id()):await service.recommendations(owner,account,id()))}
+   if(action==='state'||action==='recommendations'){if(!owner)throw new AuthError(404,'not_found','Partie introuvable dans ce navigateur.');return json(action==='state'?await service.state(owner,account,id()):await service.recommendations(owner,account,id(),false,deps.resourcesEnabled?.()??false))}
    if(action==='questions')return json({items:await service.questions(account)});
    if(action==='games')return json({items:await service.games(account)});
    if(action==='progress')return json(await new PlayProgressService(db).progress(account));
@@ -64,7 +64,7 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
    if(action==='answer'||action==='mentor-click'){
     if(!owner)throw new AuthError(404,'not_found','Partie introuvable dans ce navigateur.');
     if(action==='answer')return json(await service.answer(owner,account,input));
-    const v=z.object({id:z.uuid()}).strict().parse(input);return json(await service.recommendations(owner,account,v.id,true));
+    const v=z.object({id:z.uuid()}).strict().parse(input);return json(await service.recommendations(owner,account,v.id,true,deps.resourcesEnabled?.()??false));
    }
    if(action==='question')return json(await service.saveQuestion(account,input),201);
    if(action==='submit-question'){const v=z.object({id:z.uuid()}).strict().parse(input);return json(await service.submitQuestion(account,v.id))}
