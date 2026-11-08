@@ -37,7 +37,7 @@ test('authentification fermée et configuration production invalide : refus par 
 
 test('authentification intégrée sur le moteur PostgreSQL embarqué',async t=>{
   const db=await embeddedDatabase();t.after(()=>db.close());
-  assert.deepEqual(await migrate(db),['001_foundation.sql','002_authentication.sql','003_mentoring.sql','004_play.sql','005_play_authorship.sql','006_messaging.sql','007_planning.sql','008_audit_indexes.sql','009_attestations.sql','010_maintenance_indexes.sql','011_editorial_questions.sql','012_learning_workspace.sql','013_personal_progress.sql','014_private_assets.sql','015_ai_sprint.sql','016_sprint_editorial_guard.sql','017_weekly_availability.sql','018_notification_inbox.sql','019_attestation_sharing.sql']);
+  assert.deepEqual(await migrate(db),['001_foundation.sql','002_authentication.sql','003_mentoring.sql','004_play.sql','005_play_authorship.sql','006_messaging.sql','007_planning.sql','008_audit_indexes.sql','009_attestations.sql','010_maintenance_indexes.sql','011_editorial_questions.sql','012_learning_workspace.sql','013_personal_progress.sql','014_private_assets.sql','015_ai_sprint.sql','016_sprint_editorial_guard.sql','017_weekly_availability.sql','018_notification_inbox.sql','019_attestation_sharing.sql','020_library_editorial.sql']);
   assert.deepEqual(await migrate(db),[]);
   const sent:Mail[]=[];
   const config:AuthConfig={origin:'http://127.0.0.1:3000',secure:false,registrationEnabled:true,secret:randomBytes(32).toString('hex')};

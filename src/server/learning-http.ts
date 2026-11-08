@@ -5,6 +5,7 @@ import {authConfig,currentToken,body} from './auth-http.ts';
 import {IdentityService} from '../modules/identity/service.ts';
 import type {Account} from '../modules/identity/access.ts';
 import {AuthError} from '../modules/identity/errors.ts';
+import {LibraryEditorialService} from '../modules/learning/editorial.ts';
 import {ProgressService} from '../modules/learning/progress.ts';
 import {LearningService} from '../modules/learning/service.ts';
 type Dependencies={enabled:()=>boolean;db:()=>Promise<Database>;account:(r:Request,db:Database)=>Promise<Account|null>;origin:()=>string;secret:()=>string};
@@ -13,7 +14,7 @@ const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache
 export async function handleLearning(request:Request,action:string,deps:Dependencies=defaults){try{
  if(action==='config'&&request.method==='GET')return json({enabled:deps.enabled()});
  if(!deps.enabled())return json({message:'Cet espace n’est pas activé sur cet environnement.'},503);
- const reads=['resources','resource','profile','dashboard','feed','queue','goal-detail'],writes=['resource','favorite','profile','goal','read-notice','post','react','follow','review','step','step-complete','goal-review'];
+ const reads=['starter-guides','resources','resource','profile','dashboard','feed','queue','goal-detail'],writes=['starter-guides','resource','favorite','profile','goal','read-notice','post','react','follow','review','step','step-complete','goal-review'];
  if(!['GET','POST'].includes(request.method))return json({message:'Méthode non autorisée.'},405);
  if(!(request.method==='GET'?reads:writes).includes(action))return json({message:'Action introuvable.'},404);
  if(request.method==='POST'&&(request.headers.get('origin')!==deps.origin()||request.headers.get('sec-fetch-site')==='cross-site'))return json({message:'Origine non autorisée.'},403);
@@ -21,6 +22,7 @@ export async function handleLearning(request:Request,action:string,deps:Dependen
  const account=await deps.account(request,db);
  if(!(request.method==='GET'&&['resources','resource'].includes(action))&&!account)throw new AuthError(401,'unauthenticated','Connectez-vous pour continuer.');
  if(request.method==='GET'){
+  if(action==='starter-guides'){z.strictObject({}).parse(Object.fromEntries(url.searchParams));return json(await new LibraryEditorialService(db).preview(account))}
   if(action==='resources')return json(await service.resources(account,Object.fromEntries(url.searchParams)));
   if(action==='resource')return json(await service.resource(z.uuid().parse(url.searchParams.get('id'))));
   if(action==='profile')return json(await service.profile(account));
@@ -32,6 +34,7 @@ export async function handleLearning(request:Request,action:string,deps:Dependen
   const limiter=new IdentityService(db,{async send(){}},deps.origin(),deps.secret());
   await limiter.rate('learning-write',account!.id,60);
   const input=await body(request);
+  if(action==='starter-guides')return json(await new LibraryEditorialService(db).submit(account,input),201);
   if(action==='resource')return json(await service.submitResource(account,input),201);
   if(action==='profile')return json(await service.saveProfile(account,input));
   if(action==='favorite')return json(await service.favorite(account,input));

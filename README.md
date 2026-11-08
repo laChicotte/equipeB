@@ -164,3 +164,8 @@ Trois objectifs privés de pratique, découverte de quiz et régularité, calcul
 ## Version 0.24 — de Play à la bibliothèque
 
 Suggestions de ressources publiées après une partie, sélectionnées par domaine, avec lecture directe et recherche complémentaire. Voir [docs/play-library.md](docs/play-library.md).
+
+
+## Version 0.25 — guides de démarrage de la bibliothèque
+
+Trois guides préparés avec assistance IA, aperçu administrateur et import sans doublon dans la file de relecture. Aucune publication automatique. Voir [docs/library-starter-guides.md](docs/library-starter-guides.md).
