@@ -154,3 +154,8 @@ Partage volontaire par lien révocable, projection publique sans identité et é
 ## Version 0.22 — bilan des contributions Play
 
 Compteurs personnels des questions et quiz, disponibilité réelle au catalogue et parties entièrement terminées sans données individuelles des joueurs. Voir [docs/contribution-progress.md](docs/contribution-progress.md).
+
+
+## Version 0.23 — défis hebdomadaires Play
+
+Trois objectifs privés de pratique, découverte de quiz et régularité, calculés sur les parties enregistrées de la semaine à l’heure de Conakry. Voir [docs/weekly-challenges.md](docs/weekly-challenges.md).
