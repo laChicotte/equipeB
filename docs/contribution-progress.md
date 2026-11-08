@@ -22,3 +22,10 @@ Pas de migration et aucun changement d’activation des modules. L’interface r
 ## Vérification
 
 Tests isolés : attribution mentor/admin distincte, nouvelle version sans double compte, exclusion IA, totaux au-delà de la limite des listes, état de publication distinct de la disponibilité, parties agrégées et contrôles HTTP. Les tests de suspension et désactivation vérifient les habilitations en base. Le parcours visuel authentifié reste à vérifier manuellement.
+
+
+## Livraison du 8 novembre 2026
+
+Source `47d3ffb52a32a96d09f08c2e863e21d6be106752`, version 0.22.0. Déploiement `dpl_CccsGEt5n1DDXsRDiKqiacjt8nhZ` READY sur talentlink.today. Aucune migration, création de compte, partie artificielle ou modification de données métier en production.
+
+162 tests réussis, TypeScript et compilation réussis (42 pages statiques). Vérifications HTTP en production : atelier 200 ; bilan anonyme 401 avec no-store/no-referrer ; POST 405 ; paramètre userId refusé 400. Catalogue public 200 (trois quiz), inscriptions adultes toujours ouvertes, Sprint IA toujours désactivé. L’URL technique Vercel reste protégée (302). Les résultats autorisés ont été vérifiés sur fixtures isolées ; aucune session réelle empruntée et aucun contrôle visuel authentifié déclaré.
