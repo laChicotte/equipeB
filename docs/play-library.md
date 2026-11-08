@@ -17,3 +17,10 @@ Pas de migration, de nouvelle collecte, de publication automatique ou de contenu
 ## Vérification
 
 Tests isolés : fin de partie requise, propriétaire, plafond de trois ressources, casse/espaces, statuts exclus, retrait, résultat vide, bibliothèque désactivée et projection minimale. Contrôle TypeScript et compilation. Le parcours visuel de fin de quiz reste à vérifier manuellement.
+
+
+## Livraison du 8 novembre 2026
+
+Source `d97bba0dd181e56b2f47a9e21580b5fd19591328`, version 0.24.0. Déploiement Vercel `dpl_CfpcRCbirzkEffmXadgoSsz1NLRL` READY sur talentlink.today. Aucune migration ou donnée fictive créée en production.
+
+165 tests réussis, TypeScript et compilation réussis (42 pages statiques). Contrôles HTTP : catalogue Play 200 (trois quiz), bibliothèque 200, ressources publiques 200 (aucune ressource publiée à la livraison), suggestions sans cookie 404/no-store. Inscriptions ouvertes et Sprint IA toujours désactivé. Les suggestions valides ont été vérifiées avec des fixtures isolées ; aucune partie artificielle jouée en production et aucun contrôle visuel de résultat déclaré.
