@@ -1,12 +1,14 @@
 # Plan et critères d’acceptation
 
-## Priorité actuelle — prototype fonctionnel 0.17
+## Priorité actuelle — prototype fonctionnel 0.18
 
 Bibliothèque avec PDF et photos mentors livrés, Sprint IA préparé mais génération différée à la demande du propriétaire. La file dédiée de modération des Sprints complète désormais les listes de l’atelier. Voir [sprint-ai.md](sprint-ai.md).
 
 Le 7 novembre 2026, l’utilisateur a demandé de privilégier les modules et leur essai complet. `npm run prototype` regroupe les fonctions existantes sur une base locale persistante avec comptes fictifs et e-mails locaux. Bibliothèque, communauté modérée, profil d’apprentissage, progression personnelle et notifications de revue sont implémentés. Voir [prototype.md](prototype.md) pour les parcours et les éléments du prompt qui restent à développer. Le contrôle de récupération Neon a été effectué dans une étape précédente ; voir recovery-drill.md. Les descriptions historiques ci-dessous conservent le contexte de chaque livraison.
 
 La recherche publique unifiée relie désormais Play, la bibliothèque et les mentors publiés, avec accès depuis l’accueil. La recherche sémantique et la génération IA restent des fonctions distinctes, non activées par cette livraison. Voir [public-search.md](public-search.md).
+
+Les badges de partie et le bilan privé Play ajoutent des repères calculés à partir des parties terminées et de l’historique enregistré. Les parcours privés conservent leurs contrôles d’accès. Voir [play-progress.md](play-progress.md).
 
 ## 0 — Cadrage
 Synthèse, architecture, arborescence, modèle initial, tokens et parcours : documents présents. Les décisions différées sont signalées explicitement.

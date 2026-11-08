@@ -1,3 +1,4 @@
+import {PlayProgressService} from '../modules/play/progress.ts';
 import {randomUUID} from 'node:crypto';
 import {z,ZodError} from 'zod';
 import {getDatabase} from './database.ts';
@@ -28,8 +29,12 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
   const c=deps.config(),url=new URL(request.url),method=request.method;
   if(action==='config'&&method==='GET')return json({enabled:c.enabled});
   const publicActions=['catalog','categories','start','state','answer','recommendations','mentor-click'];
-  if(![...publicActions,'questions','question','submit-question','review-question','games','game','submit-game','review-game','category','history','stats'].includes(action))return json({message:'Action introuvable.'},404);
+  if(![...publicActions,'questions','question','submit-question','review-question','games','game','submit-game','review-game','category','history','progress','stats'].includes(action))return json({message:'Action introuvable.'},404);
   if(!['GET','POST'].includes(method))return json({message:'Méthode non autorisée.'},405);
+  if(action==='progress'){
+   if(method!=='GET')return json({message:'Méthode non autorisée.'},405);
+   z.object({}).strict().parse(Object.fromEntries(url.searchParams));
+  }
   if(publicActions.includes(action)&&action!=='categories'&&!c.enabled)throw new AuthError(503,'play_closed','Les quiz ne sont pas encore ouverts sur cet environnement.');
   if(method==='POST'&&(request.headers.get('origin')!==c.origin||request.headers.get('sec-fetch-site')==='cross-site'))throw new AuthError(403,'invalid_origin','Cette requête n’est pas autorisée.');
   const db=await deps.db(),service=new PlayService(db);
@@ -45,6 +50,7 @@ export async function handlePlay(request:Request,action:string,deps:Dependencies
    if(action==='state'||action==='recommendations'){if(!owner)throw new AuthError(404,'not_found','Partie introuvable dans ce navigateur.');return json(action==='state'?await service.state(owner,account,id()):await service.recommendations(owner,account,id()))}
    if(action==='questions')return json({items:await service.questions(account)});
    if(action==='games')return json({items:await service.games(account)});
+   if(action==='progress')return json(await new PlayProgressService(db).progress(account));
    if(action==='history')return json({items:await service.history(account)});
    if(action==='stats')return json(await service.stats(account));
   }else{

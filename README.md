@@ -133,3 +133,7 @@ File administrative paginée sur `/administration/sprints/`, consultation des co
 ## Version 0.17 — recherche publique unifiée
 
 Recherche des quiz, ressources et mentors publiés depuis `/recherche/`, la navigation et le formulaire d’accueil. Filtres par type, pagination et lecture directe des ressources. Aucune recherche dans les espaces privés et aucun appel IA. Voir [docs/public-search.md](docs/public-search.md).
+
+## Version 0.18 — badges et bilan Play
+
+Badges de fin de quiz pour les visiteurs et bilan privé dans Mes jeux pour les parties enregistrées avec accord. Aucun classement public ni certification. Voir [docs/play-progress.md](docs/play-progress.md).

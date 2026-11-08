@@ -1,3 +1,4 @@
+import {partyBadges} from './achievements.ts';
 import type {Database,Sql} from '../../server/database.ts';
 import type {Account} from '../identity/access.ts';
 import {AuthError} from '../identity/errors.ts';
@@ -104,7 +105,7 @@ export class PlayService {
   const result:Record<string,unknown>={id:a.id,aiGenerated:a.snapshot.aiGenerated===true,deadline:a.snapshot.aiGenerated?new Date(new Date(a.started_at).getTime()+180_000).toISOString():null,title:a.snapshot.title,category:a.snapshot.category,expertise:a.snapshot.expertise,total:a.snapshot.questions.length,answered:a.cursor,score:a.score,maxScore:a.snapshot.questions.length*a.points_per_answer,pointsPerAnswer:a.points_per_answer,completed,saved:!!a.user_id,question:q&&!completed?{index:a.cursor,stem:q.stem,options:q.options}:null};
   if(completed){
    const answers=await sql.query<{ordinal:number;choice:number;correct:boolean;points:number}>('SELECT ordinal,choice,correct,points FROM game_attempt_answer WHERE attempt_id=$1 ORDER BY ordinal',[a.id]);
-   result.unanswered=a.snapshot.questions.length-answers.length;result.correct=answers.filter(v=>v.correct).length;result.wrong=answers.filter(v=>!v.correct).length;result.percentage=Math.round(a.score/(a.snapshot.questions.length*a.points_per_answer)*100);
+   result.unanswered=a.snapshot.questions.length-answers.length;result.correct=answers.filter(v=>v.correct).length;result.badges=partyBadges({completed:true,answered:answers.length,total:a.snapshot.questions.length,correct:answers.filter(v=>v.correct).length});result.wrong=answers.filter(v=>!v.correct).length;result.percentage=Math.round(a.score/(a.snapshot.questions.length*a.points_per_answer)*100);
    result.results=answers.map(v=>({...v,stem:a.snapshot.questions[v.ordinal].stem,options:a.snapshot.questions[v.ordinal].options,correctIndex:a.snapshot.questions[v.ordinal].correct_index,explanation:a.snapshot.questions[v.ordinal].explanation,source:a.snapshot.questions[v.ordinal].source}));
    result.topicsToExplore=answers.some(v=>!v.correct)?[a.snapshot.category]:[];
    result.durationSeconds=Math.max(0,Math.round((new Date(a.completed_at!).getTime()-new Date(a.started_at).getTime())/1000));
