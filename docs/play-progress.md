@@ -31,3 +31,9 @@ Pas de migration, variable d’activation, envoi d’e-mail ou appel IA ajouté.
 Trente-quatre tests ciblés Play, progression et Sprint ont réussi. Ils couvrent les seuils exacts, les visiteurs, l’absence de correction avant la fin, l’enregistrement facultatif, les répétitions et réponses rejouées, les catégories distinctes, un Sprint expiré partiellement répondu, l’isolation entre comptes, l’accès adulte retiré, les comptes désactivés, la lecture seule et le cache privé. Les données de test demeurent dans une base embarquée isolée. TypeScript est validé. La revue visuelle authentifiée et l’usage avec lecteur d’écran restent à effectuer dans le navigateur.
 
 La suite complète de 142 tests et la compilation de production ont ensuite réussi. Le build conserve 40 pages statiques et utilise la route dynamique Play existante pour le bilan.
+
+## Livraison du 8 novembre 2026
+
+Déploiement Vercel dpl_4QvGAzJhdcR72PAGf3nrKpLsCuX3, état READY, source ad97367, associé à talentlink.today. Contrôles HTTP : /compte/jeux/ répond 200 et contient le chargement du nouveau bilan ; GET du bilan sans session 401/no-store ; paramètre userId rejeté en 400 ; tentative d’écriture de score/badge rejetée en 405. Le catalogue conserve trois quiz, la recherche Sciences trouve toujours un quiz, les inscriptions restent ouvertes et la configuration Sprint conserve enabled=false. Aucun jeu n’a été complété artificiellement en production pour ces contrôles : les badges de résultat ont été vérifiés dans la base isolée.
+
+Les commits sont locaux ; l’envoi GitHub reste en attente du push depuis le PowerShell interactif, les tentatives précédentes ayant échoué sur le gestionnaire d’identifiants Windows. Le déploiement Vercel utilise les fichiers de la révision indiquée ci-dessus.
