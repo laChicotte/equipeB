@@ -25,3 +25,9 @@ Pas de migration, d’extension PostgreSQL ou de service externe ajouté. Aucune
 La suite complète de 132 tests a réussi avant le dernier élargissement aux domaines. Les tests ciblés des catalogues et de la recherche couvrent ensuite les domaines, l’affichage des trois groupes, la pagination de treize ressources, les contenus privés exclus, les modules fermés, les caractères spéciaux et les retraits. Les fixtures sont exclusivement dans une base PostgreSQL embarquée isolée. TypeScript est validé. La revue visuelle et le lecteur d’écran restent à examiner manuellement.
 
 Validation complémentaire : les 36 tests des modules recherche, Play, bibliothèque et mentorat ont réussi après l’élargissement aux domaines, puis la compilation de production a réussi avec 40 pages statiques et les nouvelles routes de recherche/lecture.
+
+## Livraison du 8 novembre 2026
+
+Déploiement Vercel dpl_Ezstgth7NKa6XiQgqae4zwWPvgbo, état READY, source e45ae14, associé à talentlink.today. L’accueil expose le lien et le vrai formulaire de recherche (200), la page de recherche répond 200. L’API renvoie un quiz public pour Sciences, y compris avec le filtre Play ; les autres groupes sont vides à ce relevé, sans contenu de démonstration ajouté. Une recherche sans correspondance renvoie zéro ; une saisie trop courte ou un paramètre authorId non autorisé renvoie 400 ; une écriture renvoie 405. Réponses no-store. Les inscriptions restent ouvertes et la configuration Sprint conserve enabled=false. Aucun changement de variables, migration, contenu, compte ou service payant pour cette livraison.
+
+Le commit de développement est local. Le push GitHub a de nouveau échoué avec wincredman et les invites de terminal désactivées ; l’envoi reste à faire dans le PowerShell interactif du propriétaire. Le déploiement Vercel utilise les fichiers de la révision indiquée ci-dessus.
