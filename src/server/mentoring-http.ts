@@ -48,7 +48,11 @@ export async function handleMentoring(request:Request,action:string,deps:Depende
   return json({message:'Méthode non autorisée.'},405);
  }catch(error){
   if(error instanceof AuthError)return json({code:error.code,message:error.message},error.status);
-  if(error instanceof ZodError)return json({code:'validation_failed',message:'Vérifiez les champs : '+[...new Set(error.issues.map(i=>String(i.path[0]||'formulaire')))].join(', ')+'.'},400);
+  if(error instanceof ZodError){
+   if(error.issues.some(i=>i.path[0]==='weeklySlots'))return json({code:'validation_failed',message:'Vérifiez les créneaux : jours valides, horaires par quarts d’heure, durée de 15 minutes à 12 heures et aucun chevauchement le même jour.'},400);
+   if(error.issues.some(i=>i.path[0]==='availabilityTimezone'))return json({code:'validation_failed',message:'Choisissez un fuseau horaire valide, par exemple Africa/Conakry ou Europe/Paris.'},400);
+   return json({code:'validation_failed',message:'Vérifiez les champs : '+[...new Set(error.issues.map(i=>String(i.path[0]||'formulaire')))].join(', ')+'.'},400);
+  }
   console.error('talentlink_mentoring_error',randomUUID());return json({message:'Le service est temporairement indisponible.'},503);
  }
 }

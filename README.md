@@ -137,3 +137,7 @@ Recherche des quiz, ressources et mentors publiés depuis `/recherche/`, la navi
 ## Version 0.18 — badges et bilan Play
 
 Badges de fin de quiz pour les visiteurs et bilan privé dans Mes jeux pour les parties enregistrées avec accord. Aucun classement public ni certification. Voir [docs/play-progress.md](docs/play-progress.md).
+
+## Version 0.19 — disponibilités hebdomadaires
+
+Créneaux structurés dans le profil mentor, fuseau IANA explicite, contrôle des chevauchements et filtre de l’annuaire par jour. Publication après revue du profil, sans réservation automatique. Voir [docs/mentor-availability.md](docs/mentor-availability.md).

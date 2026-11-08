@@ -1,3 +1,4 @@
+import {availabilityTimezone,weeklySlots} from './availability.ts';
 import {ownedAsset} from '../learning/asset-access.ts';
 import type {Database,Sql} from '../../server/database.ts';
 import type {Account} from '../identity/access.ts';
@@ -5,7 +6,7 @@ import {AuthError} from '../identity/errors.ts';
 import {profileSchema,reviewSchema,requestSchema,transitionSchema,programSchema,searchSchema} from './schemas.ts';
 const deny=()=>new AuthError(403,'forbidden','Cette action n’est pas autorisée.');
 const conflict=()=>new AuthError(409,'conflict','La situation a changé. Recharge la page avant de réessayer.');
-const publicColumns=`p.user_id AS id,p.public_name,p.biography,p.experience,p.skills,p.expertise,p.languages,p.general_location,p.availability,p.formats,p.professional_links,p.photo_id,p.verification_status`;
+const publicColumns=`p.user_id AS id,p.public_name,p.biography,p.experience,p.skills,p.expertise,p.languages,p.general_location,p.availability,p.availability_timezone,p.weekly_slots,p.formats,p.professional_links,p.photo_id,p.verification_status`;
 const visible=`p.publication_status='published' AND p.verification_status='verified' AND u.disabled_at IS NULL AND u.role='mentor' AND u.email_verified_at IS NOT NULL AND u.adult_access_approved_at IS NOT NULL`;
 export class MentoringService {
  db:Database;enabled:boolean;
@@ -21,6 +22,7 @@ export class MentoringService {
   if(v.q)add('%'+v.q.replace(/[\\%_]/g,'\\$&')+'%',p=>`(p.public_name ILIKE ${p} OR p.biography ILIKE ${p} OR array_to_string(p.skills,' ') ILIKE ${p} OR array_to_string(p.expertise,' ') ILIKE ${p})`);
   for(const [value,column] of [[v.expertise,'expertise'],[v.language,'languages']] as const)if(value)add(value,p=>`EXISTS(SELECT 1 FROM unnest(p.${column}) t WHERE lower(t)=lower(${p}))`);
   for(const [value,column] of [[v.location,'general_location'],[v.availability,'availability']] as const)if(value)add('%'+value.replace(/[\\%_]/g,'\\$&')+'%',p=>`p.${column} ILIKE ${p}`);
+  if(v.weekday)add(v.weekday,p=>`EXISTS(SELECT 1 FROM jsonb_array_elements(p.weekly_slots) slot WHERE slot->>'day'=${p})`);
   if(v.format)add(v.format,p=>`${p}=ANY(p.formats)`);
   const predicate=where.join(' AND ');
   return this.db.transaction(async sql=>{
@@ -36,12 +38,13 @@ export class MentoringService {
  async save(account:Account|null,input:unknown){const v=profileSchema.parse(input);return this.db.transaction(async sql=>{
   const user=await this.actor(sql,account,'mentor',false,true);
   // User lock serializes initial insert as well as concurrent saves.
-  const [old]=await sql.query<{revision:number;photo_id:string|null}>('SELECT revision,photo_id FROM mentor_profile WHERE user_id=$1 FOR UPDATE',[user.id]);
+  const [old]=await sql.query<{revision:number;photo_id:string|null;availability_timezone:string;weekly_slots:unknown}>('SELECT revision,photo_id,availability_timezone,weekly_slots FROM mentor_profile WHERE user_id=$1 FOR UPDATE',[user.id]);
   if((old?.revision||0)!==v.revision)throw conflict();
   const photoId=v.photoId===undefined?(old?.photo_id||null):v.photoId;if(photoId)await ownedAsset(sql,user.id,photoId,'photo');
-  const values=[user.id,v.publicName,v.biography,v.experience,v.skills,v.expertise,v.languages,v.generalLocation,v.availability,v.formats,v.professionalLinks,photoId];
-  await sql.query(`INSERT INTO mentor_profile(user_id,public_name,biography,experience,skills,expertise,languages,general_location,availability,formats,professional_links,photo_id)
-   VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT(user_id) DO UPDATE SET public_name=$2,biography=$3,experience=$4,skills=$5,expertise=$6,languages=$7,general_location=$8,availability=$9,formats=$10,professional_links=$11,photo_id=$12,
+  const timezone=availabilityTimezone.parse(v.availabilityTimezone??old?.availability_timezone??'Africa/Conakry'),slots=weeklySlots.parse(v.weeklySlots??old?.weekly_slots??[]);
+  const values=[user.id,v.publicName,v.biography,v.experience,v.skills,v.expertise,v.languages,v.generalLocation,v.availability,v.formats,v.professionalLinks,photoId,timezone,JSON.stringify(slots)];
+  await sql.query(`INSERT INTO mentor_profile(user_id,public_name,biography,experience,skills,expertise,languages,general_location,availability,formats,professional_links,photo_id,availability_timezone,weekly_slots)
+   VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14::jsonb) ON CONFLICT(user_id) DO UPDATE SET public_name=$2,biography=$3,experience=$4,skills=$5,expertise=$6,languages=$7,general_location=$8,availability=$9,formats=$10,professional_links=$11,photo_id=$12,availability_timezone=$13,weekly_slots=$14::jsonb,
    publication_status='draft',verification_status='pending',verified_by=NULL,verified_at=NULL,review_note='',revision=mentor_profile.revision+1,updated_at=now()`,values);
   await this.suspendPrograms(sql,user.id);
   await this.audit(sql,user.id,'mentor.profile.saved',user.id);return {message:'Profil enregistré en brouillon. Toute modification nécessite une nouvelle validation.'};
@@ -50,7 +53,7 @@ export class MentoringService {
   const user=await this.actor(sql,account,'mentor');
   const [p]=await sql.query('SELECT * FROM mentor_profile WHERE user_id=$1 FOR UPDATE',[user.id]);
   if(!p||p.revision!==revision)throw conflict();
-  profileSchema.parse({publicName:p.public_name,biography:p.biography,experience:p.experience,skills:p.skills,expertise:p.expertise,languages:p.languages,generalLocation:p.general_location,availability:p.availability,formats:p.formats,professionalLinks:p.professional_links,revision:p.revision});
+  profileSchema.parse({publicName:p.public_name,biography:p.biography,experience:p.experience,skills:p.skills,expertise:p.expertise,languages:p.languages,generalLocation:p.general_location,availability:p.availability,availabilityTimezone:p.availability_timezone,weeklySlots:p.weekly_slots,formats:p.formats,professionalLinks:p.professional_links,revision:p.revision});
   const rows=await sql.query(`UPDATE mentor_profile SET publication_status='submitted',revision=revision+1,updated_at=now() WHERE user_id=$1 AND revision=$2 AND publication_status IN ('draft','rejected','suspended') RETURNING user_id`,[user.id,revision]);
   if(!rows.length)throw conflict();await this.audit(sql,user.id,'mentor.profile.submitted',user.id);return {message:'Profil transmis pour examen. Aucune publication automatique.'};
  })}

@@ -1,6 +1,6 @@
 # Plan et critères d’acceptation
 
-## Priorité actuelle — prototype fonctionnel 0.18
+## Priorité actuelle — prototype fonctionnel 0.19
 
 Bibliothèque avec PDF et photos mentors livrés, Sprint IA préparé mais génération différée à la demande du propriétaire. La file dédiée de modération des Sprints complète désormais les listes de l’atelier. Voir [sprint-ai.md](sprint-ai.md).
 
@@ -9,6 +9,8 @@ Le 7 novembre 2026, l’utilisateur a demandé de privilégier les modules et le
 La recherche publique unifiée relie désormais Play, la bibliothèque et les mentors publiés, avec accès depuis l’accueil. La recherche sémantique et la génération IA restent des fonctions distinctes, non activées par cette livraison. Voir [public-search.md](public-search.md).
 
 Les badges de partie et le bilan privé Play ajoutent des repères calculés à partir des parties terminées et de l’historique enregistré. Les parcours privés conservent leurs contrôles d’accès. Voir [play-progress.md](play-progress.md).
+
+Les mentors peuvent préparer des disponibilités hebdomadaires structurées, avec fuseau horaire et filtre public par jour après validation du profil. La réservation et les rappels restent distincts. Voir [mentor-availability.md](mentor-availability.md).
 
 ## 0 — Cadrage
 Synthèse, architecture, arborescence, modèle initial, tokens et parcours : documents présents. Les décisions différées sont signalées explicitement.
